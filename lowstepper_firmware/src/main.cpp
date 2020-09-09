@@ -28,16 +28,25 @@ void loop() {
   while (usec < 500) {
     // wait
     // TODO stabilize timing
-    if (morph < 1 && morph > 0) {
-      if (up) {
-        morph += 0.0001;
-      } else {
-        morph -= 0.0001;
-      }
+  }
+
+  if(usec2 > 100) {
+    if (up) {
+      morph += 0.0001;
     } else {
+      morph -= 0.0001;
+    }
+
+    if (!(morph < 1 && morph > 0)) {
+      Serial.println("swap");
       up = !up;
     }
+
+    Serial.println(morph);
+    usec2 = 0;
   }
+
+
 
   usec = usec - 500;
 }
