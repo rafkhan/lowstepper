@@ -7,8 +7,8 @@
             "name": "Mac",
             "macFrameworkPath": [],
             "includePath": [
-                "/Users/rafy/Developer/lowstepper/lowstepper_v1_firmware/include",
-                "/Users/rafy/Developer/lowstepper/lowstepper_v1_firmware/src",
+                "/Users/rafy/Developer/lowstepper/lowstepper_firmware/include",
+                "/Users/rafy/Developer/lowstepper/lowstepper_firmware/src",
                 "/Users/rafy/.platformio/packages/framework-arduinoteensy/cores/teensy3",
                 "/Users/rafy/.platformio/packages/framework-arduinoteensy/libraries/ADC",
                 "/Users/rafy/.platformio/packages/framework-arduinoteensy/libraries/AccelStepper/src",
@@ -113,8 +113,8 @@
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "path": [
-                    "/Users/rafy/Developer/lowstepper/lowstepper_v1_firmware/include",
-                    "/Users/rafy/Developer/lowstepper/lowstepper_v1_firmware/src",
+                    "/Users/rafy/Developer/lowstepper/lowstepper_firmware/include",
+                    "/Users/rafy/Developer/lowstepper/lowstepper_firmware/src",
                     "/Users/rafy/.platformio/packages/framework-arduinoteensy/cores/teensy3",
                     "/Users/rafy/.platformio/packages/framework-arduinoteensy/libraries/ADC",
                     "/Users/rafy/.platformio/packages/framework-arduinoteensy/libraries/AccelStepper/src",

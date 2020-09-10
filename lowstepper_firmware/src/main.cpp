@@ -1,52 +1,88 @@
 #include <Arduino.h>
 #include "lfo.h"
 
-double phase = 0.0;
-elapsedMicros usec = 0;
+// elapsedMicros usec = 0;
 
-double morph = 0;
-elapsedMicros usec2 = 0;
-bool up = true;
+// elapsedMicros usec2 = 0;
+// bool up = true;
 
-void setup() {
-  analogWriteResolution(12);
-  pinMode(13, OUTPUT);
-}
+// copied from O_C
+static constexpr uint32_t OC_CORE_ISR_FREQ = 16666U;
+static constexpr uint32_t OC_CORE_TIMER_RATE = (1000000UL / OC_CORE_ISR_FREQ);
 
-void loop() {
-  float val = (fuckYeahLfo(morph, phase) * 2000.0) + 2050.0;
+// Main timer stuff
+IntervalTimer main_timer;
+volatile uint32_t lastMicros;
+volatile uint32_t ticks = 0;
 
-  analogWrite(A22, (int)val);
-  analogWrite(13, (int)val);
+// LFO parameters
+volatile double phase = 0;
+volatile double morph = 0;
+volatile uint32_t lfoFreq = 10;
 
-  phase = phase + 0.02;
+void FASTRUN main_timer_ISR() {
+  uint32_t deltaTimeMicro = micros() - lastMicros;
+  double microsPerLfo = 1000000.0 / lfoFreq;
+  double ratioThroughLfo = deltaTimeMicro / microsPerLfo;
+  phase += ratioThroughLfo * TWO_PI;
 
   if (phase >= TWO_PI) {
     phase = 0;
   }
 
-  while (usec < 500) {
-    // wait
-    // TODO stabilize timing
-  }
+  float val = (fuckYeahLfo(morph, phase) * 2000.0) + 2050.0;
+  analogWrite(A22, (int)val);
+  analogWrite(13, (int)val);
+  lastMicros = micros();
+}
 
-  if(usec2 > 100) {
-    if (up) {
-      morph += 0.0001;
-    } else {
-      morph -= 0.0001;
-    }
+void setup() {
+  analogWriteResolution(12);
+  pinMode(13, OUTPUT);
 
-    if (!(morph < 1 && morph > 0)) {
-      Serial.println("swap");
-      up = !up;
-    }
+  // Setup timers
+  main_timer.begin(main_timer_ISR, OC_CORE_TIMER_RATE);
+}
 
-    Serial.println(morph);
-    usec2 = 0;
-  }
+double phaseCopy = 0;
 
+void loop() {
+  noInterrupts();
+  phaseCopy = phase;
+  interrupts();
 
+  Serial.println(phaseCopy);
+  // float val = (fuckYeahLfo(morph, phase) * 2000.0) + 2050.0;
 
-  usec = usec - 500;
+  // analogWrite(A22, (int)val);
+  // analogWrite(13, (int)val);
+
+  // phase = phase + 0.02;
+
+  // if (phase >= TWO_PI) {
+  //   phase = 0;
+  // }
+
+  // while (usec < 500) {
+  //   // wait
+  //   // TODO stabilize timing
+  // }
+
+  // if(usec2 > 100) {
+  //   if (up) {
+  //     morph += 0.0001;
+  //   } else {
+  //     morph -= 0.0001;
+  //   }
+
+  //   if (!(morph < 1 && morph > 0)) {
+  //     Serial.println("swap");
+  //     up = !up;
+  //   }
+
+  //   Serial.println(morph);
+  //   usec2 = 0;
+  // }
+
+  // usec = usec - 500;
 }
