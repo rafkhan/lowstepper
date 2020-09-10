@@ -3,8 +3,8 @@
 
 // elapsedMicros usec = 0;
 
-// elapsedMicros usec2 = 0;
-// bool up = true;
+elapsedMicros usec2 = 0;
+bool up = true;
 
 // copied from O_C
 static constexpr uint32_t OC_CORE_ISR_FREQ = 16666U;
@@ -18,13 +18,12 @@ volatile uint32_t ticks = 0;
 // LFO parameters
 volatile double phase = 0;
 volatile double morph = 0;
-volatile uint32_t lfoFreq = 10;
+volatile double lfoFreq = 10;
 
 void FASTRUN main_timer_ISR() {
   uint32_t deltaTimeMicro = micros() - lastMicros;
-  double microsPerLfo = 1000000.0 / lfoFreq;
-  double ratioThroughLfo = deltaTimeMicro / microsPerLfo;
-  phase += ratioThroughLfo * TWO_PI;
+  phase += (deltaTimeMicro/(1000000.0/lfoFreq)) * TWO_PI;
+  lastMicros = micros();
 
   if (phase >= TWO_PI) {
     phase = 0;
@@ -33,7 +32,6 @@ void FASTRUN main_timer_ISR() {
   float val = (fuckYeahLfo(morph, phase) * 2000.0) + 2050.0;
   analogWrite(A22, (int)val);
   analogWrite(13, (int)val);
-  lastMicros = micros();
 }
 
 void setup() {
@@ -47,42 +45,21 @@ void setup() {
 double phaseCopy = 0;
 
 void loop() {
-  noInterrupts();
-  phaseCopy = phase;
-  interrupts();
+  if(usec2 > 50) {
+    noInterrupts();
+    if (up) {
+      morph += 0.0001;
+    } else {
+      morph -= 0.0001;
+    }
 
-  Serial.println(phaseCopy);
-  // float val = (fuckYeahLfo(morph, phase) * 2000.0) + 2050.0;
+    if (!(morph <= 1 && morph >= 0)) {
+      up = !up;
+    }
 
-  // analogWrite(A22, (int)val);
-  // analogWrite(13, (int)val);
+    Serial.println(morph);
 
-  // phase = phase + 0.02;
-
-  // if (phase >= TWO_PI) {
-  //   phase = 0;
-  // }
-
-  // while (usec < 500) {
-  //   // wait
-  //   // TODO stabilize timing
-  // }
-
-  // if(usec2 > 100) {
-  //   if (up) {
-  //     morph += 0.0001;
-  //   } else {
-  //     morph -= 0.0001;
-  //   }
-
-  //   if (!(morph < 1 && morph > 0)) {
-  //     Serial.println("swap");
-  //     up = !up;
-  //   }
-
-  //   Serial.println(morph);
-  //   usec2 = 0;
-  // }
-
-  // usec = usec - 500;
+    usec2 = 0;
+    interrupts();
+  }
 }

@@ -19,6 +19,7 @@ const int INTERPOLATE_MIN = 1;
  * lmao math
  */
 double triangle(double phase) {
+  // TODO fix this... wtf did I do after jupyter?
   double unadjustedAmp = std::abs(std::fmod((phase - PI/2), TWO_PI) - PI);
   return unadjustedAmp * 2 -1;
 }
@@ -44,10 +45,9 @@ double square(double phase) {
  * I(x) = morphed wave function
  */
 double fuckYeahLfo(double morph, double phase) {
-  double f, g;
+  // double f, g;
 
-  // only sin / sq for now
-  return sin(phase) + morph * (square(phase) - sin(phase));
+  return triangle(phase) + morph * (sin(phase) - triangle(phase));
 }
 
 #endif
