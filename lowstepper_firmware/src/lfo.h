@@ -47,7 +47,7 @@ double square(double phase) {
 double fuckYeahLfo(double morph, double phase) {
   // double f, g;
 
-  return triangle(phase) + morph * (sin(phase) - triangle(phase));
+  return sin(phase);
 }
 
 #endif
