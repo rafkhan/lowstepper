@@ -29,18 +29,21 @@ volatile double divisons = 2;
 
 GateIn gateIn(A20);
 
+void incrementNextStep() {
+  if(nextStopPosition == divisons) {
+    nextStopPosition = 1.0;
+  } else {
+    nextStopPosition += 1.0;
+  }
+}
+
 void FASTRUN main_timer_ISR() {
   if(gateIn.checkGateHigh()) {
     if(lfoRunning) {
-      if(nextStopPosition == divisons) {
-        nextStopPosition = 1.0;
-      } else {
-        nextStopPosition += 1.0;
-      }
+      incrementNextStep();
     }
     
     phase = (TWO_PI/divisons) * (nextStopPosition - 1.0);
-
     lfoRunning = 1;
   }
 
@@ -50,12 +53,7 @@ void FASTRUN main_timer_ISR() {
     phase += inc;
 
     if (phase >= ((TWO_PI/divisons) * nextStopPosition)) {
-      if(nextStopPosition == divisons) {
-        nextStopPosition = 1.0;
-      } else {
-        nextStopPosition += 1.0;
-      }
-
+      incrementNextStep();
       lfoRunning = 0;
     }
 
@@ -63,10 +61,10 @@ void FASTRUN main_timer_ISR() {
       phase = 0;
     }
 
+    // TODO morph here
     float val = (sin(phase) * 2000.0) + 2050.0;
     analogWrite(A22, (int)val);
     analogWrite(13, (int)val);
-
   }
 
   lastMicros = micros();
