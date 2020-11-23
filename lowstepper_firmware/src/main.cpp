@@ -12,7 +12,7 @@ static constexpr uint32_t CORE_TIMER_RATE = (1000000UL / CORE_ISR_FREQ);
 
 // LFO parameters
 volatile double morph = 0;
-volatile double lfoFreq = 100;
+volatile double lfoFreq = 75;
 
 volatile double phase = 0;
 volatile int lfoRunning = 0;
@@ -24,13 +24,23 @@ volatile uint32_t ticks = 0;
 
 #define PIN_GATE_OUT 25
 
-volatile double divPosition = 1;
-volatile double divisons = 4;
+volatile double nextStopPosition = 1;
+volatile double divisons = 2;
 
 GateIn gateIn(A20);
 
 void FASTRUN main_timer_ISR() {
   if(gateIn.checkGateHigh()) {
+    if(lfoRunning) {
+      if(nextStopPosition == divisons) {
+        nextStopPosition = 1.0;
+      } else {
+        nextStopPosition += 1.0;
+      }
+    }
+    
+    phase = (TWO_PI/divisons) * (nextStopPosition - 1.0);
+
     lfoRunning = 1;
   }
 
@@ -39,11 +49,11 @@ void FASTRUN main_timer_ISR() {
     double inc = (deltaTimeMicro/(1000000.0/lfoFreq)) * TWO_PI;
     phase += inc;
 
-    if (phase >= ((TWO_PI/divisons) * divPosition)) {
-      if(divPosition == divisons) {
-        divPosition = 1.0;
+    if (phase >= ((TWO_PI/divisons) * nextStopPosition)) {
+      if(nextStopPosition == divisons) {
+        nextStopPosition = 1.0;
       } else {
-        divPosition += 1.0;
+        nextStopPosition += 1.0;
       }
 
       lfoRunning = 0;
