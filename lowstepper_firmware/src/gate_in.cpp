@@ -5,16 +5,13 @@
 /**
  * NOTE!!! the circuit forces the pin low when the incoming gate goes high.
  */
-GateIn::GateIn(int pinNum)
-{
+GateIn::GateIn(int pinNum) {
   this->pin = pinNum;
   this->isPinLow = false;
   this->isGateHigh = false;
 }
 
-GateIn::~GateIn()
-{
-}
+GateIn::~GateIn() {}
 
 void GateIn::init() {
   pinMode(this->pin, INPUT);

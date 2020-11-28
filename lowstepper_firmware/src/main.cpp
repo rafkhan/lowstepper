@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "lfo.h"
 #include "gate_in.h"
+#include "pot_input.h"
 
 elapsedMicros usec2 = 0;
 bool up = true;
@@ -28,6 +29,7 @@ volatile double nextStopPosition = 1;
 volatile double divisons = 2;
 
 GateIn gateIn(A20);
+PotInput potIn(A19);
 
 void incrementNextStep() {
   if(nextStopPosition == divisons) {
@@ -75,6 +77,7 @@ void setup() {
   pinMode(13, OUTPUT);
   pinMode(A22, OUTPUT);
   gateIn.init();
+  // potIn.init();
 
   main_timer.begin(main_timer_ISR, CORE_TIMER_RATE);
 }
@@ -82,5 +85,6 @@ void setup() {
 void loop() {
   noInterrupts()
   gateIn.scan();
+  // potIn.scan();
   interrupts()
 }
