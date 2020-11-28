@@ -1,34 +1,36 @@
 #include <Arduino.h>
+#include <cmath>
+
 #include "lfo.h"
 #include "gate_in.h"
 #include "pot_input.h"
 
-elapsedMicros usec2 = 0;
-bool up = true;
+#define DAC1_PIN A22
 
 // copied from O_C
 // TODO check these values
-static constexpr uint32_t CORE_ISR_FREQ = 10000U; // how much faster can I make this? lmao
+static constexpr uint32_t CORE_ISR_FREQ = 5000U; // how much faster can I make this? lmao
 static constexpr uint32_t CORE_TIMER_RATE = (1000000UL / CORE_ISR_FREQ);
 
 // LFO parameters
 volatile double morph = 0;
-volatile double lfoFreq = 75;
+volatile double lfoFreq = 30;
 
 volatile double phase = 0;
 volatile int lfoRunning = 0;
+volatile double nextStopPosition = 1;
+volatile double divisons = 2;
+volatile double clockInBpm = 0;
+volatile uint32_t lastBpmMicros;
 
 // Main timer stuff
 IntervalTimer main_timer;
 volatile uint32_t lastMicros;
 volatile uint32_t ticks = 0;
 
-#define PIN_GATE_OUT 25
-
-volatile double nextStopPosition = 1;
-volatile double divisons = 2;
-
 GateIn gateIn(A20);
+GateIn clockIn(A20); // use the same pin on dev board for now (NEED TO BUILD ANOTHER GATE INPUT)
+
 PotInput potIn(A19);
 
 void incrementNextStep() {
@@ -65,7 +67,7 @@ void FASTRUN main_timer_ISR() {
 
     // TODO morph here
     float val = (sin(phase) * 2000.0) + 2050.0;
-    analogWrite(A22, (int)val);
+    analogWrite(DAC1_PIN, (int)val);
     analogWrite(13, (int)val);
   }
 
@@ -75,16 +77,36 @@ void FASTRUN main_timer_ISR() {
 void setup() {
   analogWriteResolution(12);
   pinMode(13, OUTPUT);
-  pinMode(A22, OUTPUT);
+  pinMode(DAC1_PIN, OUTPUT);
   gateIn.init();
+  clockIn.init();
   // potIn.init();
 
+  lastMicros = micros();
+  lastBpmMicros = micros();
   main_timer.begin(main_timer_ISR, CORE_TIMER_RATE);
+}
+
+double calculateBpm() {
+  if(clockIn.checkGateHigh()) {
+    uint32_t delta = (micros() - lastBpmMicros);
+    double bpm = (60000.0 / (delta / 1000)) / 4;
+    lastBpmMicros = micros();
+    return bpm;
+  }
+
+  return clockInBpm;
+}
+
+void scanAllInputs() {
+  gateIn.scan();
+  clockIn.scan();
+  // potIn.scan();
 }
 
 void loop() {
   noInterrupts()
-  gateIn.scan();
-  // potIn.scan();
+  scanAllInputs();
+  clockInBpm = calculateBpm();
   interrupts()
 }
