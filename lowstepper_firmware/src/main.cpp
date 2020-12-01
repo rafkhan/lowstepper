@@ -6,6 +6,12 @@
 #include "pot_input.h"
 
 #define DAC1_PIN A22
+#define DAC0_PIN A21
+#define PIN_TRIG_IN A20
+#define PIN_CLOCK_IN A17 // TODO build
+#define BLOCK_THIS_PIN_TEMPORARILY A16
+#define PIN_RATE_POT A9 // TODO build
+#define PIN_SEGMENT_DIVIDE_POT A8 // TODO build
 
 // copied from O_C
 // TODO check these values
@@ -28,10 +34,11 @@ IntervalTimer main_timer;
 volatile uint32_t lastMicros;
 volatile uint32_t ticks = 0;
 
-GateIn gateIn(A20);
-GateIn clockIn(A20); // use the same pin on dev board for now (NEED TO BUILD ANOTHER GATE INPUT)
+GateIn gateIn(PIN_TRIG_IN);
+GateIn clockIn(PIN_TRIG_IN); // use the same pin on dev board for now (NEED TO BUILD ANOTHER GATE INPUT)
 
-PotInput potIn(A19);
+PotInput potInRate(PIN_RATE_POT);
+PotInput potInSegmentDivide(PIN_SEGMENT_DIVIDE_POT);
 
 void incrementNextStep() {
   if(nextStopPosition == divisons) {
@@ -42,7 +49,9 @@ void incrementNextStep() {
 }
 
 void FASTRUN main_timer_ISR() {
+  // Figure out if LFO should be running
   if(gateIn.checkGateHigh()) {
+    // LFO is already running, skip to next segment
     if(lfoRunning) {
       incrementNextStep();
     }
@@ -80,7 +89,8 @@ void setup() {
   pinMode(DAC1_PIN, OUTPUT);
   gateIn.init();
   clockIn.init();
-  // potIn.init();
+  potInRate.init();
+  potInSegmentDivide.init();
 
   lastMicros = micros();
   lastBpmMicros = micros();
@@ -101,7 +111,8 @@ double calculateBpm() {
 void scanAllInputs() {
   gateIn.scan();
   clockIn.scan();
-  // potIn.scan();
+  potInRate.scan();
+  potInSegmentDivide.scan();;
 }
 
 void loop() {
