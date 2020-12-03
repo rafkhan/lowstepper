@@ -12,10 +12,6 @@ void PotInput::init() {
   pinMode(this->pin, INPUT);
 }
 
-void PotInput::scan(void) {
+void PotInput::scan() {
   this->value = (double) analogRead(this->pin);
-}
-
-double PotInput::getValue(void) {
-  return this->value;
 }

@@ -4,6 +4,8 @@
 
 /**
  * NOTE!!! the circuit forces the pin low when the incoming gate goes high.
+ * ground = input is high
+ * V+ = input is low
  */
 GateIn::GateIn(int pinNum) {
   this->pin = pinNum;
