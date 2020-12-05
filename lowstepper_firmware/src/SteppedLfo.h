@@ -5,7 +5,7 @@
 
 #include "ui.h"
 #include "util.h"
-#include "Modes.h"
+#include "Mode.h"
 
 /**
  * All of the following functions take a phase input from 0 - TWO_PI
@@ -60,7 +60,7 @@ double getMorphedOutput(double morphPosition, double phase)
   }
 }
 
-class SteppedLfo : public LfoMode
+class SteppedLfo : public Mode
 {
 public:
   SteppedLfo();
@@ -98,7 +98,6 @@ void SteppedLfo::tick(UI *ui)
   divisons = map(ui->potInSegmentDivide->getValue(), 1, 1023, 1, 8);
 
   morph = map(ui->potInMorph->getValue(), 1, 1023, 0, 1);
-  Serial.println(morph);
 
   // if(potRate == 1) {
   //   Serial.println("1/4");

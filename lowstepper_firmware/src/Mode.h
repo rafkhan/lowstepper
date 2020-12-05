@@ -3,7 +3,7 @@
 
 #include "ui.h"
 
-class LfoMode {
+class Mode {
   public:
     void tick(UI* ui);
 };
