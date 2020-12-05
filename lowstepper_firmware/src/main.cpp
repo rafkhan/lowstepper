@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include <cmath>
 
-#include "lfo.h"
 #include "util.h"
 #include "ui.h"
 #include "SteppedLfo.h"
@@ -11,7 +10,7 @@ IntervalTimer main_timer;
 
 // copied from O_C
 // TODO check these values
-static constexpr uint32_t CORE_ISR_FREQ = 5000U; // how much faster can I make this? lmao
+static constexpr uint32_t CORE_ISR_FREQ = 3000U; // how much faster can I make this? lmao
 static constexpr uint32_t CORE_TIMER_RATE = (1000000UL / CORE_ISR_FREQ);
 
 UI ui;
