@@ -4,6 +4,7 @@
 
 PotInput::PotInput(int pinNum) {
   this->pin = pinNum;
+  this->value = 0;
 }
 
 PotInput::~PotInput() {}
@@ -14,4 +15,8 @@ void PotInput::init() {
 
 void PotInput::scan() {
   this->value = (double) analogRead(this->pin);
+}
+
+double PotInput::getValue() {
+  return this->value;
 }
