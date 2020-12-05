@@ -7,9 +7,6 @@
 #include "util.h"
 #include "Modes.h"
 
-const int INTERPOLATE_MAX = 1000;
-const int INTERPOLATE_MIN = 1;
-
 /**
  * All of the following functions take a phase input from 0 - TWO_PI
  * and return a value from 0 - 1.
