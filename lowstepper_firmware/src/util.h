@@ -11,4 +11,8 @@ double roundTenth(double v) {
   return (double)r/10;
 }
 
+double plusMinusOneToAnalogOut(double n) {
+  return (n * 2000.0) + 2050.0;
+}
+
 #endif

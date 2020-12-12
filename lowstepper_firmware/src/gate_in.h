@@ -6,7 +6,7 @@ class GateIn
 private:
   int pin;
   bool isPinLow;
-  bool isGateHigh;
+  bool isTrigHigh;
 public:
   GateIn(int pinNum);
   ~GateIn();
@@ -14,6 +14,7 @@ public:
   void init(void);
   void scan(void);
   bool checkGateHigh(void);
+  bool checkTrigHigh(void);
 };
 
 #endif

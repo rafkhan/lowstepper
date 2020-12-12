@@ -10,7 +10,7 @@
 GateIn::GateIn(int pinNum) {
   this->pin = pinNum;
   this->isPinLow = false;
-  this->isGateHigh = false;
+  this->isTrigHigh = false;
 }
 
 GateIn::~GateIn() {}
@@ -25,7 +25,7 @@ void GateIn::scan(void) {
   // If the pin goes low, but isn't already low, toggle gate on.
   if(!value && !this->isPinLow) {
     this->isPinLow = true;
-    this->isGateHigh = true;
+    this->isTrigHigh = true;
     return;
   }
 
@@ -36,12 +36,17 @@ void GateIn::scan(void) {
   }
 }
 
-// can only be checked once, to avoid infinite retrigger when kept input kept low
-bool GateIn::checkGateHigh(void) {
-  if(this->isGateHigh) {
-    this->isGateHigh = false;
+// Trigs can only be checked once, to avoid infinite retrigger when kept input kept low
+bool GateIn::checkTrigHigh(void) {
+  if(this->isTrigHigh) {
+    this->isTrigHigh = false;
     return true;
   }
 
   return false;
+}
+
+// Gates are high if the pin is low
+bool GateIn::checkGateHigh(void) {
+  return isPinLow;
 }

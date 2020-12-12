@@ -112,7 +112,7 @@ void SteppedLfo::tick(UI *ui)
   // }
 
   // Figure out if LFO should be running
-  if (ui->trigIn->checkGateHigh())
+  if (ui->trigIn->checkTrigHigh())
   {
     // Serial.println(ui->potInRate->getValue());
     // LFO is already running, skip to next segment
@@ -156,7 +156,7 @@ void SteppedLfo::tick(UI *ui)
 
 double SteppedLfo::calculateBpm(UI *ui)
 {
-  if (ui->clockIn->checkGateHigh())
+  if (ui->clockIn->checkTrigHigh())
   {
     uint32_t delta = (micros() - lastBpmMicros);
     double bpm = (60000.0 / (delta / 1000)) / 4;
