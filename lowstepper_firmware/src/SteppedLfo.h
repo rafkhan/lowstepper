@@ -7,6 +7,18 @@
 #include "util.h"
 #include "Mode.h"
 
+  // if(potRate == 1) {
+  //   Serial.println("1/4");
+  // } else if(potRate == 2) {
+  //   Serial.println("1/2");
+  // } else if(potRate == 3) {
+  //   Serial.println("1");
+  // } else if(potRate == 4) {
+  //   Serial.println("2");
+  // } else if(potRate == 5) {
+  //   Serial.println("4");
+  // }
+
 /**
  * All of the following functions take a phase input from 0 - TWO_PI
  * and return a value from 0 - 1.
@@ -99,18 +111,6 @@ void SteppedLfo::tick(UI *ui)
 
   morph = map(ui->potInMorph->getValue(), 1, 1023, 0, 1);
 
-  // if(potRate == 1) {
-  //   Serial.println("1/4");
-  // } else if(potRate == 2) {
-  //   Serial.println("1/2");
-  // } else if(potRate == 3) {
-  //   Serial.println("1");
-  // } else if(potRate == 4) {
-  //   Serial.println("2");
-  // } else if(potRate == 5) {
-  //   Serial.println("4");
-  // }
-
   // Figure out if LFO should be running
   if (ui->trigIn->checkTrigHigh())
   {
@@ -129,7 +129,7 @@ void SteppedLfo::tick(UI *ui)
   {
     uint32_t deltaTimeMicro = micros() - lastMicros;
     double inc = (deltaTimeMicro / (1000000.0 / lfoFreq)) * TWO_PI;
-    phase += inc; // maybe make this LAND on 2pi?
+    phase += inc;
 
     // Check if segment is complete, stop LFO if so
     if (phase >= ((TWO_PI / divisons) * nextStopPosition))

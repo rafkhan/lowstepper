@@ -256,28 +256,6 @@ F 3 "~" H 8850 3900 50  0001 C CNN
 	1    8850 3900
 	1    0    0    -1  
 $EndComp
-$Comp
-L Amplifier_Operational:MCP6004 U1
-U 2 1 5FD55DA5
-P 4800 3650
-F 0 "U1" H 4800 4017 50  0000 C CNN
-F 1 "MCP6004" H 4800 3926 50  0000 C CNN
-F 2 "" H 4750 3750 50  0001 C CNN
-F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 4850 3850 50  0001 C CNN
-	2    4800 3650
-	1    0    0    -1  
-$EndComp
-$Comp
-L Amplifier_Operational:MCP6004 U1
-U 3 1 5FD588FB
-P 4750 5400
-F 0 "U1" H 4750 5767 50  0000 C CNN
-F 1 "MCP6004" H 4750 5676 50  0000 C CNN
-F 2 "" H 4700 5500 50  0001 C CNN
-F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 4800 5600 50  0001 C CNN
-	3    4750 5400
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	8400 3600 8650 3600
 Text Label 8400 3600 2    50   ~ 0
@@ -311,9 +289,6 @@ Wire Wire Line
 	9150 3800 9150 3900
 Wire Wire Line
 	9150 3800 8650 3800
-Wire Wire Line
-	8650 3600 9150 3600
-Connection ~ 8650 3600
 Wire Wire Line
 	8650 4000 9150 4000
 Connection ~ 8650 4000
@@ -352,7 +327,7 @@ U 1 1 5FDA1C7A
 P 4800 850
 F 0 "C2" V 4571 850 50  0000 C CNN
 F 1 "1n" V 4662 850 50  0000 C CNN
-F 2 "" H 4800 850 50  0001 C CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 4800 850 50  0001 C CNN
 F 3 "~" H 4800 850 50  0001 C CNN
 	1    4800 850 
 	0    1    1    0   
@@ -465,7 +440,7 @@ U 1 1 5FDBA520
 P 4800 2700
 F 0 "C3" V 4571 2700 50  0000 C CNN
 F 1 "1n" V 4662 2700 50  0000 C CNN
-F 2 "" H 4800 2700 50  0001 C CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 4800 2700 50  0001 C CNN
 F 3 "~" H 4800 2700 50  0001 C CNN
 	1    4800 2700
 	0    1    1    0   
@@ -477,8 +452,6 @@ Wire Wire Line
 Wire Wire Line
 	4350 3150 4700 3150
 Connection ~ 4350 3550
-Wire Wire Line
-	4350 3550 4500 3550
 Wire Wire Line
 	4900 3150 5350 3150
 Wire Wire Line
@@ -529,8 +502,6 @@ $EndComp
 Wire Wire Line
 	4250 3850 4250 3750
 Wire Wire Line
-	4250 3750 4500 3750
-Wire Wire Line
 	5350 3650 5600 3650
 Connection ~ 5350 3650
 Text Label 5600 3650 0    50   ~ 0
@@ -578,7 +549,7 @@ U 1 1 5FDD3B6D
 P 4750 4450
 F 0 "C1" V 4521 4450 50  0000 C CNN
 F 1 "1n" V 4612 4450 50  0000 C CNN
-F 2 "" H 4750 4450 50  0001 C CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 4750 4450 50  0001 C CNN
 F 3 "~" H 4750 4450 50  0001 C CNN
 	1    4750 4450
 	0    1    1    0   
@@ -651,28 +622,6 @@ Wire Wire Line
 Text Label 3650 4650 2    50   ~ 0
 AREF_-10V
 $Comp
-L Amplifier_Operational:MCP6004 U1
-U 5 1 5FD5E050
-P 2050 6900
-F 0 "U1" H 2008 6946 50  0000 L CNN
-F 1 "MCP6004" H 2008 6855 50  0000 L CNN
-F 2 "" H 2000 7000 50  0001 C CNN
-F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 2100 7100 50  0001 C CNN
-	5    2050 6900
-	1    0    0    -1  
-$EndComp
-$Comp
-L Amplifier_Operational:MCP6004 U1
-U 4 1 5FD5A619
-P 1050 6750
-F 0 "U1" H 1050 7117 50  0000 C CNN
-F 1 "MCP6004" H 1050 7026 50  0000 C CNN
-F 2 "" H 1000 6850 50  0001 C CNN
-F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 1100 6950 50  0001 C CNN
-	4    1050 6750
-	1    0    0    -1  
-$EndComp
-$Comp
 L power:GND #PWR017
 U 1 1 5FD1B354
 P 8100 2250
@@ -743,28 +692,6 @@ Wire Wire Line
 Wire Wire Line
 	7800 1350 7950 1350
 $Comp
-L Amplifier_Operational:TL072 U3
-U 1 1 5FCDBE0E
-P 7500 1450
-F 0 "U3" H 7500 1083 50  0000 C CNN
-F 1 "MCP6004" H 7500 1174 50  0000 C CNN
-F 2 "" H 7500 1450 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 7500 1450 50  0001 C CNN
-	1    7500 1450
-	-1   0    0    1   
-$EndComp
-$Comp
-L Device:R_Small_US R22
-U 1 1 5FCFB1E9
-P 8250 1350
-F 0 "R22" V 8045 1350 50  0000 C CNN
-F 1 "3.3K" V 8136 1350 50  0000 C CNN
-F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 8250 1350 50  0001 C CNN
-F 3 "~" H 8250 1350 50  0001 C CNN
-	1    8250 1350
-	0    1    1    0   
-$EndComp
-$Comp
 L Device:R_Small_US R19
 U 1 1 5FCFC0DB
 P 7550 900
@@ -786,36 +713,6 @@ F 1 "GND" H 6555 1577 50  0000 C CNN
 F 2 "" H 6550 1750 50  0001 C CNN
 F 3 "" H 6550 1750 50  0001 C CNN
 	1    6550 1750
-	1    0    0    -1  
-$EndComp
-Text Label 2700 6450 1    50   ~ 0
-+12V
-Text Label 2700 7400 3    50   ~ 0
--12V
-Wire Wire Line
-	2700 7200 2700 7400
-Wire Wire Line
-	2700 6450 2700 6600
-$Comp
-L Amplifier_Operational:TL072 U3
-U 3 1 5FCE8101
-P 2800 6900
-F 0 "U3" H 2758 6946 50  0000 L CNN
-F 1 "MCP6004" H 2758 6855 50  0000 L CNN
-F 2 "" H 2800 6900 50  0001 C CNN
-F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 2800 6900 50  0001 C CNN
-	3    2800 6900
-	1    0    0    -1  
-$EndComp
-$Comp
-L Amplifier_Operational:TL072 U3
-U 2 1 5FCE35A7
-P 4800 1800
-F 0 "U3" H 4800 2167 50  0000 C CNN
-F 1 "MCP6004" H 4800 2076 50  0000 C CNN
-F 2 "" H 4800 1800 50  0001 C CNN
-F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 4800 1800 50  0001 C CNN
-	2    4800 1800
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -980,36 +877,17 @@ F 3 "~" H 1450 5350 50  0001 C CNN
 	1    1450 5350
 	0    1    1    0   
 $EndComp
-Text Label 1950 6450 1    50   ~ 0
-+12V
-Wire Wire Line
-	1950 6450 1950 6600
-Text Label 1950 7400 3    50   ~ 0
--12V
-Wire Wire Line
-	1950 7200 1950 7400
 Wire Wire Line
 	8350 1350 8650 1350
 Text Label 8650 1350 0    50   ~ 0
 DAC0_OUT
-$Comp
-L Amplifier_Operational:TL072 U2
-U 2 1 5FEF02E3
-P 1050 7350
-F 0 "U2" H 1050 7717 50  0000 C CNN
-F 1 "TL072" H 1050 7626 50  0000 C CNN
-F 2 "" H 1050 7350 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 1050 7350 50  0001 C CNN
-	2    1050 7350
-	1    0    0    -1  
-$EndComp
 $Comp
 L Device:R_POT_Small RV1
 U 1 1 5FF5DF45
 P 7050 3150
 F 0 "RV1" V 6853 3150 50  0000 C CNN
 F 1 "10K" V 6944 3150 50  0000 C CNN
-F 2 "" H 7050 3150 50  0001 C CNN
+F 2 "Potentiometer_THT:Potentiometer_Alpha_RD901F-40-00D_Single_Vertical" H 7050 3150 50  0001 C CNN
 F 3 "~" H 7050 3150 50  0001 C CNN
 	1    7050 3150
 	0    1    1    0   
@@ -1032,7 +910,7 @@ U 1 1 5FF6E6BC
 P 7050 3800
 F 0 "RV2" V 6853 3800 50  0000 C CNN
 F 1 "10K" V 6944 3800 50  0000 C CNN
-F 2 "" H 7050 3800 50  0001 C CNN
+F 2 "Potentiometer_THT:Potentiometer_Alpha_RD901F-40-00D_Single_Vertical" H 7050 3800 50  0001 C CNN
 F 3 "~" H 7050 3800 50  0001 C CNN
 	1    7050 3800
 	0    1    1    0   
@@ -1055,7 +933,7 @@ U 1 1 5FF754DE
 P 7050 4450
 F 0 "RV3" V 6853 4450 50  0000 C CNN
 F 1 "10K" V 6944 4450 50  0000 C CNN
-F 2 "" H 7050 4450 50  0001 C CNN
+F 2 "Potentiometer_THT:Potentiometer_Alpha_RD901F-40-00D_Single_Vertical" H 7050 4450 50  0001 C CNN
 F 3 "~" H 7050 4450 50  0001 C CNN
 	1    7050 4450
 	0    1    1    0   
@@ -1083,4 +961,139 @@ F 3 "~" H 4800 1300 50  0001 C CNN
 	1    4800 1300
 	0    1    1    0   
 $EndComp
+$Comp
+L Device:R_Small_US R22
+U 1 1 5FCFB1E9
+P 8250 1350
+F 0 "R22" V 8045 1350 50  0000 C CNN
+F 1 "3.3K" V 8136 1350 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 8250 1350 50  0001 C CNN
+F 3 "~" H 8250 1350 50  0001 C CNN
+	1    8250 1350
+	0    1    1    0   
+$EndComp
+$Comp
+L Amplifier_Operational:TL072 U1
+U 1 1 60042A89
+P 7500 1450
+F 0 "U1" H 7500 1083 50  0000 C CNN
+F 1 "TL072" H 7500 1174 50  0000 C CNN
+F 2 "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm" H 7500 1450 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 7500 1450 50  0001 C CNN
+	1    7500 1450
+	-1   0    0    1   
+$EndComp
+$Comp
+L Amplifier_Operational:TL072 U1
+U 2 1 60044E74
+P 1100 7000
+F 0 "U1" H 1100 7367 50  0000 C CNN
+F 1 "TL072" H 1100 7276 50  0000 C CNN
+F 2 "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm" H 1100 7000 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 1100 7000 50  0001 C CNN
+	2    1100 7000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Amplifier_Operational:TL072 U1
+U 3 1 6004C2C2
+P 1950 6950
+F 0 "U1" H 1908 6996 50  0000 L CNN
+F 1 "TL072" H 1908 6905 50  0000 L CNN
+F 2 "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm" H 1950 6950 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 1950 6950 50  0001 C CNN
+	3    1950 6950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Amplifier_Operational:MCP6004 U2
+U 1 1 60078823
+P 4800 1800
+F 0 "U2" H 4800 2167 50  0000 C CNN
+F 1 "MCP6004" H 4800 2076 50  0000 C CNN
+F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 4750 1900 50  0001 C CNN
+F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 4850 2000 50  0001 C CNN
+	1    4800 1800
+	1    0    0    1   
+$EndComp
+Wire Wire Line
+	4250 3750 4500 3750
+Wire Wire Line
+	4350 3550 4500 3550
+$Comp
+L Amplifier_Operational:MCP6004 U2
+U 2 1 60083EC0
+P 4800 3650
+F 0 "U2" H 4800 3283 50  0000 C CNN
+F 1 "MCP6004" H 4800 3374 50  0000 C CNN
+F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 4750 3750 50  0001 C CNN
+F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 4850 3850 50  0001 C CNN
+	2    4800 3650
+	1    0    0    1   
+$EndComp
+$Comp
+L Amplifier_Operational:MCP6004 U2
+U 3 1 60095AE5
+P 4750 5400
+F 0 "U2" H 4750 5033 50  0000 C CNN
+F 1 "MCP6004" H 4750 5124 50  0000 C CNN
+F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 4700 5500 50  0001 C CNN
+F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 4800 5600 50  0001 C CNN
+	3    4750 5400
+	1    0    0    1   
+$EndComp
+$Comp
+L Amplifier_Operational:MCP6004 U2
+U 4 1 60098D77
+P 3400 7000
+F 0 "U2" H 3400 7367 50  0000 C CNN
+F 1 "MCP6004" H 3400 7276 50  0000 C CNN
+F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 3350 7100 50  0001 C CNN
+F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 3450 7200 50  0001 C CNN
+	4    3400 7000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Amplifier_Operational:MCP6004 U2
+U 5 1 6009C402
+P 4100 6950
+F 0 "U2" H 4058 6996 50  0000 L CNN
+F 1 "MCP6004" H 4058 6905 50  0000 L CNN
+F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 4050 7050 50  0001 C CNN
+F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 4150 7150 50  0001 C CNN
+	5    4100 6950
+	1    0    0    -1  
+$EndComp
+Connection ~ 8650 3600
+Wire Wire Line
+	8650 3600 9150 3600
+$Comp
+L teensy:Teensy3.5 U3
+U 1 1 5FD57561
+P 15550 2900
+F 0 "U3" H 15550 5639 60  0000 C CNN
+F 1 "Teensy3.5" H 15550 5533 60  0000 C CNN
+F 2 "teensy:Teensy35_36" H 15550 5427 60  0000 C CNN
+F 3 "https://www.pjrc.com/teensy/card8a_rev2.pdf" H 15550 5321 60  0000 C CNN
+F 4 "https://www.pjrc.com/teensy/pinout.html" H 15550 5223 50  0000 C CNN "Pinouts"
+	1    15550 2900
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0101
+U 1 1 5FD645ED
+P 13950 750
+F 0 "#PWR0101" H 13950 500 50  0001 C CNN
+F 1 "GND" H 13955 577 50  0000 C CNN
+F 2 "" H 13950 750 50  0001 C CNN
+F 3 "" H 13950 750 50  0001 C CNN
+	1    13950 750 
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	13950 750  14400 750 
+Wire Wire Line
+	14050 4350 14400 4350
+Text Label 14050 4350 2    50   ~ 0
+DAC0_OUT
 $EndSCHEMATC
