@@ -1,10 +1,11 @@
+#include <stdio.h>
+#include <emscripten/emscripten.h>
 
-#include "emscripten.h"
+#define __EMSCRIPTEN__ 1
+
 #include "src/SteppedLfo.h"
 
 
-#include <stdio.h>
-#include <emscripten/emscripten.h>
 
 int main(int argc, char ** argv) {
     printf("Hello World\n");
@@ -21,7 +22,7 @@ EMSCRIPTEN_KEEPALIVE void myFunction(int argc, char ** argv) {
 
 EMSCRIPTEN_KEEPALIVE
 double sawWave() {
-  return saw(0.0)
+  return saw(0.0);
 }
 
 

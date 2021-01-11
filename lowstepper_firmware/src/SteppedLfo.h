@@ -3,10 +3,10 @@
 
 #include <cmath>
 
-#ifndef __EMPSCRIPTEN__
-  #include "ui.h"
+#ifdef __EMSCRIPTEN__
+#include "ui_emscripten.h"
 #else
-  #include "ui_emscripten.h"
+#include "ui.h"
 #endif
 
 #include "util.h"

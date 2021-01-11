@@ -1,7 +1,11 @@
 #ifndef MODES_H
 #define MODES_H
 
+#ifdef __EMSCRIPTEN__
+#include "ui_emscripten.h"
+#else
 #include "ui.h"
+#endif
 
 class Mode {
   public:
