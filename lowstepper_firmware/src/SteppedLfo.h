@@ -3,7 +3,12 @@
 
 #include <cmath>
 
-#include "ui.h"
+#ifndef __EMPSCRIPTEN__
+  #include "ui.h"
+#else
+  #include "ui_emscripten.h"
+#endif
+
 #include "util.h"
 #include "Mode.h"
 
