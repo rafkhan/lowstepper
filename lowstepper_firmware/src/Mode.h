@@ -2,14 +2,17 @@
 #define MODES_H
 
 #ifdef __EMSCRIPTEN__
-#include "ui_emscripten.h"
+#include "ui/ui_emscripten.h"
 #else
 #include "ui/ui.h"
 #endif
 
 class Mode {
   public:
-    void tick(UI* ui);
+    float tick(UI* ui);
+  private:
+    virtual uint32_t getTime(void);
+    virtual void writeToDAC(int value);
 };
 
 #endif
