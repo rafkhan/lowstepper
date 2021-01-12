@@ -1,1 +1,1 @@
-emcc wasm.cc -s WASM=1 -o wasm.html
+emcc wasm.cc -o wasm.js -s MODULARIZE
