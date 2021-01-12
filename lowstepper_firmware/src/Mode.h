@@ -9,7 +9,10 @@
 
 class Mode {
   public:
-    void tick(UI* ui);
+    float tick(UI* ui);
+  private:
+    virtual uint32_t getTime(void);
+    virtual void writeToDAC(int value);
 };
 
 #endif

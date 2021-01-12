@@ -3,7 +3,7 @@
 
 #include "util.h"
 #include "ui/UI.h"
-#include "SteppedLfo.h"
+#include "SteppedLfoHardware.h"
 
 // Timer related stuff
 IntervalTimer main_timer;
@@ -14,7 +14,7 @@ static constexpr uint32_t CORE_ISR_FREQ = 3000U; // how much faster can I make t
 static constexpr uint32_t CORE_TIMER_RATE = (1000000UL / CORE_ISR_FREQ);
 
 UI ui;
-SteppedLfo steppedLfo;
+SteppedLfoHardware steppedLfo(PIN_DAC1);
 
 void FASTRUN main_timer_ISR() {
   steppedLfo.tick(&ui);
@@ -23,7 +23,6 @@ void FASTRUN main_timer_ISR() {
 void setup() {
   analogWriteResolution(12);
   pinMode(13, OUTPUT);
-  pinMode(PIN_DAC1, OUTPUT); // TODO abstract this
 
   ui.init();
 

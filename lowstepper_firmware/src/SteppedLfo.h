@@ -81,9 +81,14 @@ class SteppedLfo : public Mode
 {
 public:
   SteppedLfo();
-  void tick(UI *ui);
+  float tick(UI *ui);
 
 private:
+  void incrementNextStep(void);
+  double calculateBpm(UI *ui);
+  uint32_t getTime(void);
+  void writeToDAC(int value);
+
   // Internal state
   volatile double morph = 0;
   volatile double lfoFreq = 30;
@@ -94,18 +99,16 @@ private:
   volatile uint32_t lastBpmMicros = 0; // used to track time between clock inputs
   volatile uint32_t lastMicros = 0;    // used for lfo calcs
   volatile double phase = 0;
-
-  void incrementNextStep(void);
-  double calculateBpm(UI *ui);
+  volatile float lastWriteValue = 0;
 };
 
 SteppedLfo::SteppedLfo()
 {
-  lastMicros = micros();
-  lastBpmMicros = micros();
+  lastMicros = this->getTime();
+  lastBpmMicros = this->getTime();
 }
 
-void SteppedLfo::tick(UI *ui)
+float SteppedLfo::tick(UI *ui)
 {
   clockInBpm = roundTenth(calculateBpm(ui));
 
@@ -132,7 +135,7 @@ void SteppedLfo::tick(UI *ui)
 
   if (lfoRunning)
   {
-    uint32_t deltaTimeMicro = micros() - lastMicros;
+    uint32_t deltaTimeMicro = this->getTime() - lastMicros;
     double inc = (deltaTimeMicro / (1000000.0 / lfoFreq)) * TWO_PI;
     phase += inc;
 
@@ -150,13 +153,15 @@ void SteppedLfo::tick(UI *ui)
       phase = phase - TWO_PI; // lol does this work?
     }
 
-    float val = (getMorphedOutput(morph, phase) * 2000.0) + 2050.0;
+    lastWriteValue = (getMorphedOutput(morph, phase) * 2000.0) + 2050.0;
 
     // TODO abstract all of this shit
-    analogWrite(PIN_DAC1, (int)val);
+    // analogWrite(PIN_DAC1, (int)writeValue);
+    this->writeToDAC((int) lastWriteValue);
   }
 
-  lastMicros = micros();
+  lastMicros = this->getTime();
+  return lastWriteValue;
 }
 
 double SteppedLfo::calculateBpm(UI *ui)
@@ -182,6 +187,16 @@ void SteppedLfo::incrementNextStep()
   {
     nextStopPosition += 1.0;
   }
+}
+
+uint32_t SteppedLfo::getTime(void)
+{
+  return 0;
+}
+
+void SteppedLfo::writeToDAC(int value)
+{
+  return;
 }
 
 #endif
