@@ -4,7 +4,7 @@
 #ifdef __EMSCRIPTEN__
 #include "ui_emscripten.h"
 #else
-#include "ui.h"
+#include "ui/ui.h"
 #endif
 
 class Mode {

@@ -4,9 +4,9 @@
 #include <cmath>
 
 #ifdef __EMSCRIPTEN__
-#include "ui_emscripten.h"
+#include "emscripten/ui_emscripten.h"
 #else
-#include "ui.h"
+#include "ui/ui.h"
 #endif
 
 #include "util.h"

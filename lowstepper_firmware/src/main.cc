@@ -2,7 +2,7 @@
 #include <cmath>
 
 #include "util.h"
-#include "ui.h"
+#include "ui/UI.h"
 #include "SteppedLfo.h"
 
 // Timer related stuff

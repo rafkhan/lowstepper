@@ -1,22 +1,22 @@
 #include <Arduino.h>
 
-#include "pot_input.h"
+#include "AnalogIn.h"
 
-PotInput::PotInput(int pinNum) {
+AnalogIn::AnalogIn(int pinNum) {
   this->pin = pinNum;
   this->value = 0;
 }
 
-PotInput::~PotInput() {}
+AnalogIn::~AnalogIn() {}
 
-void PotInput::init() {
+void AnalogIn::init() {
   pinMode(this->pin, INPUT);
 }
 
-void PotInput::scan() {
+void AnalogIn::scan() {
   this->value = (double) analogRead(this->pin);
 }
 
-double PotInput::getValue() {
+double AnalogIn::getValue() {
   return this->value;
 }

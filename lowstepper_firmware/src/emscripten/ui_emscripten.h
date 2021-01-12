@@ -12,15 +12,22 @@
 #define PIN_MORPH_POT 0          // TODO build
 
 
-#define PI 0
-#define TWO_PI 0
+#define PI 3.14159265359
+#define TWO_PI 6.283185307180
+
+long JS_MICROS = 0;
+EMSCRIPTEN_KEEPALIVE void setJSMicros(long value) {
+  JS_MICROS = value;
+}
+
 double micros(void) {
-  return 0.0;
+  return JS_MICROS;
 }
 
 long map(long x, long in_min, long in_max, long out_min, long out_max) {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
+
 double analogWrite(int pin, int value) {
   return 0.0;
 }

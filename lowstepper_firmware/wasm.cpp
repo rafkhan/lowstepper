@@ -5,8 +5,6 @@
 
 #include "src/SteppedLfo.h"
 
-
-
 int main(int argc, char ** argv) {
     printf("Hello World\n");
 }
@@ -19,12 +17,10 @@ EMSCRIPTEN_KEEPALIVE void myFunction(int argc, char ** argv) {
     printf("MyFunction Called\n");
 }
 
-
 EMSCRIPTEN_KEEPALIVE
 double sawWave() {
   return saw(0.0);
 }
-
 
 #ifdef __cplusplus
 }

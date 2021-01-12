@@ -1,14 +1,14 @@
-#ifndef POTS_IN_H
-#define POTS_IN_H
+#ifndef ANALOG_IN_IN 
+#define ANALOG_IN_IN
 
-class PotInput 
+class AnalogIn
 {
 private:
   int pin;
   double value;
 public:
-  PotInput(int pinNum);
-  ~PotInput();
+  AnalogIn(int pinNum);
+  ~AnalogIn();
 
   void init(void);
   void scan(void);

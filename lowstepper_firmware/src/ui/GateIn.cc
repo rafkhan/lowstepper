@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-#include "gate_in.h"
+#include "GateIn.h"
 
 /**
  * NOTE!!! the circuit forces the pin low when the incoming gate goes high.
