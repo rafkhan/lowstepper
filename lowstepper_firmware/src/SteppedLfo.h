@@ -4,7 +4,7 @@
 #include <cmath>
 
 #ifdef __EMSCRIPTEN__
-#include "emscripten/ui_emscripten.h"
+#include "ui/ui_emscripten.h"
 #else
 #include "ui/ui.h"
 #endif
@@ -168,9 +168,9 @@ double SteppedLfo::calculateBpm(UI *ui)
 {
   if (ui->clockIn->checkTrigHigh())
   {
-    uint32_t delta = (micros() - lastBpmMicros);
+    uint32_t delta = (this->getTime() - lastBpmMicros);
     double bpm = (60000.0 / (delta / 1000)) / 4;
-    lastBpmMicros = micros();
+    lastBpmMicros = this->getTime();
     return bpm;
   }
 
