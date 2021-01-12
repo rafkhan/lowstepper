@@ -1,5 +1,5 @@
-#ifndef POTS_IN_H
-#define POTS_IN_H
+#ifndef POT_IN_H
+#define POT_IN_H
 
 #include "AnalogIn.h"
 
