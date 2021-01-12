@@ -1803,6 +1803,9 @@ var _tickLFO = Module["_tickLFO"] = createExportWrapper("tickLFO");
 var _setTime = Module["_setTime"] = createExportWrapper("setTime");
 
 /** @type {function(...*):?} */
+var _setGate = Module["_setGate"] = createExportWrapper("setGate");
+
+/** @type {function(...*):?} */
 var ___errno_location = Module["___errno_location"] = createExportWrapper("__errno_location");
 
 /** @type {function(...*):?} */

@@ -98,6 +98,7 @@ private:
 GateIn::GateIn(int pinNum) {
   this->isPinLow = false;
   this->isTrigHigh = false;
+  this->value = 1;
 }
 GateIn::~GateIn() {}
 void GateIn::init() {}
@@ -156,6 +157,7 @@ public:
 
   void init(void);
   void scan(void);
+  void setGate(int);
 
   GateIn* trigIn;
   GateIn* clockIn;
@@ -199,6 +201,10 @@ void UI::scan(void) {
   cvInRate->scan();
   cvInSegmentDivide->scan();
   cvInMorph->scan();
+}
+
+void UI::setGate(int v) {
+  this->trigIn->setValue(v);
 }
 
 #endif

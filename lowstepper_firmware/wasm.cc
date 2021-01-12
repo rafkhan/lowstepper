@@ -27,6 +27,12 @@ EMSCRIPTEN_KEEPALIVE void setTime(uint32_t time) {
   sle.setTime(time);
 }
 
+
+EMSCRIPTEN_KEEPALIVE void setGate(int g) {
+  // build UI object
+  ui.setGate(g);
+}
+
 #ifdef __cplusplus
 }
 #endif
