@@ -114,13 +114,13 @@ float SteppedLfo::tick(UI ui)
 {
   clockInBpm = roundTenth(calculateBpm(ui));
 
-  int potRate = map(ui.potInRate->getValue(), 1, 1023, 1, 5);
+  // int potRate = map(ui.potInRate->getValue(), 1, 1023, 1, 5);
   // lfoFreq = clockInBpm / (15 * pow(2, potRate));
+  
   divisons = 4;
 
   // divisons = map(ui->potInSegmentDivide->getValue(), 1, 1023, 1, 8);
-
-  morph = map(ui.potInMorph->getValue(), 1, 1023, 0, 1);
+  // morph = map(ui.potInMorph->getValue(), 1, 1023, 0, 1);
 
   // Figure out if LFO should be running
   if (ui.trigIn->checkTrigHigh())
