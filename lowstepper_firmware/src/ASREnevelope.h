@@ -46,8 +46,6 @@ void ASREnvelope::tick(UI *ui) {
     }
   }
 
-
-
   if(ui->trigIn->checkGateHigh() && mode == 1) {
     position = 1.0;
   }

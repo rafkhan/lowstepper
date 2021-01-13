@@ -23,9 +23,8 @@ lowstepperWasm().then((module: any) => {
   }, 2000);
 
   setInterval(() => {
-    time += 50;
+    time += 3;
     console.log(round(module._tickLFO(time), 4));
-    time += 50;
   }, 5);
 })
 
