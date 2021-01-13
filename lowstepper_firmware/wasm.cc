@@ -10,26 +10,29 @@ UI ui;
 SteppedLfoEmscripten sle;
 
 int main(int argc, char ** argv) {
-    printf("Hello World\n");
+  ui.setGate(0);
+  printf("Hello World\n");
 }
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-EMSCRIPTEN_KEEPALIVE float tickLFO(int argc, char ** argv) {
-  // build UI object
-  return sle.tick(&ui);
-}
-
-EMSCRIPTEN_KEEPALIVE void setTime(uint32_t time) {
+EMSCRIPTEN_KEEPALIVE float tickLFO(uint32_t time) {
   // build UI object
   sle.setTime(time);
+  ui.scan();
+  return sle.tick(&ui);
 }
 
 EMSCRIPTEN_KEEPALIVE void setGate(int g) {
   // build UI object
   ui.setGate(g);
+}
+
+EMSCRIPTEN_KEEPALIVE uint32_t getTime(void) {
+  // build UI object
+  return sle.getTime();
 }
 
 #ifdef __cplusplus

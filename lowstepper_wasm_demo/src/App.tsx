@@ -6,15 +6,27 @@ import P5Wrapper from "react-p5-wrapper";
 
 import five from "p5";
 
+function round(value: number, precision: number) {
+  var multiplier = Math.pow(10, precision || 0);
+  return Math.round(value * multiplier) / multiplier;
+}
+
 lowstepperWasm().then((module: any) => {
   // console.log('kek')
-  module._setGate(0)
-  console.log(module._setTime(100))
-  console.log(module._tickLFO())
-  setTimeout(() => {
-    console.log(module._setTime(500))
-    console.log(module._tickLFO())
-  }, 1000);
+  module._setGate(1)
+  let time = 0;
+  console.log(module._tickLFO(time))
+
+  setInterval(() => {
+    setTimeout(() => { module._setGate(false); }, 10);
+    setTimeout(() => { module._setGate(true); console.log('backup'); }, 100);
+  }, 2000);
+
+  setInterval(() => {
+    time += 50;
+    console.log(round(module._tickLFO(time), 4));
+    time += 50;
+  }, 5);
 })
 
 function sketch(p: five) {

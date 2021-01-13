@@ -78,7 +78,7 @@ private:
   int pin;
   bool isPinLow;
   bool isTrigHigh;
-  int value;
+  bool value;
 public:
   GateIn(int pinNum);
   ~GateIn();
@@ -88,7 +88,7 @@ public:
   bool checkGateHigh(void);
   bool checkTrigHigh(void);
 
-  void setValue(int);
+  void setValue(bool);
 
 private:
   int getValue(void);
@@ -98,7 +98,7 @@ private:
 GateIn::GateIn(int pinNum) {
   this->isPinLow = false;
   this->isTrigHigh = false;
-  this->value = 1;
+  this->value = true;
 }
 GateIn::~GateIn() {}
 void GateIn::init() {}
@@ -108,7 +108,7 @@ int GateIn::getValue()
   return this->value;
 }
 
-void GateIn::setValue(int value)
+void GateIn::setValue(bool value)
 {
   this->value = value;
 }
@@ -116,6 +116,7 @@ void GateIn::setValue(int value)
 void GateIn::scan(void) {
   // int value = digitalReadFast(this->pin);
   int value = this->getValue();
+  printf("TEST");
 
   // If the pin goes low, but isn't already low, toggle gate on.
   if(!value && !this->isPinLow) {

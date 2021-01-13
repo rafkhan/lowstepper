@@ -113,9 +113,10 @@ float SteppedLfo::tick(UI *ui)
   clockInBpm = roundTenth(calculateBpm(ui));
 
   int potRate = map(ui->potInRate->getValue(), 1, 1023, 1, 5);
-  lfoFreq = clockInBpm / (15 * pow(2, potRate));
+  // lfoFreq = clockInBpm / (15 * pow(2, potRate));
+  lfoFreq = 100;
 
-  divisons = map(ui->potInSegmentDivide->getValue(), 1, 1023, 1, 8);
+  // divisons = map(ui->potInSegmentDivide->getValue(), 1, 1023, 1, 8);
 
   morph = map(ui->potInMorph->getValue(), 1, 1023, 0, 1);
 
@@ -153,11 +154,11 @@ float SteppedLfo::tick(UI *ui)
       phase = phase - TWO_PI; // lol does this work?
     }
 
-    lastWriteValue = (getMorphedOutput(morph, phase) * 2000.0) + 2050.0;
+    lastWriteValue = getMorphedOutput(morph, phase);
 
     // TODO abstract all of this shit
     // analogWrite(PIN_DAC1, (int)writeValue);
-    this->writeToDAC((int) lastWriteValue);
+    this->writeToDAC((int) (lastWriteValue * 2000.0) + 2050.0);
   }
 
   lastMicros = this->getTime();
