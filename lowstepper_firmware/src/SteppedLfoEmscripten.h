@@ -27,4 +27,9 @@ void SteppedLfoEmscripten::setLfoFreq(double freq)
   this->lfoFreq = freq;
 }
 
+void SteppedLfoEmscripten::setMorph(double morph)
+{
+  this->morph = morph;
+}
+
 #endif

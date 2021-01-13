@@ -36,6 +36,10 @@ EMSCRIPTEN_KEEPALIVE void setRate(double freq) {
   return sle.setLfoFreq(freq);
 }
 
+EMSCRIPTEN_KEEPALIVE void setMorph(double morph) {
+  return sle.setMorph(morph);
+}
+
 #ifdef __cplusplus
 }
 #endif

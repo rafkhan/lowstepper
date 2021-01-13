@@ -85,6 +85,7 @@ public:
 
 protected:
   volatile double lfoFreq = 30;
+  volatile double morph = 0;
 
 private:
   void incrementNextStep(void);
@@ -93,7 +94,6 @@ private:
   void writeToDAC(int value);
 
   // Internal state
-  volatile double morph = 0;
   volatile bool lfoRunning = false;
   volatile double nextStopPosition = 1;
   volatile int divisons = 2;
