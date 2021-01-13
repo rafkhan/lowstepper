@@ -13,7 +13,7 @@ function round(value: number, precision: number) {
 
 async function sketch(p: five) {
   let module: any;
-  let xspacing = 1; // Distance between each horizontal location
+  let xspacing = 5; // Distance between each horizontal location
   let w; // Width of entire wave
   let theta = 0.0; // Start angle at 0
   let amplitude = 100.0; // Height of wave
