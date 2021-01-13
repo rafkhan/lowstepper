@@ -106,8 +106,11 @@ async function sketch(p: five) {
 }
 
 export default function App() {
-  const [state, setState] = React.useState({
-
+  const [state, setState] = React.useState<{[parameter: string]: any}>({
+    chunks: 1,
+    rate: 750,
+    morph: 0,
+    gate: true
   });
 
   const [currentKnobIndex, setCurrentKnobIndex] = React.useState(0);
@@ -120,7 +123,8 @@ export default function App() {
       inputProps: {
         step: 1,
         min: 1,
-        max: 10
+        max: 10,
+
       }
     },
     {
@@ -130,7 +134,8 @@ export default function App() {
       inputProps: {
         step: 1,
         min: 1,
-        max: 1000
+        max: 1000,
+
       }
     },
     {
@@ -140,24 +145,14 @@ export default function App() {
       inputProps: {
         step: 0.01,
         min: 0,
-        max: 1
+        max: 1,
+
       }
     }
   ];
 
   return (
     <div className="App">
-      <button onMouseDown={(e) =>  {
-          setState({ ...state, "gate": false });
-          audioCtx.resume();
-        }}
-        onMouseUp={(e) => {
-          setState({ ...state, "gate": true })
-        }}
-        onMouseOut={() => {
-          setState({ ...state, "gate": true })
-        }}
-      >FUCK</button>
       <P5Wrapper sketch={sketch} {...state} />
       <div className="container">
         {/* <div>
@@ -167,6 +162,21 @@ export default function App() {
             );
           })}
         </div> */}
+        <div>
+        <h2 className="parameterName">Trig</h2>
+             <p className="parameterDescription">Hold gate to start modulating</p>
+        <button onMouseDown={(e) =>  {
+          setState({ ...state, "gate": false })
+          audioCtx.resume();
+        }}
+        onMouseUp={(e) => {
+          setState({ ...state, "gate": true })
+        }}
+        onMouseOut={() => {
+          setState({ ...state, "gate": true })
+        }}
+      >Trig</button>
+        </div>
           {knobs.map((currentKnob) => (
              <div>
              <h2 className="parameterName"> {currentKnob.name}</h2>
@@ -177,7 +187,8 @@ export default function App() {
                onChange={(e) =>
                  setState({ ...state, [currentKnob.parameter]: e.target.value })
                }
-               
+     
+               defaultValue={state[currentKnob.parameter]} 
              {...currentKnob.inputProps}
              />
            </div>
