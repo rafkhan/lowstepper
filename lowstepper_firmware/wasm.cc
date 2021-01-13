@@ -10,7 +10,8 @@ UI ui;
 SteppedLfoEmscripten sle;
 
 int main(int argc, char ** argv) {
-  ui.setGate(0);
+  ui.setGate(true);
+  // tickLFO(0);
   printf("Hello World\n");
 }
 
@@ -38,6 +39,10 @@ EMSCRIPTEN_KEEPALIVE void setRate(double freq) {
 
 EMSCRIPTEN_KEEPALIVE void setMorph(double morph) {
   return sle.setMorph(morph);
+}
+
+EMSCRIPTEN_KEEPALIVE void setChunks(int c) {
+  return sle.setChunks(c);
 }
 
 #ifdef __cplusplus

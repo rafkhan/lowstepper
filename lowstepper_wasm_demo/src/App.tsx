@@ -24,33 +24,13 @@ async function sketch(p: five) {
   let state: any = {};
 
   //@ts-ignore
-
-
-
-  // let time = 0;
-  // console.log(module._tickLFO(time))
-
-  // setInterval(() => {
-  //   setTimeout(() => { module && module._setGate(false); }, 10);
-  //   setTimeout(() => { module && module._setGate(true); }, 100);
-  // }, 1000);
-
-  // setInterval(() => {
-  //   time += 3;
-  //   console.log(round(module._tickLFO(time), 4));
-  // }, 5);
-
-
-  //@ts-ignore
   p.myCustomRedrawAccordingToNewPropsHandler = function (props) {
-    console.table(props)
+    // console.table(props)
     if (module) {
-      
       props.rate && module._setRate(parseInt(props.rate))
       props.morph && module._setMorph(parseFloat(props.morph))
+      props.chunks && module._setChunks(parseInt(props.chunks))
       props.gate !== undefined && module._setGate(props.gate)
-    
-    
     }
     state = props;
   };
@@ -64,16 +44,6 @@ async function sketch(p: five) {
   }
 
   function calcWave() {
-    // Increment theta (try different values for
-    // 'angular velocity' here)
-    theta += 0.02;
-
-    // For every x value, calculate a y value with sine function
-    let x = theta;
-    // for (let i = 0; i < yvalues.length; i++) {
-    //   yvalues[i] = generateFunction(x, state)() * amplitude;
-    //   x += dx;
-    // }
     yvalues.shift();
     yvalues.push(generateFunction(0, state)() * amplitude)
   }
@@ -90,11 +60,13 @@ async function sketch(p: five) {
   p.setup = async function () {
     
     p.createCanvas(710, 400);
+    
  
     w = p.width + 16;
     dx = (p.TWO_PI / period) * xspacing;
     yvalues = new Array(p.floor(w / xspacing));
     module = await lowstepperWasm();
+    module._tickLFO(0);
   };
 
   p.draw = function () {
@@ -118,7 +90,8 @@ export default function App() {
       description: "Number of chunks",
       parameter: "chunks",
       inputProps: {
-        min:1,
+        step: 1,
+        min: 1,
         max: 10
       }
     },
