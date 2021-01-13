@@ -13,25 +13,27 @@ function round(value: number, precision: number) {
 
 async function sketch(p: five) {
   let module: any;
-  let xspacing = 1; // Distance between each horizontal location
+  let xspacing = 10; // Distance between each horizontal location
   let w; // Width of entire wave
   let theta = 0.0; // Start angle at 0
-  let amplitude = 75.0; // Height of wave
-  let period = 500.0; // How many pixels before the wave repeats
+  let amplitude = 100.0; // Height of wave
+  let period = 100.0; // How many pixels before the wave repeats
   let dx: number; // Value for incrementing x
   let yvalues: Array<number> = []; // Using an array to store height values for the wave
 
   let state: any = {};
+
+  //@ts-ignore
 
 
 
   // let time = 0;
   // console.log(module._tickLFO(time))
 
-  setInterval(() => {
-    setTimeout(() => { module._setGate(false); }, 10);
-    setTimeout(() => { module._setGate(true); console.log('backup'); }, 100);
-  }, 2000);
+  // setInterval(() => {
+  //   setTimeout(() => { module && module._setGate(false); }, 10);
+  //   setTimeout(() => { module && module._setGate(true); }, 100);
+  // }, 1000);
 
   // setInterval(() => {
   //   time += 3;
@@ -41,6 +43,15 @@ async function sketch(p: five) {
 
   //@ts-ignore
   p.myCustomRedrawAccordingToNewPropsHandler = function (props) {
+    console.table(props)
+    if (module) {
+      
+      props.rate && module._setRate(parseInt(props.rate))
+      props.morph && module._setMorph(parseFloat(props.morph))
+      props.gate !== undefined && module._setGate(props.gate)
+    
+    
+    }
     state = props;
   };
 
@@ -72,12 +83,14 @@ async function sketch(p: five) {
     p.fill(255);
     // A simple way to draw the wave with an ellipse at each location
     for (let x = 0; x < yvalues.length; x++) {
-      p.ellipse(x * xspacing, p.height / 2 + yvalues[x], 3, 3);
+      p.ellipse(x * xspacing, p.height / 2 + yvalues[x], 5,5);
     }
   }
 
   p.setup = async function () {
+    
     p.createCanvas(710, 400);
+ 
     w = p.width + 16;
     dx = (p.TWO_PI / period) * xspacing;
     yvalues = new Array(p.floor(w / xspacing));
@@ -89,12 +102,12 @@ async function sketch(p: five) {
     calcWave();
     renderWave();
   };
+
 }
 
 export default function App() {
   const [state, setState] = React.useState({
-    amplitude: 1,
-    offset: 0
+
   });
 
   const [currentKnobIndex, setCurrentKnobIndex] = React.useState(0);
@@ -103,51 +116,72 @@ export default function App() {
     {
       name: "Chunks",
       description: "Number of chunks",
-      parameter: "amplitude"
+      parameter: "chunks",
+      inputProps: {
+        min:1,
+        max: 10
+      }
     },
     {
       name: "Rate",
       description: "Shift the wave's period.",
-      parameter: "offset"
+      parameter: "rate",
+      inputProps: {
+        step: 1,
+        min: 1,
+        max: 1000
+      }
     },
     {
       name: "Morph",
       description: "Lorem",
-      parameter: "amplitude"
-    },
-    {
-      name: "Trigger",
-      description: "Lorem",
-      parameter: "amplitude"
+      parameter: "morph",
+      inputProps: {
+        step: 0.01,
+        min: 0,
+        max: 1
+      }
     }
   ];
-  const currentKnob = knobs[currentKnobIndex];
 
   return (
     <div className="App">
+      <button onMouseDown={(e) =>  {
+          setState({ ...state, "gate": false })
+        }}
+        onMouseUp={(e) => {
+          setState({ ...state, "gate": true })
+        }}
+        onMouseOut={() => {
+          setState({ ...state, "gate": true })
+        }}
+      >FUCK</button>
       <P5Wrapper sketch={sketch} {...state} />
       <div className="container">
-        <div>
+        {/* <div>
           {knobs.map((knob, index) => {
             return (
               <h2 onClick={() => setCurrentKnobIndex(index)}>{knob.name}</h2>
             );
           })}
-        </div>
-        <div>
-          <h2 className="parameterName"> {currentKnob.name}</h2>
-          <p className="parameterDescription"> {currentKnob.description}</p>
-          {/* <label>state : ({JSON.stringify(state)})</label> */}
-          <input
-            type="range"
-            onChange={(e) =>
-              setState({ ...state, [currentKnob.parameter]: e.target.value })
-            }
-            step="0.01"
-            min={0}
-            max={1}
-          />
-        </div>
+        </div> */}
+          {knobs.map((currentKnob) => (
+             <div>
+             <h2 className="parameterName"> {currentKnob.name}</h2>
+             <p className="parameterDescription"> {currentKnob.description}</p>
+             {/* <label>state : ({JSON.stringify(state)})</label> */}
+             <input
+               type="range"
+               onChange={(e) =>
+                 setState({ ...state, [currentKnob.parameter]: e.target.value })
+               }
+               
+             {...currentKnob.inputProps}
+             />
+           </div>
+          ))}
+
+
       </div>
     </div>
   );

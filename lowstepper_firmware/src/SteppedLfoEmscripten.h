@@ -8,6 +8,7 @@ class SteppedLfoEmscripten : public SteppedLfo {
     uint32_t getTime(void);
     void setTime(uint32_t t);
     void setLfoFreq(double freq);
+    void setMorph(double morph);
   private:
     uint32_t time;
 };
