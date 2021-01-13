@@ -19,24 +19,20 @@ extern "C" {
 #endif
 
 EMSCRIPTEN_KEEPALIVE float tickLFO(uint32_t time) {
-  // build UI object
   sle.setTime(time);
   ui.scan();
   return sle.tick(ui);
 }
 
 EMSCRIPTEN_KEEPALIVE void setGate(int g) {
-  // build UI object
   ui.setGate(g);
 }
 
 EMSCRIPTEN_KEEPALIVE uint32_t getTime(void) {
-  // build UI object
   return sle.getTime();
 }
 
-EMSCRIPTEN_KEEPALIVE void setFrequency(double freq) {
-  // build UI object
+EMSCRIPTEN_KEEPALIVE void setRate(double freq) {
   return sle.setLfoFreq(freq);
 }
 
