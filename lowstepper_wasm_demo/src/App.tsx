@@ -11,33 +11,33 @@ function round(value: number, precision: number) {
   return Math.round(value * multiplier) / multiplier;
 }
 
-lowstepperWasm().then((module: any) => {
-  // console.log('kek')
-  module._setGate(1)
-  let time = 0;
-  console.log(module._tickLFO(time))
-
-  setInterval(() => {
-    setTimeout(() => { module._setGate(false); }, 10);
-    setTimeout(() => { module._setGate(true); console.log('backup'); }, 100);
-  }, 2000);
-
-  setInterval(() => {
-    time += 3;
-    console.log(round(module._tickLFO(time), 4));
-  }, 5);
-})
-
-function sketch(p: five) {
+async function sketch(p: five) {
+  let module: any;
   let xspacing = 1; // Distance between each horizontal location
   let w; // Width of entire wave
   let theta = 0.0; // Start angle at 0
   let amplitude = 75.0; // Height of wave
   let period = 500.0; // How many pixels before the wave repeats
   let dx: number; // Value for incrementing x
-  let yvalues: Array<number>; // Using an array to store height values for the wave
+  let yvalues: Array<number> = []; // Using an array to store height values for the wave
 
   let state: any = {};
+
+
+
+  // let time = 0;
+  // console.log(module._tickLFO(time))
+
+  // setInterval(() => {
+  //   setTimeout(() => { module._setGate(false); }, 10);
+  //   setTimeout(() => { module._setGate(true); console.log('backup'); }, 100);
+  // }, 2000);
+
+  // setInterval(() => {
+  //   time += 3;
+  //   console.log(round(module._tickLFO(time), 4));
+  // }, 5);
+
 
   //@ts-ignore
   p.myCustomRedrawAccordingToNewPropsHandler = function (props) {
@@ -45,7 +45,16 @@ function sketch(p: five) {
   };
 
   function generateFunction(x: number, state: any): () => number {
-    return () => p.sin(x) * state.amplitude + state.ofsfset;
+    return () => {
+if (!module) return 0;
+
+
+   const y =  module._tickLFO(x)
+
+return y;
+
+
+    }
   }
 
   function calcWave() {
@@ -70,11 +79,12 @@ function sketch(p: five) {
     }
   }
 
-  p.setup = function () {
+  p.setup = async function () {
     p.createCanvas(710, 400);
     w = p.width + 16;
     dx = (p.TWO_PI / period) * xspacing;
     yvalues = new Array(p.floor(w / xspacing));
+    module = await lowstepperWasm();
   };
 
   p.draw = function () {
