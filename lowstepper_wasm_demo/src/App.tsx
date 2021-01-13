@@ -1,10 +1,19 @@
 import * as React from "react";
 import "./styles.css";
 import lowstepperWasm from "./wasm";
+import Oscillator from "./Oscillator";
 // @ts-ignore
 import P5Wrapper from "react-p5-wrapper";
 
 import five from "p5";
+
+
+const audioCtx = new AudioContext();
+const biquadFilter = audioCtx.createBiquadFilter();
+biquadFilter.type = "lowpass";
+biquadFilter.frequency.setValueAtTime(20000, audioCtx.currentTime);
+biquadFilter.Q.setValueAtTime(10, audioCtx.currentTime);
+biquadFilter.connect(audioCtx.destination);
 
 function round(value: number, precision: number) {
   var multiplier = Math.pow(10, precision || 0);
@@ -43,9 +52,17 @@ async function sketch(p: five) {
     }
   }
 
+  // @ts-ignore
+  function mapnum(x, in_min, in_max, out_min, out_max) {
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+  }
+
   function calcWave() {
     yvalues.shift();
-    yvalues.push(generateFunction(0, state)() * amplitude)
+    const y = generateFunction(0, state)();
+    const f = mapnum(y, -1, 1, 0, 4000);
+    biquadFilter.frequency.setValueAtTime(f, audioCtx.currentTime);
+    yvalues.push(y * amplitude)
   }
 
   function renderWave() {
@@ -67,6 +84,17 @@ async function sketch(p: five) {
     yvalues = new Array(p.floor(w / xspacing));
     module = await lowstepperWasm();
     module._tickLFO(0);
+
+    const freq = 100;
+    const unisonDetune = 1;
+    const o1 = new Oscillator(audioCtx, biquadFilter);
+    o1.playFrequency(freq);
+
+    const o2 = new Oscillator(audioCtx, biquadFilter);
+    o2.playFrequency(freq + unisonDetune);
+
+    const o3 = new Oscillator(audioCtx, biquadFilter);
+    o3.playFrequency(freq - unisonDetune);
   };
 
   p.draw = function () {
@@ -120,7 +148,8 @@ export default function App() {
   return (
     <div className="App">
       <button onMouseDown={(e) =>  {
-          setState({ ...state, "gate": false })
+          setState({ ...state, "gate": false });
+          audioCtx.resume();
         }}
         onMouseUp={(e) => {
           setState({ ...state, "gate": true })
