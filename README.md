@@ -11,7 +11,8 @@ TODO: write this
 ### Build for Web/WASM
 TODO: fix this
 ```
-emcc wasm.cc
+cd lowstepper_firmware
+bash build_wasm.sh
 ```
 
 ## License 
