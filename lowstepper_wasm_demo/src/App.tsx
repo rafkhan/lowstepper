@@ -9,11 +9,18 @@ import five from "p5";
 
 
 const audioCtx = new AudioContext();
+const bf2 = audioCtx.createBiquadFilter();
+bf2.type = "highpass";
+bf2.frequency.setValueAtTime(200, audioCtx.currentTime);
+bf2.Q.setValueAtTime(0.1, audioCtx.currentTime);
+bf2.connect(audioCtx.destination);
+
 const biquadFilter = audioCtx.createBiquadFilter();
 biquadFilter.type = "lowpass";
 biquadFilter.frequency.setValueAtTime(20000, audioCtx.currentTime);
-biquadFilter.Q.setValueAtTime(10, audioCtx.currentTime);
-biquadFilter.connect(audioCtx.destination);
+biquadFilter.Q.setValueAtTime(0.5, audioCtx.currentTime);
+biquadFilter.connect(bf2);
+
 
 function round(value: number, precision: number) {
   var multiplier = Math.pow(10, precision || 0);
@@ -60,7 +67,7 @@ async function sketch(p: five) {
   function calcWave() {
     yvalues.shift();
     const y = generateFunction(0, state)();
-    const f = mapnum(y, -1, 1, 0, 4000);
+    const f = mapnum(y, -1, 1, 0, 5000);
     biquadFilter.frequency.setValueAtTime(f, audioCtx.currentTime);
     yvalues.push(y * amplitude)
   }
@@ -85,16 +92,25 @@ async function sketch(p: five) {
     module = await lowstepperWasm();
     module._tickLFO(0);
 
-    const freq = 100;
-    const unisonDetune = 1;
-    const o1 = new Oscillator(audioCtx, biquadFilter);
-    o1.playFrequency(freq);
+    const freqE = 164.81; 
+    const freqG = 196;
+    const freqB = 246.94;
+    const unisonDetune = 0.5;
+    
+    const unisonNote = (freq: number) => {
+      const o1 = new Oscillator(audioCtx, biquadFilter);
+      o1.playFrequency(freq);
 
-    const o2 = new Oscillator(audioCtx, biquadFilter);
-    o2.playFrequency(freq + unisonDetune);
+      // const o2 = new Oscillator(audioCtx, biquadFilter);
+      // o2.playFrequency(freq + unisonDetune);
 
-    const o3 = new Oscillator(audioCtx, biquadFilter);
-    o3.playFrequency(freq - unisonDetune);
+      // const o3 = new Oscillator(audioCtx, biquadFilter);
+      // o3.playFrequency(freq - unisonDetune);
+    }
+
+    unisonNote(freqE);
+    unisonNote(freqG);
+    unisonNote(freqB);
   };
 
   p.draw = function () {
