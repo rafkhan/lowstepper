@@ -1,10 +1,21 @@
 import * as React from "react";
 import "./styles.css";
-
+import lowstepperWasm from "./wasm";
 // @ts-ignore
 import P5Wrapper from "react-p5-wrapper";
 
 import five from "p5";
+
+lowstepperWasm().then((module: any) => {
+  // console.log('kek')
+  module._setGate(0)
+  console.log(module._setTime(100))
+  console.log(module._tickLFO())
+  setTimeout(() => {
+    console.log(module._setTime(500))
+    console.log(module._tickLFO())
+  }, 1000);
+})
 
 function sketch(p: five) {
   let xspacing = 1; // Distance between each horizontal location
@@ -23,7 +34,7 @@ function sketch(p: five) {
   };
 
   function generateFunction(x: number, state: any): () => number {
-    return () => p.sin(x) * state.amplitude + state.offset;
+    return () => p.sin(x) * state.amplitude + state.ofsfset;
   }
 
   function calcWave() {
