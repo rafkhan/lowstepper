@@ -59,10 +59,12 @@ async function sketch(p: five) {
 
     // For every x value, calculate a y value with sine function
     let x = theta;
-    for (let i = 0; i < yvalues.length; i++) {
-      yvalues[i] = generateFunction(x, state)() * amplitude;
-      x += dx;
-    }
+    // for (let i = 0; i < yvalues.length; i++) {
+    //   yvalues[i] = generateFunction(x, state)() * amplitude;
+    //   x += dx;
+    // }
+    yvalues.shift();
+    yvalues.push(generateFunction(0, state)() * amplitude)
   }
 
   function renderWave() {

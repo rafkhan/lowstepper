@@ -35,6 +35,11 @@ EMSCRIPTEN_KEEPALIVE uint32_t getTime(void) {
   return sle.getTime();
 }
 
+EMSCRIPTEN_KEEPALIVE void setFrequency(double freq) {
+  // build UI object
+  return sle.setLfoFreq(freq);
+}
+
 #ifdef __cplusplus
 }
 #endif

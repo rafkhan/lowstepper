@@ -83,6 +83,9 @@ public:
   SteppedLfo();
   float tick(UI ui);
 
+protected:
+  volatile double lfoFreq = 30;
+
 private:
   void incrementNextStep(void);
   double calculateBpm(UI ui);
@@ -91,7 +94,6 @@ private:
 
   // Internal state
   volatile double morph = 0;
-  volatile double lfoFreq = 30;
   volatile bool lfoRunning = false;
   volatile double nextStopPosition = 1;
   volatile int divisons = 2;
@@ -114,7 +116,6 @@ float SteppedLfo::tick(UI ui)
 
   int potRate = map(ui.potInRate->getValue(), 1, 1023, 1, 5);
   // lfoFreq = clockInBpm / (15 * pow(2, potRate));
-  lfoFreq = 500;
   divisons = 4;
 
   // divisons = map(ui->potInSegmentDivide->getValue(), 1, 1023, 1, 8);

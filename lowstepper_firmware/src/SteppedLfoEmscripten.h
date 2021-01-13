@@ -7,6 +7,7 @@ class SteppedLfoEmscripten : public SteppedLfo {
   public:
     uint32_t getTime(void);
     void setTime(uint32_t t);
+    void setLfoFreq(double freq);
   private:
     uint32_t time;
 };
@@ -19,6 +20,11 @@ void SteppedLfoEmscripten::setTime(uint32_t t)
 uint32_t SteppedLfoEmscripten::getTime(void)
 {
   return this->time;
+}
+
+void SteppedLfoEmscripten::setLfoFreq(double freq)
+{
+  this->lfoFreq = freq;
 }
 
 #endif
