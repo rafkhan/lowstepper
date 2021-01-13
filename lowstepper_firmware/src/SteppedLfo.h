@@ -115,6 +115,7 @@ float SteppedLfo::tick(UI *ui)
   int potRate = map(ui->potInRate->getValue(), 1, 1023, 1, 5);
   // lfoFreq = clockInBpm / (15 * pow(2, potRate));
   lfoFreq = 100;
+  divisons = 4;
 
   // divisons = map(ui->potInSegmentDivide->getValue(), 1, 1023, 1, 8);
 
