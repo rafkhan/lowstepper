@@ -4,6 +4,7 @@
 #include <cmath>
 
 #ifdef __EMSCRIPTEN__
+#include <emscripten/emscripten.h>
 #include "ui/ui_emscripten.h"
 #else
 #include "ui/ui.h"
@@ -86,6 +87,7 @@ public:
 protected:
   volatile double lfoFreq = 30;
   volatile double morph = 0;
+  volatile int divisions = 2;
 
 private:
   void incrementNextStep(void);
@@ -96,7 +98,6 @@ private:
   // Internal state
   volatile bool lfoRunning = false;
   volatile double nextStopPosition = 1;
-  volatile int divisons = 2;
   volatile double clockInBpm = 0;
   volatile uint32_t lastBpmMicros = 0; // used to track time between clock inputs
   volatile uint32_t lastMicros = 0;    // used for lfo calcs
@@ -112,14 +113,13 @@ SteppedLfo::SteppedLfo()
 
 float SteppedLfo::tick(UI ui)
 {
-  clockInBpm = roundTenth(calculateBpm(ui));
+  // clockInBpm = roundTenth(calculateBpm(ui));
 
   // int potRate = map(ui.potInRate->getValue(), 1, 1023, 1, 5);
   // lfoFreq = clockInBpm / (15 * pow(2, potRate));
-  
-  divisons = 4;
 
-  // divisons = map(ui->potInSegmentDivide->getValue(), 1, 1023, 1, 8);
+  // divisions = map(ui->potInSegmentDivide->getValue(), 1, 1023, 1, 8);
+
   // morph = map(ui.potInMorph->getValue(), 1, 1023, 0, 1);
 
   // Figure out if LFO should be running
@@ -132,7 +132,7 @@ float SteppedLfo::tick(UI ui)
       incrementNextStep();
     }
 
-    phase = (TWO_PI / divisons) * (nextStopPosition - 1.0);
+    phase = (TWO_PI / divisions) * (nextStopPosition - 1.0);
     lfoRunning = true;
   }
 
@@ -143,7 +143,7 @@ float SteppedLfo::tick(UI ui)
     phase += inc;
 
     // Check if segment is complete, stop LFO if so
-    if (phase >= ((TWO_PI / divisons) * nextStopPosition))
+    if (phase >= ((TWO_PI / divisions) * nextStopPosition))
     {
       incrementNextStep();
       lfoRunning = false;
@@ -153,7 +153,7 @@ float SteppedLfo::tick(UI ui)
     // TODO maybe do this more intelligently?
     if (phase >= TWO_PI)
     {
-      phase = phase - TWO_PI; // lol does this work?
+      phase = TWO_PI; // lol does this work?
     }
 
     lastWriteValue = getMorphedOutput(morph, phase);
@@ -182,7 +182,7 @@ double SteppedLfo::calculateBpm(UI ui)
 
 void SteppedLfo::incrementNextStep()
 {
-  if (nextStopPosition == divisons)
+  if (nextStopPosition == divisions)
   {
     nextStopPosition = 1.0;
   }

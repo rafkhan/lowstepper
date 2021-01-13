@@ -6,9 +6,10 @@
 class SteppedLfoEmscripten : public SteppedLfo {
   public:
     uint32_t getTime(void);
-    void setTime(uint32_t t);
-    void setLfoFreq(double freq);
-    void setMorph(double morph);
+    void setTime(uint32_t);
+    void setLfoFreq(double);
+    void setMorph(double);
+    void setChunks(int);
   private:
     uint32_t time;
 };
@@ -31,6 +32,11 @@ void SteppedLfoEmscripten::setLfoFreq(double freq)
 void SteppedLfoEmscripten::setMorph(double morph)
 {
   this->morph = morph;
+}
+
+void SteppedLfoEmscripten::setChunks(int divs)
+{
+  this->divisions = divs;
 }
 
 #endif
