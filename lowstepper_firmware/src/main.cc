@@ -17,7 +17,7 @@ UI ui;
 SteppedLfoHardware steppedLfo(PIN_DAC1);
 
 void FASTRUN main_timer_ISR() {
-  steppedLfo.tick(&ui);
+  steppedLfo.tick(ui);
 }
 
 void setup() {

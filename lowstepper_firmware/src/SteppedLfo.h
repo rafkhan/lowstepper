@@ -81,11 +81,11 @@ class SteppedLfo : public Mode
 {
 public:
   SteppedLfo();
-  float tick(UI *ui);
+  float tick(UI ui);
 
 private:
   void incrementNextStep(void);
-  double calculateBpm(UI *ui);
+  double calculateBpm(UI ui);
   uint32_t getTime(void);
   void writeToDAC(int value);
 
@@ -108,21 +108,21 @@ SteppedLfo::SteppedLfo()
   lastBpmMicros = this->getTime();
 }
 
-float SteppedLfo::tick(UI *ui)
+float SteppedLfo::tick(UI ui)
 {
   clockInBpm = roundTenth(calculateBpm(ui));
 
-  int potRate = map(ui->potInRate->getValue(), 1, 1023, 1, 5);
+  int potRate = map(ui.potInRate->getValue(), 1, 1023, 1, 5);
   // lfoFreq = clockInBpm / (15 * pow(2, potRate));
-  lfoFreq = 20;
+  lfoFreq = 500;
   divisons = 4;
 
   // divisons = map(ui->potInSegmentDivide->getValue(), 1, 1023, 1, 8);
 
-  morph = map(ui->potInMorph->getValue(), 1, 1023, 0, 1);
+  morph = map(ui.potInMorph->getValue(), 1, 1023, 0, 1);
 
   // Figure out if LFO should be running
-  if (ui->trigIn->checkTrigHigh())
+  if (ui.trigIn->checkTrigHigh())
   {
     // Serial.println(ui->potInRate->getValue());
     // LFO is already running, skip to next segment
@@ -166,9 +166,9 @@ float SteppedLfo::tick(UI *ui)
   return lastWriteValue;
 }
 
-double SteppedLfo::calculateBpm(UI *ui)
+double SteppedLfo::calculateBpm(UI ui)
 {
-  if (ui->clockIn->checkTrigHigh())
+  if (ui.clockIn->checkTrigHigh())
   {
     uint32_t delta = (this->getTime() - lastBpmMicros);
     double bpm = (60000.0 / (delta / 1000)) / 4;

@@ -28,10 +28,10 @@ async function sketch(p: five) {
   // let time = 0;
   // console.log(module._tickLFO(time))
 
-  // setInterval(() => {
-  //   setTimeout(() => { module._setGate(false); }, 10);
-  //   setTimeout(() => { module._setGate(true); console.log('backup'); }, 100);
-  // }, 2000);
+  setInterval(() => {
+    setTimeout(() => { module._setGate(false); }, 10);
+    setTimeout(() => { module._setGate(true); console.log('backup'); }, 100);
+  }, 2000);
 
   // setInterval(() => {
   //   time += 3;
@@ -46,14 +46,9 @@ async function sketch(p: five) {
 
   function generateFunction(x: number, state: any): () => number {
     return () => {
-if (!module) return 0;
-
-
-   const y =  module._tickLFO(x)
-
-return y;
-
-
+      if (!module) return 0;
+      const y =  module._tickLFO(Date.now())
+      return y;
     }
   }
 

@@ -22,7 +22,7 @@ EMSCRIPTEN_KEEPALIVE float tickLFO(uint32_t time) {
   // build UI object
   sle.setTime(time);
   ui.scan();
-  return sle.tick(&ui);
+  return sle.tick(ui);
 }
 
 EMSCRIPTEN_KEEPALIVE void setGate(int g) {

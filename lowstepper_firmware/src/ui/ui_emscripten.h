@@ -116,7 +116,6 @@ void GateIn::setValue(bool value)
 void GateIn::scan(void) {
   // int value = digitalReadFast(this->pin);
   int value = this->getValue();
-  printf("TEST");
 
   // If the pin goes low, but isn't already low, toggle gate on.
   if(!value && !this->isPinLow) {
