@@ -13,7 +13,7 @@ function round(value: number, precision: number) {
 
 async function sketch(p: five) {
   let module: any;
-  let xspacing = 10; // Distance between each horizontal location
+  let xspacing = 5; // Distance between each horizontal location
   let w; // Width of entire wave
   let theta = 0.0; // Start angle at 0
   let amplitude = 100.0; // Height of wave
@@ -146,16 +146,7 @@ export default function App() {
 
   return (
     <div className="App">
-      <button onMouseDown={(e) =>  {
-          setState({ ...state, "gate": false })
-        }}
-        onMouseUp={(e) => {
-          setState({ ...state, "gate": true })
-        }}
-        onMouseOut={() => {
-          setState({ ...state, "gate": true })
-        }}
-      >FUCK</button>
+
       <P5Wrapper sketch={sketch} {...state} />
       <div className="container">
         {/* <div>
@@ -165,6 +156,20 @@ export default function App() {
             );
           })}
         </div> */}
+        <div>
+        <h2 className="parameterName"> Trig</h2>
+             <p className="parameterDescription">Hold gate to start modulating</p>
+        <button onMouseDown={(e) =>  {
+          setState({ ...state, "gate": false })
+        }}
+        onMouseUp={(e) => {
+          setState({ ...state, "gate": true })
+        }}
+        onMouseOut={() => {
+          setState({ ...state, "gate": true })
+        }}
+      >Trig</button>
+        </div>
           {knobs.map((currentKnob) => (
              <div>
              <h2 className="parameterName"> {currentKnob.name}</h2>
