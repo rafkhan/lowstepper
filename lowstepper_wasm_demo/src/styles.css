@@ -3,9 +3,15 @@
   text-align: center;
 }
 
+p {
+  font-size: 16px;
+}
+
 .container {
   width: 480px;
   display: flex;
+  margin: 0 auto;
+  margin-top:20px;
 }
 .container > * {
   width: 50%;
