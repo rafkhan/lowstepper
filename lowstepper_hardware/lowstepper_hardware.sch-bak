@@ -1068,32 +1068,32 @@ Connection ~ 8650 3600
 Wire Wire Line
 	8650 3600 9150 3600
 $Comp
-L teensy:Teensy3.5 U3
-U 1 1 5FD57561
-P 15550 2900
-F 0 "U3" H 15550 5639 60  0000 C CNN
-F 1 "Teensy3.5" H 15550 5533 60  0000 C CNN
-F 2 "teensy:Teensy35_36" H 15550 5427 60  0000 C CNN
-F 3 "https://www.pjrc.com/teensy/card8a_rev2.pdf" H 15550 5321 60  0000 C CNN
-F 4 "https://www.pjrc.com/teensy/pinout.html" H 15550 5223 50  0000 C CNN "Pinouts"
-	1    15550 2900
-	1    0    0    -1  
-$EndComp
-$Comp
 L power:GND #PWR0101
 U 1 1 5FD645ED
-P 13950 750
-F 0 "#PWR0101" H 13950 500 50  0001 C CNN
-F 1 "GND" H 13955 577 50  0000 C CNN
-F 2 "" H 13950 750 50  0001 C CNN
-F 3 "" H 13950 750 50  0001 C CNN
-	1    13950 750 
+P 12700 1900
+F 0 "#PWR0101" H 12700 1650 50  0001 C CNN
+F 1 "GND" H 12705 1727 50  0000 C CNN
+F 2 "" H 12700 1900 50  0001 C CNN
+F 3 "" H 12700 1900 50  0001 C CNN
+	1    12700 1900
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	13950 750  14400 750 
-Wire Wire Line
-	14050 4350 14400 4350
-Text Label 14050 4350 2    50   ~ 0
+	12800 5500 13150 5500
+Text Label 12800 5500 2    50   ~ 0
 DAC0_OUT
+Wire Wire Line
+	12700 1900 13150 1900
+$Comp
+L teensy:Teensy3.5 U3
+U 1 1 5FD57561
+P 14300 4050
+F 0 "U3" H 14300 6789 60  0000 C CNN
+F 1 "Teensy3.5" H 14300 6683 60  0000 C CNN
+F 2 "teensy:Teensy35_36" H 14150 5900 60  0000 C CNN
+F 3 "https://www.pjrc.com/teensy/card8a_rev2.pdf" H 14300 6471 60  0000 C CNN
+F 4 "https://www.pjrc.com/teensy/pinout.html" H 14300 6373 50  0000 C CNN "Pinouts"
+	1    14300 4050
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

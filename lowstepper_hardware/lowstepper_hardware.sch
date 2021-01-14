@@ -903,7 +903,7 @@ GND
 Wire Wire Line
 	7050 3250 7050 3400
 Text Label 7050 3400 0    50   ~ 0
-MORPH_IN
+MORPH_POT
 $Comp
 L Device:R_POT_Small RV2
 U 1 1 5FF6E6BC
@@ -926,7 +926,7 @@ GND
 Wire Wire Line
 	7050 3900 7050 4050
 Text Label 7050 4050 0    50   ~ 0
-RATE_IN
+RATE_POT
 $Comp
 L Device:R_POT_Small RV3
 U 1 1 5FF754DE
@@ -949,7 +949,7 @@ GND
 Wire Wire Line
 	7050 4550 7050 4700
 Text Label 7050 4700 0    50   ~ 0
-CHUNK_IN
+CHUNK_POT
 $Comp
 L Device:R_Small_US R17
 U 1 1 5FD95CCE
