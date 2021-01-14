@@ -7,6 +7,10 @@ import P5Wrapper from "react-p5-wrapper";
 
 import five from "p5";
 
+var AudioContext = window.AudioContext // Default
+//@ts-ignore
+    || window.webkitAudioContext // Safari and old versions of Chrome 
+    || false; 
 
 const audioCtx = new AudioContext();
 const bf2 = audioCtx.createBiquadFilter();
@@ -32,12 +36,20 @@ async function sketch(p: five) {
   let xspacing = 5; // Distance between each horizontal location
   let w; // Width of entire wave
   let theta = 0.0; // Start angle at 0
-  let amplitude = 100.0; // Height of wave
+  let amplitude = 50.0; // Height of wave
   let period = 100.0; // How many pixels before the wave repeats
   let dx: number; // Value for incrementing x
   let yvalues: Array<number> = []; // Using an array to store height values for the wave
 
   let state: any = {};
+
+setInterval(() => {
+  module && module._setGate(false)
+  setTimeout(() => {
+    module && module._setGate(true)
+  }, 100)
+}, 200)
+
 
   //@ts-ignore
   p.myCustomRedrawAccordingToNewPropsHandler = function (props) {
@@ -83,7 +95,7 @@ async function sketch(p: five) {
 
   p.setup = async function () {
     
-    p.createCanvas(710, 400);
+    p.createCanvas(480, 260);
     
  
     w = p.width + 16;
@@ -134,7 +146,7 @@ export default function App() {
   const knobs = [
     {
       name: "Chunks",
-      description: "Number of chunks",
+      description: "Break an LFO into 1-10 chunks. Each chunk is played in sequence when gate or trigger is activated.",
       parameter: "chunks",
       inputProps: {
         step: 1,
@@ -145,7 +157,7 @@ export default function App() {
     },
     {
       name: "Rate",
-      description: "Shift the wave's period.",
+      description: "Adjust the frequency of the LFO.",
       parameter: "rate",
       inputProps: {
         step: 1,
@@ -156,10 +168,10 @@ export default function App() {
     },
     {
       name: "Morph",
-      description: "Lorem",
+      description: "Morph between Sin, Saw, and Square LFOs.",
       parameter: "morph",
       inputProps: {
-        step: 0.01,
+        step: 0.001,
         min: 0,
         max: 1,
 
@@ -169,8 +181,17 @@ export default function App() {
 
   return (
     <div className="App">
+      <h1>LowStepper</h1>
+    <p>A new type of LFO from Okay Synthesizer.</p>
+
       <P5Wrapper sketch={sketch} {...state} />
+
       <div className="container">
+      <div>
+      <img src={require("./Lowstepper.svg").default} />
+      </div>
+      <div >
+
         {/* <div>
           {knobs.map((knob, index) => {
             return (
@@ -180,7 +201,7 @@ export default function App() {
         </div> */}
         <div>
         <h2 className="parameterName">Trig</h2>
-             <p className="parameterDescription">Hold gate to start modulating</p>
+             <p className="parameterDescription">Click here to trigger the LFO.</p>
         <button onMouseDown={(e) =>  {
           setState({ ...state, "gate": false })
           audioCtx.resume();
@@ -211,6 +232,7 @@ export default function App() {
           ))}
 
 
+      </div>
       </div>
     </div>
   );
