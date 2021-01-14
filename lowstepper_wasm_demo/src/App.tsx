@@ -189,7 +189,7 @@ export default function App() {
       {/* <div>
       <img src={require("./Lowstepper.png").default} />
       </div> */}
-      <div >
+      {/* <div > */}
 
         {/* <div>
           {knobs.map((knob, index) => {
@@ -198,7 +198,7 @@ export default function App() {
             );
           })}
         </div> */}
-        <div>
+        {/* <div> */}
         <h2 className="parameterName">Trig</h2>
              <p className="parameterDescription">Click here to trigger the LFO.</p>
         <button onMouseDown={(e) =>  {
