@@ -95,7 +95,7 @@ setInterval(() => {
 
   p.setup = async function () {
     
-    p.createCanvas(480, 260);
+    p.createCanvas(440, 260);
     
  
     w = p.width + 16;

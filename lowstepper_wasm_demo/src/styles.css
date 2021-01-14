@@ -14,7 +14,7 @@ p {
 }
 
 .container {
-  width: 480px;
+  width: 440px;
   display: flex;
   justify-content: center;
   flex-direction: column;
