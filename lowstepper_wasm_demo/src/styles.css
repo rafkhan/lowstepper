@@ -20,5 +20,6 @@ p {
   margin-top:20px;
 }
 .container > * {
+  padding: 20px;
   width: 50%;
 }
