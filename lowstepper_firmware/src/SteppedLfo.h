@@ -182,7 +182,7 @@ double SteppedLfo::calculateBpm(UI ui)
 
 void SteppedLfo::incrementNextStep()
 {
-  if (nextStopPosition == divisions)
+  if (nextStopPosition >= divisions)
   {
     nextStopPosition = 1.0;
   }
