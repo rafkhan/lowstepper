@@ -4,6 +4,7 @@
 }
 
 .container {
+  width: 480px;
   display: flex;
 }
 .container > * {

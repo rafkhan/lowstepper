@@ -83,7 +83,7 @@ async function sketch(p: five) {
 
   p.setup = async function () {
     
-    p.createCanvas(710, 400);
+    p.createCanvas(480, 260);
     
  
     w = p.width + 16;
