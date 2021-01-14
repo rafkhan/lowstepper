@@ -181,14 +181,13 @@ export default function App() {
 
   return (
     <div className="App">
-      <h1>LowStepper</h1>
-    <p>A new type of LFO from Okay Synthesizer.</p>
+
 
       <P5Wrapper sketch={sketch} {...state} />
 
       <div className="container">
       <div>
-      <img src={require("./Lowstepper.svg").default} />
+      <img src={require("./Lowstepper.png").default} />
       </div>
       <div >
 
