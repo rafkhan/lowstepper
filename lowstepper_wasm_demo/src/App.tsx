@@ -186,9 +186,9 @@ export default function App() {
       <P5Wrapper sketch={sketch} {...state} />
 
       <div className="container">
-      <div>
+      {/* <div>
       <img src={require("./Lowstepper.png").default} />
-      </div>
+      </div> */}
       <div >
 
         {/* <div>
