@@ -88,17 +88,18 @@ protected:
   volatile double lfoFreq = 30;
   volatile double morph = 0;
   volatile int divisions = 2;
+  volatile double clockInBpm = 0;
+  double calculateBpm(UI ui);
 
 private:
   void incrementNextStep(void);
-  double calculateBpm(UI ui);
   uint32_t getTime(void);
   void writeToDAC(int value);
+  virtual void setStateFromExternalInputs(UI ui);
 
   // Internal state
   volatile bool lfoRunning = false;
   volatile double nextStopPosition = 1;
-  volatile double clockInBpm = 0;
   volatile uint32_t lastBpmMicros = 0; // used to track time between clock inputs
   volatile uint32_t lastMicros = 0;    // used for lfo calcs
   volatile double phase = 0;
@@ -113,14 +114,7 @@ SteppedLfo::SteppedLfo()
 
 float SteppedLfo::tick(UI ui)
 {
-  // clockInBpm = roundTenth(calculateBpm(ui));
-
-  // int potRate = map(ui.potInRate->getValue(), 1, 1023, 1, 5);
-  // lfoFreq = clockInBpm / (15 * pow(2, potRate));
-
-  // divisions = map(ui->potInSegmentDivide->getValue(), 1, 1023, 1, 8);
-
-  // morph = map(ui.potInMorph->getValue(), 1, 1023, 0, 1);
+  this->setStateFromExternalInputs(ui);
 
   // Figure out if LFO should be running
   if (ui.trigIn->checkTrigHigh())
@@ -201,5 +195,11 @@ void SteppedLfo::writeToDAC(int value)
 {
   return;
 }
+
+void SteppedLfo::setStateFromExternalInputs(UI ui)
+{
+  return;
+}
+
 
 #endif
