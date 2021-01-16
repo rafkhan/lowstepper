@@ -13,17 +13,7 @@
 #include "util.h"
 #include "Mode.h"
 
-  // if(potRate == 1) {
-  //   Serial.println("1/4");
-  // } else if(potRate == 2) {
-  //   Serial.println("1/2");
-  // } else if(potRate == 3) {
-  //   Serial.println("1");
-  // } else if(potRate == 4) {
-  //   Serial.println("2");
-  // } else if(potRate == 5) {
-  //   Serial.println("4");
-  // }
+
 
 /**
  * All of the following functions take a phase input from 0 - TWO_PI

@@ -17,7 +17,7 @@
 #define PIN_MORPH_POT A7
 #define PIN_RATE_CV 0
 #define PIN_SEGMENT_DIVIDE_CV 0
-#define PIN_MORPH_CV 0
+#define PIN_MORPH_CV A6
 
 class UI
 {
@@ -26,6 +26,7 @@ public:
 
   void init(void);
   void scan(void);
+  int combineAnalogInputs(int, int);
 
   GateIn* trigIn;
   GateIn* clockIn;

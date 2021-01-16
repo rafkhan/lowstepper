@@ -68,7 +68,6 @@ void AnalogIn::setValue(double value) {
 typedef AnalogIn PotIn;
 typedef AnalogIn CVIn;
 
-
 /**
  * GATE/TRIGGER 
  */
