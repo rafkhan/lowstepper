@@ -33,3 +33,18 @@ void UI::scan(void) {
   cvInSegmentDivide->scan();
   cvInMorph->scan();
 }
+
+int UI::combineAnalogInputs(int potInput, int cvInput)
+{
+  int value = potInput + ((cvInput * 2) - 1024);
+
+  if (value >= 1023) {
+    return 1023;
+  }
+
+  if(value <= 1) {
+    return 1;
+  }
+
+  return value;
+}
