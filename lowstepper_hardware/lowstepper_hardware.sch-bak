@@ -1148,36 +1148,6 @@ F 3 "~" H 8350 3150 50  0001 C CNN
 	1    8350 3150
 	0    1    1    0   
 $EndComp
-$Comp
-L Amplifier_Operational:MCP6004 U2
-U 5 1 6009C402
-P 6450 5050
-F 0 "U2" H 6408 5096 50  0000 L CNN
-F 1 "MCP6004" H 6408 5005 50  0000 L CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 6400 5150 50  0001 C CNN
-F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 6500 5250 50  0001 C CNN
-	5    6450 5050
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR?
-U 1 1 600BACFF
-P 6350 5450
-F 0 "#PWR?" H 6350 5200 50  0001 C CNN
-F 1 "GND" H 6355 5277 50  0000 C CNN
-F 2 "" H 6350 5450 50  0001 C CNN
-F 3 "" H 6350 5450 50  0001 C CNN
-	1    6350 5450
-	1    0    0    -1  
-$EndComp
-Text Notes 5650 5900 0    50   ~ 0
-Should this be analog ground / analog\n3v3 or a special ground reference?\n
-Wire Wire Line
-	6350 4750 6350 4550
-Text Label 6350 4550 0    50   ~ 0
-3v3
-Wire Wire Line
-	6350 5350 6350 5450
 Text Notes 9400 6150 0    50   ~ 0
 Footprint is incorrect, see docs in OKA-12
 Wire Wire Line
@@ -1278,145 +1248,6 @@ Wire Wire Line
 Text Label 13350 3650 2    50   ~ 0
 RESET_IN
 $Comp
-L Device:R_Small_US R?
-U 1 1 602073D3
-P 4750 6700
-F 0 "R?" V 4545 6700 50  0000 C CNN
-F 1 "33k" V 4636 6700 50  0000 C CNN
-F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 4750 6700 50  0001 C CNN
-F 3 "~" H 4750 6700 50  0001 C CNN
-	1    4750 6700
-	0    1    1    0   
-$EndComp
-$Comp
-L Device:R_Small_US R?
-U 1 1 602073DD
-P 4000 7100
-F 0 "R?" V 3795 7100 50  0000 C CNN
-F 1 "100k" V 3886 7100 50  0000 C CNN
-F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 4000 7100 50  0001 C CNN
-F 3 "~" H 4000 7100 50  0001 C CNN
-	1    4000 7100
-	0    1    1    0   
-$EndComp
-$Comp
-L Device:R_Small_US R?
-U 1 1 602073E7
-P 4000 6450
-F 0 "R?" V 4205 6450 50  0000 C CNN
-F 1 "200k" V 4114 6450 50  0000 C CNN
-F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 4000 6450 50  0001 C CNN
-F 3 "~" H 4000 6450 50  0001 C CNN
-	1    4000 6450
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Device:C_Small C?
-U 1 1 602073F1
-P 4750 6250
-F 0 "C?" V 4521 6250 50  0000 C CNN
-F 1 "1n" V 4612 6250 50  0000 C CNN
-F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 4750 6250 50  0001 C CNN
-F 3 "~" H 4750 6250 50  0001 C CNN
-	1    4750 6250
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	4100 7100 4300 7100
-Wire Wire Line
-	4300 7100 4300 6700
-Wire Wire Line
-	4300 6700 4650 6700
-Connection ~ 4300 7100
-Wire Wire Line
-	4300 7100 4450 7100
-Wire Wire Line
-	4850 6700 5300 6700
-Wire Wire Line
-	5300 6700 5300 7200
-Wire Wire Line
-	4300 6700 4300 6450
-Wire Wire Line
-	4300 6250 4650 6250
-Connection ~ 4300 6700
-Wire Wire Line
-	4850 6250 5300 6250
-Wire Wire Line
-	5300 6250 5300 6700
-Connection ~ 5300 6700
-Wire Wire Line
-	4100 6450 4300 6450
-Connection ~ 4300 6450
-Wire Wire Line
-	4300 6450 4300 6250
-Wire Wire Line
-	3600 7100 3900 7100
-Wire Wire Line
-	3600 7200 3600 7400
-$Comp
-L power:GND #PWR?
-U 1 1 6020740E
-P 3600 7400
-F 0 "#PWR?" H 3600 7150 50  0001 C CNN
-F 1 "GND" H 3605 7227 50  0000 C CNN
-F 2 "" H 3600 7400 50  0001 C CNN
-F 3 "" H 3600 7400 50  0001 C CNN
-	1    3600 7400
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR?
-U 1 1 60207418
-P 4200 7400
-F 0 "#PWR?" H 4200 7150 50  0001 C CNN
-F 1 "GND" H 4205 7227 50  0000 C CNN
-F 2 "" H 4200 7400 50  0001 C CNN
-F 3 "" H 4200 7400 50  0001 C CNN
-	1    4200 7400
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	4200 7400 4200 7300
-Wire Wire Line
-	4200 7300 4450 7300
-Wire Wire Line
-	5300 7200 5550 7200
-Connection ~ 5300 7200
-Wire Wire Line
-	3650 6450 3900 6450
-Text Label 3650 6450 2    50   ~ 0
-AREF_-10V
-$Comp
-L Connector:AudioJack2 J?
-U 1 1 60207428
-P 3400 7200
-F 0 "J?" H 3432 7525 50  0000 C CNN
-F 1 "RATE" H 3432 7434 50  0000 C CNN
-F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 3400 7200 50  0001 C CNN
-F 3 "~" H 3400 7200 50  0001 C CNN
-	1    3400 7200
-	1    0    0    -1  
-$EndComp
-Text Label 5550 7200 0    50   ~ 0
-SCAN_CV
-Wire Wire Line
-	5300 7200 5050 7200
-$Comp
-L Amplifier_Operational:MCP6004 U2
-U 4 1 60098D77
-P 4750 7200
-F 0 "U2" H 4750 7567 50  0000 C CNN
-F 1 "MCP6004" H 4750 7476 50  0000 C CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 4700 7300 50  0001 C CNN
-F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 4800 7400 50  0001 C CNN
-	4    4750 7200
-	1    0    0    1   
-$EndComp
-Wire Wire Line
-	16100 6050 16450 6050
-Text Label 16450 6050 0    50   ~ 0
-SCAN_CV
-$Comp
 L Device:R_Small_US R7
 U 1 1 5FCC3A1D
 P 2300 1000
@@ -1431,4 +1262,47 @@ Text Label 2300 700  0    50   ~ 0
 3v3
 Wire Wire Line
 	2300 900  2300 700 
+Wire Wire Line
+	5400 6850 5400 6950
+Text Label 5400 6050 0    50   ~ 0
+3v3
+Wire Wire Line
+	5400 6250 5400 6050
+Text Notes 4700 7400 0    50   ~ 0
+Should this be analog ground / analog\n3v3 or a special ground reference?\n
+$Comp
+L power:GND #PWR?
+U 1 1 600BACFF
+P 5400 6950
+F 0 "#PWR?" H 5400 6700 50  0001 C CNN
+F 1 "GND" H 5405 6777 50  0000 C CNN
+F 2 "" H 5400 6950 50  0001 C CNN
+F 3 "" H 5400 6950 50  0001 C CNN
+	1    5400 6950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Amplifier_Operational:MCP6004 U2
+U 5 1 6009C402
+P 5500 6550
+F 0 "U2" H 5458 6596 50  0000 L CNN
+F 1 "MCP6004" H 5458 6505 50  0000 L CNN
+F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 5450 6650 50  0001 C CNN
+F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 5550 6750 50  0001 C CNN
+	5    5500 6550
+	1    0    0    -1  
+$EndComp
+Text Notes 2950 7100 0    50   ~ 0
+Stub out last op-amp to avoid\ninterference - not sure how LOL
+$Comp
+L Amplifier_Operational:MCP6004 U2
+U 4 1 60098D77
+P 3600 6650
+F 0 "U2" H 3600 7017 50  0000 C CNN
+F 1 "MCP6004" H 3600 6926 50  0000 C CNN
+F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 3550 6750 50  0001 C CNN
+F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 3650 6850 50  0001 C CNN
+	4    3600 6650
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

@@ -1305,4 +1305,12 @@ F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 3650 6850 50 
 	4    3600 6650
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	13800 3750 13350 3750
+Text Label 13350 3750 2    50   ~ 0
+EOC_0
+Wire Wire Line
+	13800 3850 13350 3850
+Text Label 13350 3850 2    50   ~ 0
+EOC_1
 $EndSCHEMATC
