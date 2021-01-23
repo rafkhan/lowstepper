@@ -1328,4 +1328,14 @@ F 3 "~" H 15700 5250 50  0001 C CNN
 	1    15700 5250
 	1    0    0    -1  
 $EndComp
+Text Notes 15500 5500 0    50   ~ 0
+Needs vref
+Text Notes 1900 3500 0    50   ~ 0
+Pull up on seperate detection pin\n
+Text Notes 6600 3350 0    50   ~ 0
+pin 2 grounded
+Text Notes 12750 2350 0    50   ~ 0
+0 - 3.3v
+Text Notes 10250 2350 0    50   ~ 0
+-5 - +5v
 $EndSCHEMATC
