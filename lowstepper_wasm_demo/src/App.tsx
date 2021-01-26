@@ -48,7 +48,7 @@ setInterval(() => {
   setTimeout(() => {
     module && module._setGate(true)
   }, 100)
-}, 200)
+}, 1200)
 
 
   //@ts-ignore
@@ -162,7 +162,7 @@ export default function App() {
       inputProps: {
         step: 1,
         min: 1,
-        max: 1000,
+        max: 2000,
 
       }
     },
