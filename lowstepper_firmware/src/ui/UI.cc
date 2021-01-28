@@ -9,6 +9,8 @@ UI::UI() {
   this->cvInRate = new CVIn(PIN_RATE_POT);
   this->cvInSegmentDivide = new CVIn(PIN_SEGMENT_DIVIDE_CV);
   this->cvInMorph = new CVIn(PIN_MORPH_CV);
+  this->eoc1 = new TrigOut();
+  this->eoc2 = new TrigOut();
 }
 
 void UI::init(void) {

@@ -6,6 +6,7 @@
 #include "GateIn.h"
 #include "PotIn.h"
 #include "CVIn.h"
+#include "TrigOut.h"
 
 #define PIN_DAC1 A22
 #define PIN_DAC0 A21
@@ -36,6 +37,8 @@ public:
   CVIn* cvInRate;
   CVIn* cvInSegmentDivide;
   CVIn* cvInMorph;
+  TrigOut* eoc1;
+  TrigOut* eoc2;
 };
 
 #endif

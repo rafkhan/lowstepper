@@ -131,6 +131,9 @@ float SteppedLfo::tick(UI ui)
     {
       incrementNextStep();
       lfoRunning = false;
+
+      // potentially move this down
+      ui.eoc1->setHighForDuration(this->getTime(), 50);
     }
 
     // Reset phase when we can
@@ -145,6 +148,9 @@ float SteppedLfo::tick(UI ui)
     // TODO abstract all of this shit
     // analogWrite(PIN_DAC1, (int)writeValue);
     this->writeToDAC((int) (lastWriteValue * 2000.0) + 2050.0);
+
+    // Maybe turn off trig
+    ui.eoc1->tick(this->getTime());
   }
 
   lastMicros = this->getTime();
