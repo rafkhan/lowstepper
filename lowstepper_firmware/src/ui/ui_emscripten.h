@@ -1,6 +1,8 @@
 #ifndef UI_EMSCRIPTEN
 #define UI_EMSCRIPTEN
 
+#include <cstdint>
+
 #define PIN_DAC1 0
 #define PIN_DAC0 0
 #define PIN_TRIG_IN 0
@@ -12,7 +14,6 @@
 #define PIN_RATE_CV 0
 #define PIN_SEGMENT_DIVIDE_CV 0
 #define PIN_MORPH_CV 0
-
 
 /**
  * ARDUINO STUFF
@@ -146,6 +147,68 @@ bool GateIn::checkGateHigh(void) {
 }
 
 
+
+
+
+
+
+/***
+ * 
+ */
+class TrigOut 
+{
+private:
+  int pin;
+  bool isHigh;
+  uint32_t startTime;
+  uint32_t endTime;
+
+  void setHigh(void);
+  void setLow(void);
+public:
+  TrigOut(int pinNum);
+  ~TrigOut();
+
+  void init(void);
+  void setHighForDuration(uint32_t currentTime, uint32_t duration);
+  void tick(uint32_t currentTime);
+};
+
+TrigOut::TrigOut(int pin) {
+  this->pin = pin;
+  this->isHigh = true;
+}
+
+void TrigOut::init() {
+  // pinMode(this->pin, OUTPUT);
+}
+
+void TrigOut::tick(uint32_t currentTime) {
+  if(this->isHigh && currentTime >= this->endTime) {
+    setLow();
+  }
+}
+
+void TrigOut::setHighForDuration(uint32_t currentTime, uint32_t duration) {
+  this->startTime = currentTime;
+  this->endTime = this->startTime + duration;
+  this->setHigh();
+}
+
+void TrigOut::setHigh(void) {
+  // digitalWriteFast(this->pin, HIGH);
+  isHigh = true;
+}
+
+void TrigOut::setLow(void) {
+  // digitalWriteFast(this->pin, LOW);
+  isHigh = false;
+}
+
+
+
+
+
 /**
  * UI general.
  */
@@ -166,6 +229,8 @@ public:
   CVIn* cvInRate;
   CVIn* cvInSegmentDivide;
   CVIn* cvInMorph;
+  TrigOut* eoc1;
+  TrigOut* eoc2;
 };
 
 UI::UI() {
@@ -177,6 +242,8 @@ UI::UI() {
   this->cvInRate = new CVIn(PIN_RATE_POT);
   this->cvInSegmentDivide = new CVIn(PIN_SEGMENT_DIVIDE_CV);
   this->cvInMorph = new CVIn(PIN_MORPH_CV);
+  this->eoc1 = new TrigOut(0);
+  this->eoc2 = new TrigOut(0);
 }
 
 void UI::init(void) {
