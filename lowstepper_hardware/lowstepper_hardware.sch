@@ -1056,4 +1056,6 @@ F 3 "" H 21250 11650 50  0001 C CNN
 	1    21250 11650
 	1    0    0    -1  
 $EndComp
+Text Notes 14600 2000 0    50   ~ 0
+Non inverting amp - take digital out from 0 - 3v3 and keep it the same
 $EndSCHEMATC
