@@ -2,9 +2,9 @@
 #define MODES_H
 
 #ifdef __EMSCRIPTEN__
-#include "ui/ui_emscripten.h"
+#include "../ui/ui_emscripten.h"
 #else
-#include "ui/ui.h"
+#include "../ui/ui.h"
 #endif
 
 class Mode {

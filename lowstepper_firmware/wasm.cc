@@ -4,7 +4,7 @@
 #define __EMSCRIPTEN__ 1
 
 #include "src/ui/ui_emscripten.h"
-#include "src/SteppedLfoEmscripten.h"
+#include "src/modes/SteppedLfoEmscripten.h"
 
 UI ui;
 SteppedLfoEmscripten sle;

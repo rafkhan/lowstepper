@@ -5,12 +5,12 @@
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
-#include "ui/ui_emscripten.h"
+#include "../ui/ui_emscripten.h"
 #else
-#include "ui/ui.h"
+#include "../ui/ui.h"
 #endif
 
-#include "util.h"
+#include "../util.h"
 #include "Mode.h"
 
 

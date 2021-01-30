@@ -3,7 +3,7 @@
 
 #include "util.h"
 #include "ui/UI.h"
-#include "SteppedLfoHardware.h"
+#include "modes/SteppedLfoHardware.h"
 
 // Timer related stuff
 IntervalTimer main_timer;

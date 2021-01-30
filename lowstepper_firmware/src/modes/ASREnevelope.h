@@ -3,8 +3,8 @@
 
 #include <cmath>
 
-#include "ui/ui.h"
-#include "util.h"
+#include "../ui/ui.h"
+#include "../util.h"
 #include "Mode.h"
 
 #define ASRENV_SEG_ATTACK 0
