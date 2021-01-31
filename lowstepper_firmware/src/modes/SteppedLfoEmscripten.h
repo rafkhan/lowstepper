@@ -12,7 +12,6 @@ class SteppedLfoEmscripten : public SteppedLfo {
     void setChunks(int);
   private:
     uint32_t time;
-    void setStateFromExternalInputs(UI ui);
 };
 
 void SteppedLfoEmscripten::setTime(uint32_t t)
@@ -38,11 +37,6 @@ void SteppedLfoEmscripten::setMorph(double morph)
 void SteppedLfoEmscripten::setChunks(int divs)
 {
   this->divisions = divs;
-}
-
-void SteppedLfoEmscripten::setStateFromExternalInputs(UI ui)
-{
-  return;
 }
 
 #endif

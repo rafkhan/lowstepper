@@ -3,16 +3,7 @@
 
 #include <cmath>
 
-#ifdef __EMSCRIPTEN__
-#include <emscripten/emscripten.h>
-#include "../ui/ui_emscripten.h"
-#else
-#include "../ui/ui.h"
-#endif
-
 #include "../util.h"
-#include "Mode.h"
-
 
 
 /**
@@ -68,24 +59,30 @@ double getMorphedOutput(double morphPosition, double phase)
   }
 }
 
-class SteppedLfo : public Mode
+class SteppedLfo
 {
 public:
   SteppedLfo();
-  float tick(UI ui);
+  float tick(
+    double frequency,
+    double morph,
+    int chunks,
+    bool shouldUseTrigger,
+    bool trigHigh,
+    bool shouldUseClock,
+    double bpm
+  );
 
 protected:
   volatile double lfoFreq = 30;
   volatile double morph = 0;
   volatile int divisions = 2;
   volatile double clockInBpm = 0;
-  double calculateBpm(UI ui);
 
 private:
   void incrementNextStep(void);
   uint32_t getTime(void);
   void writeToDAC(int value);
-  virtual void setStateFromExternalInputs(UI ui);
 
   // Internal state
   volatile bool lfoRunning = false;
@@ -96,18 +93,34 @@ private:
   volatile float lastWriteValue = 0;
 };
 
-SteppedLfo::SteppedLfo()
+SteppedLfo::SteppedLfo(
+  // DAC writer
+  // Trig writer
+  // Time Provider
+)
 {
   lastMicros = this->getTime();
   lastBpmMicros = this->getTime();
 }
 
-float SteppedLfo::tick(UI ui)
-{
-  this->setStateFromExternalInputs(ui);
+float SteppedLfo::tick(
+  double frequency,
+  double morph,
+  int chunks,
+
+  // trig
+  bool shouldUseTrigger,
+  bool trigHigh,
+
+  // clk
+  bool shouldUseClock,
+  double bpm
+) {
+
+  // this->setStateFromExternalInputs(ui);
 
   // Figure out if LFO should be running
-  if (ui.trigIn->checkTrigHigh())
+  if (trigHigh)
   {
     // Serial.println(ui->potInRate->getValue());
     // LFO is already running, skip to next segment
@@ -133,42 +146,41 @@ float SteppedLfo::tick(UI ui)
       lfoRunning = false;
 
       // potentially move this down
-      ui.eoc1->setHighForDuration(this->getTime(), 50);
+      // ui.eoc1->setHighForDuration(this->getTime(), 50);
     }
 
-    // Reset phase when we can
-    // TODO maybe do this more intelligently?
     if (phase >= TWO_PI)
     {
-      phase = TWO_PI; // lol does this work?
+      // Disable this logic when free running
+      phase = TWO_PI;
     }
 
     lastWriteValue = getMorphedOutput(morph, phase);
 
     // TODO abstract all of this shit
     // analogWrite(PIN_DAC1, (int)writeValue);
-    this->writeToDAC((int) (lastWriteValue * 2000.0) + 2050.0);
+    // this->writeToDAC((int) (lastWriteValue * 2000.0) + 2050.0);
 
     // Maybe turn off trig
-    ui.eoc1->tick(this->getTime());
+    // ui.eoc1->tick(this->getTime());
   }
 
   lastMicros = this->getTime();
   return lastWriteValue;
 }
 
-double SteppedLfo::calculateBpm(UI ui)
-{
-  if (ui.clockIn->checkTrigHigh())
-  {
-    uint32_t delta = (this->getTime() - lastBpmMicros);
-    double bpm = (60000.0 / (delta / 1000)) / 4;
-    lastBpmMicros = this->getTime();
-    return bpm;
-  }
+// double SteppedLfo::calculateBpm(UI ui)
+// {
+//   if (ui.clockIn->checkTrigHigh())
+//   {
+//     uint32_t delta = (this->getTime() - lastBpmMicros);
+//     double bpm = (60000.0 / (delta / 1000)) / 4;
+//     lastBpmMicros = this->getTime();
+//     return bpm;
+//   }
 
-  return this->clockInBpm;
-}
+//   return this->clockInBpm;
+// }
 
 void SteppedLfo::incrementNextStep()
 {
@@ -188,11 +200,6 @@ uint32_t SteppedLfo::getTime(void)
 }
 
 void SteppedLfo::writeToDAC(int value)
-{
-  return;
-}
-
-void SteppedLfo::setStateFromExternalInputs(UI ui)
 {
   return;
 }

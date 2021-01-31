@@ -1,21 +1,25 @@
 #include "ui.h"
 
 UI::UI() {
-  this->trigIn = new GateIn(PIN_TRIG_IN);
-  this->clockIn = new GateIn(PIN_CLOCK_IN);
-  this->potInRate = new PotIn(PIN_RATE_POT);
-  this->potInSegmentDivide = new PotIn(PIN_SEGMENT_DIVIDE_POT);
-  this->potInMorph = new PotIn(PIN_MORPH_POT);
-  this->cvInRate = new CVIn(PIN_RATE_POT);
-  this->cvInSegmentDivide = new CVIn(PIN_SEGMENT_DIVIDE_CV);
-  this->cvInMorph = new CVIn(PIN_MORPH_CV);
-  this->eoc1 = new TrigOut(0);
-  this->eoc2 = new TrigOut(0);
+  // this->trigInA = new GateIn(PIN_TRIG_IN);
+  // this->trigInB = new GateIn(0);
+  // this->clockInA = new GateIn(PIN_CLOCK_IN);
+  // this->clockInB = new GateIn(0);
+  // this->potInRate = new PotIn(PIN_RATE_POT);
+  // this->potInSegmentDivide = new PotIn(PIN_SEGMENT_DIVIDE_POT);
+  // this->potInMorph = new PotIn(PIN_MORPH_POT);
+  // this->cvInRate = new CVIn(PIN_RATE_POT);
+  // this->cvInSegmentDivide = new CVIn(PIN_SEGMENT_DIVIDE_CV);
+  // this->cvInMorph = new CVIn(PIN_MORPH_CV);
+  // this->eoc1 = new TrigOut(0);
+  // this->eoc2 = new TrigOut(0);
 }
 
 void UI::init(void) {
-  trigIn->init();
-  clockIn->init();
+  trigInA->init();
+  trigInB->init();
+  clockInA->init();
+  clockInB->init();
   potInRate->init();
   potInSegmentDivide->init();
   potInMorph->init();
@@ -26,8 +30,10 @@ void UI::init(void) {
 
 // get the everything from external hardware
 void UI::scan(void) {
-  trigIn->scan();
-  clockIn->scan();
+  trigInA->scan();
+  trigInB->scan();
+  clockInA->scan();
+  clockInB->scan();
   potInRate->scan();
   potInSegmentDivide->scan();
   potInMorph->scan();

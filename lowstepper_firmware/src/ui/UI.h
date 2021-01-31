@@ -29,16 +29,32 @@ public:
   void scan(void);
   int combineAnalogInputs(int, int);
 
-  GateIn* trigIn;
-  GateIn* clockIn;
-  PotIn* potInRate;
-  PotIn* potInSegmentDivide;
-  PotIn* potInMorph;
-  CVIn* cvInRate;
-  CVIn* cvInSegmentDivide;
-  CVIn* cvInMorph;
-  TrigOut* eoc1;
-  TrigOut* eoc2;
+  GateIn* trigInA;
+  GateIn* trigInB;
+
+  GateIn* clockInA;
+  GateIn* clockInB;
+
+  PotIn* potInRateA;
+  PotIn* potInRateB;
+
+  PotIn* potInSegmentDivideA;
+  PotIn* potInSegmentDivideB;
+
+  PotIn* potInMorphA;
+  PotIn* potInMorphB;
+
+  CVIn* cvInRateA;
+  CVIn* cvInRateB;
+
+  CVIn* cvInSegmentDivideA;
+  CVIn* cvInSegmentDivideB;
+
+  CVIn* cvInMorphA;
+  CVIn* cvInMorphB;
+
+  TrigOut* eocA;
+  TrigOut* eocB;
 };
 
 #endif
