@@ -203,7 +203,8 @@ export default function App() {
              <p className="parameterDescription">Click here to trigger the LFO.</p>
         <button onMouseDown={(e) =>  {
           setState({ ...state, "gate": false })
-          audioCtx.resume();
+          // UNCOMMENT TO PLAY SOUND
+          // audioCtx.resume();
         }}
         onMouseUp={(e) => {
           setState({ ...state, "gate": true })
