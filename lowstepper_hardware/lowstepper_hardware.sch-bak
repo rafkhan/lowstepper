@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A2 23386 16535
 encoding utf-8
-Sheet 1 1
+Sheet 1 2
 Title ""
 Date ""
 Rev ""
@@ -94,15 +94,11 @@ U 1 1 5FD1ED66
 P 14200 15150
 F 0 "J8" H 14250 15667 50  0000 C CNN
 F 1 "DONT_FUCK_UP_RED_LINE" H 14250 15576 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_2x08_P2.54mm_Vertical" H 14200 15150 50  0001 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_2x08_Pitch2.54mm" H 14200 15150 50  0001 C CNN
 F 3 "~" H 14200 15150 50  0001 C CNN
 	1    14200 15150
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	13750 14850 14000 14850
-Text Label 13750 14850 2    50   ~ 0
--12V
 Wire Wire Line
 	14000 14950 14000 15050
 Connection ~ 14000 15050
@@ -122,10 +118,6 @@ $EndComp
 Wire Wire Line
 	13700 15050 14000 15050
 Wire Wire Line
-	14000 15250 13750 15250
-Text Label 13750 15250 2    50   ~ 0
-+12V
-Wire Wire Line
 	14500 14950 14500 15050
 Connection ~ 14500 15050
 Wire Wire Line
@@ -134,11 +126,6 @@ Wire Wire Line
 	14500 15050 14000 15050
 Wire Wire Line
 	14000 15250 14500 15250
-Connection ~ 14000 15250
-Wire Wire Line
-	14000 15350 13750 15350
-Text Label 13750 15350 2    50   ~ 0
-5V
 Wire Wire Line
 	14500 15350 14000 15350
 Connection ~ 14000 15350
@@ -253,8 +240,6 @@ F 3 "~" H 20200 7500 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	20300 7500 20450 7500
-Text Label 20450 7500 0    50   ~ 0
-3V3
 Wire Wire Line
 	20100 7500 19900 7500
 Text Label 19900 7500 2    50   ~ 0
@@ -276,8 +261,6 @@ F 3 "~" H 20200 8150 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	20300 8150 20450 8150
-Text Label 20450 8150 0    50   ~ 0
-3V3
 Wire Wire Line
 	20100 8150 19900 8150
 Text Label 19900 8150 2    50   ~ 0
@@ -299,8 +282,6 @@ F 3 "~" H 20200 8800 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	20300 8800 20450 8800
-Text Label 20450 8800 0    50   ~ 0
-3V3
 Wire Wire Line
 	20100 8800 19900 8800
 Text Label 19900 8800 2    50   ~ 0
@@ -334,20 +315,14 @@ $EndComp
 Connection ~ 14000 14850
 Wire Wire Line
 	14000 14850 14500 14850
-Text Notes 13200 15750 0    50   ~ 0
-Footprint is incorrect, see docs in OKA-12
 Wire Wire Line
 	10100 4250 10100 4350
-Text Label 10100 4350 0    50   ~ 0
--12V
 Wire Wire Line
 	10100 3500 10100 3650
-Text Label 10100 3500 0    50   ~ 0
-+12V
-Text Notes 12800 14400 0    50   ~ 0
-Everything from the power bus probably needs filtering of sorts
+Text Notes 12800 14550 0    50   ~ 0
+Everything from the power bus probably needs filtering of sorts\n(Decoupling caps should be enough)
 $Comp
-L teensy:Teensy3.5 U3
+L lowstepper_hardware-rescue:Teensy3.5-teensy U3
 U 1 1 5FD57561
 P 20550 3650
 F 0 "U3" H 20550 6389 60  0000 C CNN
@@ -429,12 +404,8 @@ F 3 "~" H 3100 1400 50  0001 C CNN
 	1    3100 1400
 	-1   0    0    1   
 $EndComp
-Text Label 3100 1100 0    50   ~ 0
-3v3
 Wire Wire Line
 	3100 1300 3100 1100
-Text Notes 6450 4550 0    50   ~ 0
-Should this be analog ground / analog\n3v3 or a special ground reference?\n
 Wire Wire Line
 	21700 4600 22150 4600
 Text Label 22150 4600 0    50   ~ 0
@@ -446,31 +417,29 @@ EOC_B
 $Comp
 L Amplifier_Operational:MCP6004 U2
 U 5 1 6009C402
-P 7250 3650
-F 0 "U2" H 7208 3696 50  0000 L CNN
-F 1 "MCP6004" H 7208 3605 50  0000 L CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 7200 3750 50  0001 C CNN
-F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 7300 3850 50  0001 C CNN
-	5    7250 3650
+P 6900 8650
+F 0 "U2" H 6858 8696 50  0000 L CNN
+F 1 "MCP6004" H 6858 8605 50  0000 L CNN
+F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 6850 8750 50  0001 C CNN
+F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 6950 8850 50  0001 C CNN
+	5    6900 8650
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR0104
 U 1 1 600BACFF
-P 7150 4050
-F 0 "#PWR0104" H 7150 3800 50  0001 C CNN
-F 1 "GND" H 7155 3877 50  0000 C CNN
-F 2 "" H 7150 4050 50  0001 C CNN
-F 3 "" H 7150 4050 50  0001 C CNN
-	1    7150 4050
+P 6800 9050
+F 0 "#PWR0104" H 6800 8800 50  0001 C CNN
+F 1 "GND" H 6805 8877 50  0000 C CNN
+F 2 "" H 6800 9050 50  0001 C CNN
+F 3 "" H 6800 9050 50  0001 C CNN
+	1    6800 9050
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	7150 3350 7150 3150
-Text Label 7150 3150 0    50   ~ 0
-3v3
+	6800 8350 6800 8150
 Wire Wire Line
-	7150 3950 7150 4050
+	6800 8950 6800 9050
 $Comp
 L Amplifier_Operational:MCP6004 U2
 U 1 1 60078823
@@ -482,24 +451,6 @@ F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 7000 2350 50 
 	1    6950 2150
 	1    0    0    1   
 $EndComp
-$Comp
-L Device:R_Small_US R17
-U 1 1 5FD95CCE
-P 6950 1650
-F 0 "R17" V 6745 1650 50  0000 C CNN
-F 1 "33k" V 6836 1650 50  0000 C CNN
-F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 6950 1650 50  0001 C CNN
-F 3 "~" H 6950 1650 50  0001 C CNN
-	1    6950 1650
-	0    1    1    0   
-$EndComp
-Text Label 5850 1400 2    50   ~ 0
-AREF_-10V
-Wire Wire Line
-	5850 1400 6100 1400
-Connection ~ 7500 2150
-Wire Wire Line
-	7500 2150 7750 2150
 Wire Wire Line
 	6400 2250 6650 2250
 Wire Wire Line
@@ -515,93 +466,17 @@ F 3 "" H 6400 2350 50  0001 C CNN
 	1    6400 2350
 	1    0    0    -1  
 $EndComp
-$Comp
-L power:GND #PWR011
-U 1 1 5FDB2B7B
-P 5800 1750
-F 0 "#PWR011" H 5800 1500 50  0001 C CNN
-F 1 "GND" H 5805 1577 50  0000 C CNN
-F 2 "" H 5800 1750 50  0001 C CNN
-F 3 "" H 5800 1750 50  0001 C CNN
-	1    5800 1750
-	-1   0    0    1   
-$EndComp
-Wire Wire Line
-	5800 1950 5800 1750
-Wire Wire Line
-	6500 1400 6500 1200
-Connection ~ 6500 1400
-Wire Wire Line
-	6300 1400 6500 1400
-Connection ~ 7500 1650
-Wire Wire Line
-	7500 1200 7500 1650
-Wire Wire Line
-	7050 1200 7500 1200
-Connection ~ 6500 1650
-Wire Wire Line
-	6500 1200 6850 1200
-Wire Wire Line
-	6500 1650 6500 1400
-Wire Wire Line
-	7500 2150 7250 2150
-Wire Wire Line
-	7500 1650 7500 2150
-Wire Wire Line
-	7050 1650 7500 1650
-Wire Wire Line
-	6500 2050 6650 2050
-Connection ~ 6500 2050
-Wire Wire Line
-	6500 1650 6850 1650
-Wire Wire Line
-	6500 2050 6500 1650
-Wire Wire Line
-	6300 2050 6500 2050
-$Comp
-L Device:C_Small C2
-U 1 1 5FDA1C7A
-P 6950 1200
-F 0 "C2" V 6721 1200 50  0000 C CNN
-F 1 "1n" V 6812 1200 50  0000 C CNN
-F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 6950 1200 50  0001 C CNN
-F 3 "~" H 6950 1200 50  0001 C CNN
-	1    6950 1200
-	0    1    1    0   
-$EndComp
-$Comp
-L Device:R_Small_US R12
-U 1 1 5FD9ABA8
-P 6200 1400
-F 0 "R12" V 5995 1400 50  0000 C CNN
-F 1 "200k" V 6086 1400 50  0000 C CNN
-F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 6200 1400 50  0001 C CNN
-F 3 "~" H 6200 1400 50  0001 C CNN
-	1    6200 1400
-	0    1    1    0   
-$EndComp
-$Comp
-L Device:R_Small_US R13
-U 1 1 5FD97CBF
-P 6200 2050
-F 0 "R13" V 5995 2050 50  0000 C CNN
-F 1 "100k" V 6086 2050 50  0000 C CNN
-F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 6200 2050 50  0001 C CNN
-F 3 "~" H 6200 2050 50  0001 C CNN
-	1    6200 2050
-	0    1    1    0   
-$EndComp
 Text Notes 10900 2350 0    50   ~ 0
 1.29V
 $Comp
 L Amplifier_Operational:MCP6004 U2
 U 4 1 60098D77
-P 5750 3700
-F 0 "U2" H 5750 4067 50  0000 C CNN
-F 1 "MCP6004" H 5750 3976 50  0000 C CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 5700 3800 50  0001 C CNN
-F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 5800 3900 50  0001 C CNN
-	4    5750 3700
+P 6950 7050
+F 0 "U2" H 6950 7417 50  0000 C CNN
+F 1 "MCP6004" H 6950 7326 50  0000 C CNN
+F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 6900 7150 50  0001 C CNN
+F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 7000 7250 50  0001 C CNN
+	4    6950 7050
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -655,8 +530,6 @@ F 3 "~" H 21650 7500 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	21750 7500 21900 7500
-Text Label 21900 7500 0    50   ~ 0
-3V3
 Wire Wire Line
 	21550 7500 21350 7500
 Text Label 21350 7500 2    50   ~ 0
@@ -678,8 +551,6 @@ F 3 "~" H 21650 8150 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	21750 8150 21900 8150
-Text Label 21900 8150 0    50   ~ 0
-3V3
 Wire Wire Line
 	21550 8150 21350 8150
 Text Label 21350 8150 2    50   ~ 0
@@ -701,8 +572,6 @@ F 3 "~" H 21650 8800 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	21750 8800 21900 8800
-Text Label 21900 8800 0    50   ~ 0
-3V3
 Wire Wire Line
 	21550 8800 21350 8800
 Text Label 21350 8800 2    50   ~ 0
@@ -788,36 +657,6 @@ Wire Wire Line
 Text Label 18950 2600 2    50   ~ 0
 LED_B_B
 $Comp
-L Connector:AudioJack2_SwitchT J2
-U 1 1 605CAED6
-P 5450 2050
-F 0 "J2" H 5482 2375 50  0000 C CNN
-F 1 "thonkiconn" H 5482 2284 50  0000 C CNN
-F 2 "" H 5450 2050 50  0001 C CNN
-F 3 "~" H 5450 2050 50  0001 C CNN
-	1    5450 2050
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5650 1950 5800 1950
-Wire Wire Line
-	5650 2050 6100 2050
-Wire Wire Line
-	5650 2150 5800 2150
-$Comp
-L power:GND #PWR0103
-U 1 1 6061408A
-P 5800 2350
-F 0 "#PWR0103" H 5800 2100 50  0001 C CNN
-F 1 "GND" H 5805 2177 50  0000 C CNN
-F 2 "" H 5800 2350 50  0001 C CNN
-F 3 "" H 5800 2350 50  0001 C CNN
-	1    5800 2350
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5800 2350 5800 2150
-$Comp
 L Connector:AudioJack2_SwitchT J3
 U 1 1 6068AB83
 P 9250 2050
@@ -853,8 +692,8 @@ Wire Wire Line
 	1900 2100 2050 2100
 Wire Wire Line
 	2050 2100 2050 2850
-Text Notes 5100 4150 0    50   ~ 0
-Stub out last op-amp to avoid\ninterference - not sure how LOL
+Text Notes 6400 6500 0    50   ~ 0
+Last op-amp unused
 $Comp
 L Device:R_Small_US R22
 U 1 1 5FCFB1E9
@@ -880,9 +719,7 @@ F 3 "~" H 17050 14750 50  0001 C CNN
 	1    0    0    1   
 $EndComp
 Wire Wire Line
-	17050 14650 17050 14450
-Text Label 17050 14450 0    50   ~ 0
--12V
+	17050 14650 17050 14500
 $Comp
 L Reference_Voltage:LM4040DBZ-10 U4
 U 1 1 6074C093
@@ -974,17 +811,13 @@ F 3 "" H 21100 10450 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	20550 9850 20300 9850
-Text Label 20300 9850 2    50   ~ 0
-3v3
-Text Notes 9900 4600 0    50   ~ 0
-Update vrefs
 Text Notes 10950 2250 0    50   ~ 0
 Update vrefs
 $Comp
-L Device:LED_CRGB D?
+L Device:LED_CRGB D1
 U 1 1 60853A16
 P 20100 11550
-F 0 "D?" H 20100 12047 50  0000 C CNN
+F 0 "D1" H 20100 12047 50  0000 C CNN
 F 1 "LED_CRGB" H 20100 11956 50  0000 C CNN
 F 2 "" H 20100 11500 50  0001 C CNN
 F 3 "~" H 20100 11500 50  0001 C CNN
@@ -1008,10 +841,10 @@ Wire Wire Line
 Wire Wire Line
 	19600 11550 19600 11650
 $Comp
-L power:GND #PWR?
+L power:GND #PWR0107
 U 1 1 60884E35
 P 19600 11650
-F 0 "#PWR?" H 19600 11400 50  0001 C CNN
+F 0 "#PWR0107" H 19600 11400 50  0001 C CNN
 F 1 "GND" H 19605 11477 50  0000 C CNN
 F 2 "" H 19600 11650 50  0001 C CNN
 F 3 "" H 19600 11650 50  0001 C CNN
@@ -1019,10 +852,10 @@ F 3 "" H 19600 11650 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:LED_CRGB D?
+L Device:LED_CRGB D2
 U 1 1 6088C403
 P 21750 11550
-F 0 "D?" H 21750 12047 50  0000 C CNN
+F 0 "D2" H 21750 12047 50  0000 C CNN
 F 1 "LED_CRGB" H 21750 11956 50  0000 C CNN
 F 2 "" H 21750 11500 50  0001 C CNN
 F 3 "~" H 21750 11500 50  0001 C CNN
@@ -1046,14 +879,340 @@ Wire Wire Line
 Wire Wire Line
 	21250 11550 21250 11650
 $Comp
-L power:GND #PWR?
+L power:GND #PWR0108
 U 1 1 6088C411
 P 21250 11650
-F 0 "#PWR?" H 21250 11400 50  0001 C CNN
+F 0 "#PWR0108" H 21250 11400 50  0001 C CNN
 F 1 "GND" H 21255 11477 50  0000 C CNN
 F 2 "" H 21250 11650 50  0001 C CNN
 F 3 "" H 21250 11650 50  0001 C CNN
 	1    21250 11650
 	1    0    0    -1  
 $EndComp
+Text Notes 14600 2000 0    50   ~ 0
+Non inverting amp - take digital out from 0 - 3v3 and keep it the same
+$Comp
+L power:+3V3 #PWR0109
+U 1 1 6017CB37
+P 3100 1100
+F 0 "#PWR0109" H 3100 950 50  0001 C CNN
+F 1 "+3V3" H 3115 1273 50  0000 C CNN
+F 2 "" H 3100 1100 50  0001 C CNN
+F 3 "" H 3100 1100 50  0001 C CNN
+	1    3100 1100
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3V3 #PWR0110
+U 1 1 6017D328
+P 20300 9850
+F 0 "#PWR0110" H 20300 9700 50  0001 C CNN
+F 1 "+3V3" H 20315 10023 50  0000 C CNN
+F 2 "" H 20300 9850 50  0001 C CNN
+F 3 "" H 20300 9850 50  0001 C CNN
+	1    20300 9850
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3V3 #PWR0111
+U 1 1 6017FFDA
+P 20450 7500
+F 0 "#PWR0111" H 20450 7350 50  0001 C CNN
+F 1 "+3V3" H 20465 7673 50  0000 C CNN
+F 2 "" H 20450 7500 50  0001 C CNN
+F 3 "" H 20450 7500 50  0001 C CNN
+	1    20450 7500
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3V3 #PWR0112
+U 1 1 601811E0
+P 20450 8150
+F 0 "#PWR0112" H 20450 8000 50  0001 C CNN
+F 1 "+3V3" H 20465 8323 50  0000 C CNN
+F 2 "" H 20450 8150 50  0001 C CNN
+F 3 "" H 20450 8150 50  0001 C CNN
+	1    20450 8150
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3V3 #PWR0113
+U 1 1 601815F5
+P 20450 8800
+F 0 "#PWR0113" H 20450 8650 50  0001 C CNN
+F 1 "+3V3" H 20465 8973 50  0000 C CNN
+F 2 "" H 20450 8800 50  0001 C CNN
+F 3 "" H 20450 8800 50  0001 C CNN
+	1    20450 8800
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3V3 #PWR0114
+U 1 1 60181B45
+P 21900 8800
+F 0 "#PWR0114" H 21900 8650 50  0001 C CNN
+F 1 "+3V3" H 21915 8973 50  0000 C CNN
+F 2 "" H 21900 8800 50  0001 C CNN
+F 3 "" H 21900 8800 50  0001 C CNN
+	1    21900 8800
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3V3 #PWR0115
+U 1 1 60182027
+P 21900 8150
+F 0 "#PWR0115" H 21900 8000 50  0001 C CNN
+F 1 "+3V3" H 21915 8323 50  0000 C CNN
+F 2 "" H 21900 8150 50  0001 C CNN
+F 3 "" H 21900 8150 50  0001 C CNN
+	1    21900 8150
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3V3 #PWR0116
+U 1 1 601823B5
+P 21900 7500
+F 0 "#PWR0116" H 21900 7350 50  0001 C CNN
+F 1 "+3V3" H 21915 7673 50  0000 C CNN
+F 2 "" H 21900 7500 50  0001 C CNN
+F 3 "" H 21900 7500 50  0001 C CNN
+	1    21900 7500
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3V3 #PWR0117
+U 1 1 60182671
+P 6800 8150
+F 0 "#PWR0117" H 6800 8000 50  0001 C CNN
+F 1 "+3V3" H 6815 8323 50  0000 C CNN
+F 2 "" H 6800 8150 50  0001 C CNN
+F 3 "" H 6800 8150 50  0001 C CNN
+	1    6800 8150
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3V3 #PWR0118
+U 1 1 60184133
+P 6500 6850
+F 0 "#PWR0118" H 6500 6700 50  0001 C CNN
+F 1 "+3V3" H 6515 7023 50  0000 C CNN
+F 2 "" H 6500 6850 50  0001 C CNN
+F 3 "" H 6500 6850 50  0001 C CNN
+	1    6500 6850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6500 6850 6500 6950
+Wire Wire Line
+	6500 6950 6650 6950
+$Comp
+L power:GND #PWR0119
+U 1 1 6018AEC0
+P 6500 7200
+F 0 "#PWR0119" H 6500 6950 50  0001 C CNN
+F 1 "GND" H 6505 7027 50  0000 C CNN
+F 2 "" H 6500 7200 50  0001 C CNN
+F 3 "" H 6500 7200 50  0001 C CNN
+	1    6500 7200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6650 7150 6500 7150
+Wire Wire Line
+	6500 7150 6500 7200
+$Comp
+L power:+12V #PWR0120
+U 1 1 60192071
+P 10100 3500
+F 0 "#PWR0120" H 10100 3350 50  0001 C CNN
+F 1 "+12V" H 10115 3673 50  0000 C CNN
+F 2 "" H 10100 3500 50  0001 C CNN
+F 3 "" H 10100 3500 50  0001 C CNN
+	1    10100 3500
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR0121
+U 1 1 60192C80
+P 13700 15250
+F 0 "#PWR0121" H 13700 15100 50  0001 C CNN
+F 1 "+12V" V 13715 15378 50  0000 L CNN
+F 2 "" H 13700 15250 50  0001 C CNN
+F 3 "" H 13700 15250 50  0001 C CNN
+	1    13700 15250
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	13700 15250 14000 15250
+Connection ~ 14000 15250
+$Comp
+L power:+5V #PWR0122
+U 1 1 601B5121
+P 13700 15350
+F 0 "#PWR0122" H 13700 15200 50  0001 C CNN
+F 1 "+5V" V 13715 15478 50  0000 L CNN
+F 2 "" H 13700 15350 50  0001 C CNN
+F 3 "" H 13700 15350 50  0001 C CNN
+	1    13700 15350
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	13700 15350 14000 15350
+$Comp
+L power:-12V #PWR0123
+U 1 1 601BCCA1
+P 13700 14850
+F 0 "#PWR0123" H 13700 14950 50  0001 C CNN
+F 1 "-12V" V 13715 14978 50  0000 L CNN
+F 2 "" H 13700 14850 50  0001 C CNN
+F 3 "" H 13700 14850 50  0001 C CNN
+	1    13700 14850
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	13700 14850 14000 14850
+$Comp
+L power:-12V #PWR0124
+U 1 1 601C4D97
+P 17050 14500
+F 0 "#PWR0124" H 17050 14600 50  0001 C CNN
+F 1 "-12V" H 17065 14673 50  0000 C CNN
+F 2 "" H 17050 14500 50  0001 C CNN
+F 3 "" H 17050 14500 50  0001 C CNN
+	1    17050 14500
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:-12V #PWR0125
+U 1 1 601CBCD9
+P 10100 4350
+F 0 "#PWR0125" H 10100 4450 50  0001 C CNN
+F 1 "-12V" H 10115 4523 50  0000 C CNN
+F 2 "" H 10100 4350 50  0001 C CNN
+F 3 "" H 10100 4350 50  0001 C CNN
+	1    10100 4350
+	-1   0    0    1   
+$EndComp
+$Comp
+L Amplifier_Operational:MCP6004 U2
+U 2 1 601DE43F
+P 6950 3850
+F 0 "U2" H 6950 4217 50  0000 C CNN
+F 1 "MCP6004" H 6950 4126 50  0000 C CNN
+F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 6900 3950 50  0001 C CNN
+F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 7000 4050 50  0001 C CNN
+	2    6950 3850
+	1    0    0    1   
+$EndComp
+$Comp
+L Amplifier_Operational:MCP6004 U2
+U 3 1 601E0345
+P 6950 5550
+F 0 "U2" H 6950 5917 50  0000 C CNN
+F 1 "MCP6004" H 6950 5826 50  0000 C CNN
+F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 6900 5650 50  0001 C CNN
+F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 7000 5750 50  0001 C CNN
+	3    6950 5550
+	1    0    0    1   
+$EndComp
+$Sheet
+S 6400 1400 1150 300 
+U 601E3138
+F0 "Morph_CV_A_cct" 50
+F1 "CV_Input_Cct.sch" 50
+F2 "OPAMP_INV" U L 6400 1550 50 
+F3 "OPAMP_OUT" U R 7550 1550 50 
+$EndSheet
+Wire Wire Line
+	7250 2150 7650 2150
+Wire Wire Line
+	6300 2050 6650 2050
+Wire Wire Line
+	7650 2150 7650 1550
+Wire Wire Line
+	7650 1550 7550 1550
+Wire Wire Line
+	6400 1550 6300 1550
+Wire Wire Line
+	6300 1550 6300 2050
+$Sheet
+S 6400 3100 1150 300 
+U 6021AA0A
+F0 "Rate_CV_A_cct" 50
+F1 "CV_Input_Cct.sch" 50
+F2 "OPAMP_INV" U L 6400 3250 50 
+F3 "OPAMP_OUT" U R 7550 3250 50 
+$EndSheet
+Wire Wire Line
+	7650 3850 7650 3250
+Wire Wire Line
+	7650 3250 7550 3250
+Wire Wire Line
+	6400 3250 6300 3250
+Wire Wire Line
+	6300 3250 6300 3750
+Wire Wire Line
+	7250 3850 7650 3850
+Wire Wire Line
+	6300 3750 6650 3750
+$Comp
+L power:GND #PWR?
+U 1 1 6023A109
+P 6350 4050
+F 0 "#PWR?" H 6350 3800 50  0001 C CNN
+F 1 "GND" H 6355 3877 50  0000 C CNN
+F 2 "" H 6350 4050 50  0001 C CNN
+F 3 "" H 6350 4050 50  0001 C CNN
+	1    6350 4050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6650 3950 6350 3950
+Wire Wire Line
+	6350 3950 6350 4050
+Text Label 7900 2150 0    50   ~ 0
+MORPH_CV_A
+Wire Wire Line
+	7900 2150 7650 2150
+Connection ~ 7650 2150
+Text Label 7900 3850 0    50   ~ 0
+RATE_CV_A
+Wire Wire Line
+	7900 3850 7650 3850
+Connection ~ 7650 3850
+$Sheet
+S 6400 4800 1150 300 
+U 60250BAC
+F0 "Chunks_CV_A_cct" 50
+F1 "CV_Input_Cct.sch" 50
+F2 "OPAMP_INV" U L 6400 4950 50 
+F3 "OPAMP_OUT" U R 7550 4950 50 
+$EndSheet
+Wire Wire Line
+	7650 5550 7650 4950
+Wire Wire Line
+	7650 4950 7550 4950
+Wire Wire Line
+	6400 4950 6300 4950
+Wire Wire Line
+	6300 4950 6300 5450
+Wire Wire Line
+	7650 5550 7250 5550
+Wire Wire Line
+	6650 5450 6300 5450
+$Comp
+L power:GND #PWR?
+U 1 1 6026FCE5
+P 6400 5750
+F 0 "#PWR?" H 6400 5500 50  0001 C CNN
+F 1 "GND" H 6405 5577 50  0000 C CNN
+F 2 "" H 6400 5750 50  0001 C CNN
+F 3 "" H 6400 5750 50  0001 C CNN
+	1    6400 5750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6400 5650 6400 5750
+Wire Wire Line
+	6650 5650 6400 5650
 $EndSCHEMATC

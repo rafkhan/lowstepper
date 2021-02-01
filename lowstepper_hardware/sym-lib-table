@@ -1,4 +1,5 @@
 (sym_lib_table
   (lib (name teensy)(type Legacy)(uri /Users/rafy/Developer/lowstepper/kicad_libraries/teensy_library/teensy.lib)(options "")(descr ""))
   (lib (name audio_connectors)(type Legacy)(uri /Users/rafy/Developer/lowstepper/kicad_libraries/Connector_Audio.pretty)(options "")(descr ""))
+  (lib (name lowstepper_hardware-rescue)(type Legacy)(uri ${KIPRJMOD}/lowstepper_hardware-rescue.lib)(options "")(descr ""))
 )
