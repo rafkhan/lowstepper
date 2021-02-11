@@ -2,9 +2,13 @@
 #define STEPPED_LFO_H
 
 #include <cmath>
+#include <stdio.h>
+
 
 #include "../util.h"
 
+#define PI 3.14159265359
+#define TWO_PI 6.28318530718
 
 /**
  * All of the following functions take a phase input from 0 - TWO_PI
@@ -34,6 +38,10 @@ double square(double phase)
     return -1;
   }
   return 1;
+}
+
+double map(double x, double in_min, double in_max, double out_min, double out_max) {
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
 /**
@@ -66,28 +74,18 @@ public:
   float tick(
     double frequency,
     double morph,
-    int chunks,
+    int divisions,
     bool shouldUseTrigger,
-    bool trigHigh,
-    bool shouldUseClock,
-    double bpm
+    bool trigHigh
   );
 
-protected:
-  volatile double lfoFreq = 30;
-  volatile double morph = 0;
-  volatile int divisions = 2;
-  volatile double clockInBpm = 0;
-
-private:
-  void incrementNextStep(void);
   virtual void writeToDAC(int value);
   virtual uint32_t getTime(void);
+  void incrementNextStep(int divisions);
 
   // Internal state
   volatile bool lfoRunning = false;
   volatile double nextStopPosition = 1;
-  volatile uint32_t lastBpmMicros = 0; // used to track time between clock inputs
   volatile uint32_t lastMicros = 0;    // used for lfo calcs
   volatile double phase = 0;
   volatile float lastWriteValue = 0;
@@ -100,98 +98,75 @@ SteppedLfo::SteppedLfo(
 )
 {
   lastMicros = this->getTime();
-  lastBpmMicros = this->getTime();
 }
 
 float SteppedLfo::tick(
   double frequency,
   double morph,
-  int chunks,
+  int divisions,
 
   // trig
   bool shouldUseTrigger,
-  bool trigHigh,
-
-  // clk
-  bool shouldUseClock,
-  double bpm
+  bool trigHigh
 ) {
-
-  // this->setStateFromExternalInputs(ui);
-
   // Figure out if LFO should be running
   if (trigHigh)
   {
-    // Serial.println(ui->potInRate->getValue());
     // LFO is already running, skip to next segment
     if (lfoRunning)
     {
-      incrementNextStep();
+      incrementNextStep(divisions);
     }
 
-    phase = (TWO_PI / divisions) * (nextStopPosition - 1.0);
+    this->phase = (TWO_PI / divisions) * (nextStopPosition - 1.0);
     lfoRunning = true;
   }
 
   if (lfoRunning)
   {
     uint32_t deltaTimeMicro = this->getTime() - lastMicros;
-    double inc = (deltaTimeMicro / (1000000.0 / lfoFreq)) * TWO_PI;
-    phase += inc;
+    double inc = (deltaTimeMicro / (1000000.0 / frequency)) * TWO_PI;
+    this->phase += inc;
 
     // Check if segment is complete, stop LFO if so
-    if (phase >= ((TWO_PI / divisions) * nextStopPosition))
+    if (this->phase >= ((TWO_PI / divisions) * nextStopPosition))
     {
-      incrementNextStep();
+      incrementNextStep(divisions);
       lfoRunning = false;
-
-      // potentially move this down
-      // ui.eoc1->setHighForDuration(this->getTime(), 50);
     }
 
-    if (phase >= TWO_PI)
+    if (this->phase >= TWO_PI)
     {
       // Disable this logic when free running
-      phase = TWO_PI;
+      this->phase = TWO_PI;
     }
 
     lastWriteValue = getMorphedOutput(morph, phase);
 
-    // TODO abstract all of this shit
-    // analogWrite(PIN_DAC1, (int)writeValue);
     this->writeToDAC((int) (lastWriteValue * 2000.0) + 2050.0);
-
-    // Maybe turn off trig
-    // ui.eoc1->tick(this->getTime());
   }
 
   lastMicros = this->getTime();
   return lastWriteValue;
 }
 
-// double SteppedLfo::calculateBpm(UI ui)
-// {
-//   if (ui.clockIn->checkTrigHigh())
-//   {
-//     uint32_t delta = (this->getTime() - lastBpmMicros);
-//     double bpm = (60000.0 / (delta / 1000)) / 4;
-//     lastBpmMicros = this->getTime();
-//     return bpm;
-//   }
-
-//   return this->clockInBpm;
-// }
-
-void SteppedLfo::incrementNextStep()
+void SteppedLfo::incrementNextStep(int divisions)
 {
-  if (nextStopPosition >= divisions)
+  if (this->nextStopPosition >= divisions)
   {
-    nextStopPosition = 1.0;
+    this->nextStopPosition = 1.0;
   }
   else
   {
-    nextStopPosition += 1.0;
+    this->nextStopPosition += 1.0;
   }
 }
+
+uint32_t SteppedLfo::getTime() {
+  printf("USING WRONG METHOD!!!!!!\n");
+  return 1;
+}
+
+void SteppedLfo::writeToDAC(int value) { /* do nothing :) */ }
 
 #endif

@@ -71,9 +71,7 @@ void SteppedLfoMode::tick(UI ui) {
     morphA,
     chunksA,
     true,
-    ui.trigInA->checkTrigHigh(),
-    BPM_ENABLED,
-    lfoStateA.bpm
+    ui.trigInA->checkTrigHigh()
   );
 }
 

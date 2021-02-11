@@ -1,67 +1,93 @@
 #include <stdio.h>
 #include <emscripten/emscripten.h>
 
+#include "src/modes/SteppedLfo.h"
+
+
 #define __EMSCRIPTEN__ 1
-
-#include "src/ui/ui_emscripten.h"
-#include "src/modes/SteppedLfoEmscripten.h"
-
 
 int main(int argc, char ** argv) {
   // tickLFO(0);
   printf("Hello World\n");
+  printf("Hello World2\n");
 }
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-double globalBpm = 128;
-uint32_t globalTime = 0;
-double frequency = 512;
-double morphA = 1;
-int chunksA = 1;
-bool shouldUseTriggerA = true;
-bool trigHighA = false;
-bool shouldUseClockA = false;
+volatile double globalBpm = 128;
+volatile uint32_t globalTime = 0;
+volatile double frequency = 512;
+volatile double morphA = 0;
+volatile int chunksA = 1;
+volatile bool shouldUseTriggerA = true;
+volatile bool trigHighA = false;
+volatile bool didSetTrigA = false;
+volatile bool shouldUseClockA = false;
 
-class SteppedLfoEmscripten : SteppedLfo {};
+class SteppedLfoEmscripten : public SteppedLfo {
+public:
+  void writeToDAC(int value);
+  uint32_t getTime(void);
+};
 
-int SteppedLfoEmscripten::getTime() {
+uint32_t SteppedLfoEmscripten::getTime() {
   return globalTime;
 }
 
-void SteppedLfoEmscripten::writeToDAC(int value) {} 
+void SteppedLfoEmscripten::writeToDAC(int value) { /* do nothing :) */ } 
 
-class SteppedLfoMode {
+class SteppedLfoEmpscriptenMode {
   public:
     SteppedLfoEmscripten lfoA;
     SteppedLfoEmscripten lfoB;
 };
 
+SteppedLfoEmpscriptenMode slem;
 
-EMSCRIPTEN_KEEPALIVE void setGlobalBpm(double bpm) {
-  globalBpm = bpm;
+EMSCRIPTEN_KEEPALIVE void setGlobalBpm(double b) {
+  globalBpm = b;
 }
 
-EMSCRIPTEN_KEEPALIVE void setGlobalTime(uint32_t time) {
-  globalTime = time;
+EMSCRIPTEN_KEEPALIVE void setGlobalTime(uint32_t t) {
+  globalTime = t;
 }
 
-EMSCRIPTEN_KEEPALIVE void setGateA(int g) {
+EMSCRIPTEN_KEEPALIVE void setGateA(bool g) {
+  if(!didSetTrigA && g) {
+    trigHighA = true;
+    didSetTrigA = true;
+  }
+
+  if(didSetTrigA && !g) {
+    didSetTrigA = false;
+    trigHighA = false;
+  }
 }
 
-EMSCRIPTEN_KEEPALIVE void setRate(double freq) {
+EMSCRIPTEN_KEEPALIVE void setRateA(int r) {
+
 }
 
-EMSCRIPTEN_KEEPALIVE void setMorph(double morph) {
+EMSCRIPTEN_KEEPALIVE void setMorphA(double m) {
+  morphA = m;
 }
 
-EMSCRIPTEN_KEEPALIVE void setChunks(int c) {
+EMSCRIPTEN_KEEPALIVE void setChunksA(int c) {
+  chunksA = c;
 }
 
-EMSCRIPTEN_KEEPALIVE float tickLFO(uint32_t time) {
-  // DO STUFF
+EMSCRIPTEN_KEEPALIVE float tickLFO(uint32_t t) {
+  globalTime = t;
+  return slem.lfoA.tick(
+    200,
+    morphA,
+    chunksA,
+    true,
+    trigHighA
+  );
+  trigHighA = false;
 }
 
 #ifdef __cplusplus
