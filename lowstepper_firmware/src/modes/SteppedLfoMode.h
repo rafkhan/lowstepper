@@ -5,7 +5,11 @@
 #define MIN_LFO_FREQ 0.01 
 #define MAX_LFO_FREQ 20000
 
-class SteppedLfoHardware : SteppedLfo {};
+class SteppedLfoHardware : public SteppedLfo {
+public:
+  void writeToDAC(int value);
+  uint32_t getTime(void);
+};
 
 uint32_t SteppedLfoHardware::getTime() {
   return micros();

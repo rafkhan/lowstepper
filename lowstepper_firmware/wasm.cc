@@ -18,7 +18,7 @@ extern "C" {
 
 volatile double globalBpm = 128;
 volatile uint32_t globalTime = 0;
-volatile double frequency = 512;
+volatile double rateA = 512;
 volatile double morphA = 0;
 volatile int chunksA = 1;
 volatile bool shouldUseTriggerA = true;
@@ -55,6 +55,8 @@ EMSCRIPTEN_KEEPALIVE void setGlobalTime(uint32_t t) {
 }
 
 EMSCRIPTEN_KEEPALIVE void setGateA(bool g) {
+  // debounce logic below...
+  // has to be low before it can be set high again
   if(!didSetTrigA && g) {
     trigHighA = true;
     didSetTrigA = true;
@@ -67,7 +69,7 @@ EMSCRIPTEN_KEEPALIVE void setGateA(bool g) {
 }
 
 EMSCRIPTEN_KEEPALIVE void setRateA(int r) {
-
+  rateA = r;
 }
 
 EMSCRIPTEN_KEEPALIVE void setMorphA(double m) {
@@ -81,7 +83,7 @@ EMSCRIPTEN_KEEPALIVE void setChunksA(int c) {
 EMSCRIPTEN_KEEPALIVE float tickLFO(uint32_t t) {
   globalTime = t;
   return slem.lfoA.tick(
-    200,
+    rateA,
     morphA,
     chunksA,
     true,

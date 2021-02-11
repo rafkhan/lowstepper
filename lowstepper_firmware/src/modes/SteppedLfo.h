@@ -163,7 +163,7 @@ void SteppedLfo::incrementNextStep(int divisions)
 }
 
 uint32_t SteppedLfo::getTime() {
-  printf("USING WRONG METHOD!!!!!!\n");
+  printf("this should never be called!!!!!!\n");
   return 1;
 }
 
