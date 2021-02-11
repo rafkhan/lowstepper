@@ -17,8 +17,8 @@ p {
   width: 440px;
   display: flex;
   justify-content: center;
-  flex-direction: column;
-  align-items: center;;
+  /* flex-direction: column; */
+  align-items: center;
   margin: 0 auto;
   margin-top:20px;
 }
