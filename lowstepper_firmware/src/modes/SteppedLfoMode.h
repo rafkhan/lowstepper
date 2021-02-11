@@ -2,8 +2,18 @@
 #include "SteppedLfo.h"
 
 #define BPM_ENABLED true
+#define MIN_LFO_FREQ 0.01 
+#define MAX_LFO_FREQ 20000
 
+class SteppedLfoHardware : SteppedLfo {};
 
+uint32_t SteppedLfoHardware::getTime() {
+  return micros();
+}
+
+void SteppedLfoHardawre::writeToDAC(int value) {
+  analogWrite(this->pin, value);
+}
 
 // Used to track state in between hardware ticks
 class LfoState {
@@ -35,8 +45,8 @@ class SteppedLfoMode {
   private:
     LfoState lfoStateA;
     LfoState lfoStateB;
-    SteppedLfo lfoA;
-    SteppedLfo lfoB;
+    SteppedLfoHardware lfoA;
+    SteppedLfoHardware lfoB;
 };
 
 void SteppedLfoMode::tick(UI ui) {
@@ -50,7 +60,7 @@ void SteppedLfoMode::tick(UI ui) {
     int potRateA = map(ui.potInRateA->getValue(), 1, 1023, 1, 5);
     lfoFreqA = lfoStateA.bpm / (15 * pow(2, potRateA));
   } else {
-    lfoFreqA = map((double) ui.potInRateA->getValue(), 1, 1023, 0, 6900);
+    lfoFreqA = map((double) ui.potInRateA->getValue(), 1, 1023, MIN_LFO_FREQ, MAX_LFO_FREQ);
   }
 
   int chunksA = map(ui.potInSegmentDivideA->getValue(), 1, 1023, 1, 8);

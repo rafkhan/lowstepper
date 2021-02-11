@@ -81,8 +81,8 @@ protected:
 
 private:
   void incrementNextStep(void);
-  uint32_t getTime(void);
-  void writeToDAC(int value);
+  virtual void writeToDAC(int value);
+  virtual uint32_t getTime(void);
 
   // Internal state
   volatile bool lfoRunning = false;
@@ -159,7 +159,7 @@ float SteppedLfo::tick(
 
     // TODO abstract all of this shit
     // analogWrite(PIN_DAC1, (int)writeValue);
-    // this->writeToDAC((int) (lastWriteValue * 2000.0) + 2050.0);
+    this->writeToDAC((int) (lastWriteValue * 2000.0) + 2050.0);
 
     // Maybe turn off trig
     // ui.eoc1->tick(this->getTime());
@@ -193,16 +193,5 @@ void SteppedLfo::incrementNextStep()
     nextStopPosition += 1.0;
   }
 }
-
-uint32_t SteppedLfo::getTime(void)
-{
-  return 0;
-}
-
-void SteppedLfo::writeToDAC(int value)
-{
-  return;
-}
-
 
 #endif

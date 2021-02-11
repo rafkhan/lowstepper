@@ -6,11 +6,8 @@
 #include "src/ui/ui_emscripten.h"
 #include "src/modes/SteppedLfoEmscripten.h"
 
-UI ui;
-SteppedLfoEmscripten sle;
 
 int main(int argc, char ** argv) {
-  ui.setGate(true);
   // tickLFO(0);
   printf("Hello World\n");
 }
@@ -19,30 +16,52 @@ int main(int argc, char ** argv) {
 extern "C" {
 #endif
 
-EMSCRIPTEN_KEEPALIVE float tickLFO(uint32_t time) {
-  sle.setTime(time);
-  ui.scan();
-  return sle.tick(ui);
+double globalBpm = 128;
+uint32_t globalTime = 0;
+double frequency = 512;
+double morphA = 1;
+int chunksA = 1;
+bool shouldUseTriggerA = true;
+bool trigHighA = false;
+bool shouldUseClockA = false;
+
+class SteppedLfoEmscripten : SteppedLfo {};
+
+int SteppedLfoEmscripten::getTime() {
+  return globalTime;
 }
 
-EMSCRIPTEN_KEEPALIVE void setGate(int g) {
-  ui.setGate(g);
+void SteppedLfoEmscripten::writeToDAC(int value) {} 
+
+class SteppedLfoMode {
+  public:
+    SteppedLfoEmscripten lfoA;
+    SteppedLfoEmscripten lfoB;
+};
+
+
+EMSCRIPTEN_KEEPALIVE void setGlobalBpm(double bpm) {
+  globalBpm = bpm;
 }
 
-EMSCRIPTEN_KEEPALIVE uint32_t getTime(void) {
-  return sle.getTime();
+EMSCRIPTEN_KEEPALIVE void setGlobalTime(uint32_t time) {
+  globalTime = time;
+}
+
+EMSCRIPTEN_KEEPALIVE void setGateA(int g) {
 }
 
 EMSCRIPTEN_KEEPALIVE void setRate(double freq) {
-  return sle.setLfoFreq(freq);
 }
 
 EMSCRIPTEN_KEEPALIVE void setMorph(double morph) {
-  return sle.setMorph(morph);
 }
 
 EMSCRIPTEN_KEEPALIVE void setChunks(int c) {
-  return sle.setChunks(c);
+}
+
+EMSCRIPTEN_KEEPALIVE float tickLFO(uint32_t time) {
+  // DO STUFF
 }
 
 #ifdef __cplusplus
