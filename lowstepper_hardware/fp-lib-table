@@ -1,5 +1,6 @@
 (fp_lib_table
-  (lib (name Connector_Audio)(type KiCad)(uri /Users/rafy/Developer/lowstepper/kicad_libraries/Connector_Audio.pretty)(options "")(descr ""))
   (lib (name Potentiometer_THT)(type KiCad)(uri ${KIPRJMOD}/Potentiometer_THT.pretty)(options "")(descr ""))
   (lib (name teensy)(type KiCad)(uri ${KIPRJMOD}/teensy.pretty)(options "")(descr ""))
+  (lib (name Connector_Audio)(type KiCad)(uri ${KIPRJMOD}/Connector_Audio.pretty)(options "")(descr ""))
+  (lib (name PJ398SM-12)(type KiCad)(uri ${KIPRJMOD}/PJ398SM-12)(options "")(descr ""))
 )
