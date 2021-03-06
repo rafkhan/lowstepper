@@ -3,4 +3,5 @@
   (lib (name teensy)(type KiCad)(uri ${KIPRJMOD}/teensy.pretty)(options "")(descr ""))
   (lib (name Connector_Audio)(type KiCad)(uri ${KIPRJMOD}/Connector_Audio.pretty)(options "")(descr ""))
   (lib (name PJ398SM-12)(type KiCad)(uri ${KIPRJMOD}/PJ398SM-12)(options "")(descr ""))
+  (lib (name XZM2CRKM2DGFBB45SCCB)(type KiCad)(uri ${KIPRJMOD}/XZM2CRKM2DGFBB45SCCB)(options "")(descr ""))
 )

@@ -1,4 +1,5 @@
 (sym_lib_table
   (lib (name lowstepper_hardware-rescue)(type Legacy)(uri ${KIPRJMOD}/lowstepper_hardware-rescue.lib)(options "")(descr ""))
   (lib (name PJ398SM-12)(type Legacy)(uri ${KIPRJMOD}/PJ398SM-12/PJ398SM-12.lib)(options "")(descr ""))
+  (lib (name XZM2CRKM2DGFBB45SCCB)(type Legacy)(uri ${KIPRJMOD}/XZM2CRKM2DGFBB45SCCB/XZM2CRKM2DGFBB45SCCB.lib)(options "")(descr ""))
 )
