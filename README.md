@@ -43,4 +43,30 @@ npm run build
 - This will copy to `lowstepper_wasm_demo` and you will be able to refresh and see changes you made from C++
 
 
-Maintained by Rafael Khan.
+# LICENSE
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
+
+------
+
+Look, if you're considering selling this... go for it, but we would rather you call us up and collaborate. If you are going to sell it, please make your files available for the community to build on. That's all we ask :)
+
+------
+
+
+
+
+Maintained, with love, by [Okay Synthesizer](https://okaysynthesizer.com/) <3
