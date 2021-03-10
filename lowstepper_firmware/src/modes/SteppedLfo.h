@@ -12,7 +12,7 @@
 
 /**
  * All of the following functions take a phase input from 0 - TWO_PI
- * and return a value from 0 - 1.
+ * and return a value from -1 to 1.
  * 
  * std::sin is also leveraged but not included because sine waves are
  * incredibly based and just do that by default
@@ -21,12 +21,24 @@
  */
 double triangle(double phase)
 {
-  // TODO fix this... wtf did I do after jupyter?
-  double unadjustedAmp = std::abs(std::fmod((phase - PI / 2), TWO_PI) - PI);
-  return unadjustedAmp * 2 - 1;
+  //REALLY DUMB CODE, NEED TO BE OPTIMIZED!
+
+  if (phase <= PI * 0.5) //FIRST QUARTER
+  {
+    return 2 + ( -1 * (((PI - phase * 2) + PI) / PI) ); //GO DOWN!
+  }
+
+  if(phase >= PI * 1.5) //FOURTH QUARTER
+  {
+    return -1 + ( -1 * (((TWO_PI - phase * 2) + PI) / PI) ) ; //GO DOWN TOO!
+  } 
+  
+  //SECOND AND THIRD QUARTER 
+  return 1 + ( -1 * ((phase*2 - PI) / PI)); //GO UP!
+
 }
 
-double saw(double phase)
+double ramp(double phase)
 {
   return -1 * ((phase - PI) / PI);
 }
@@ -60,10 +72,10 @@ double getMorphedOutput(double morphPosition, double phase)
   double newMorph;
   if(morphPosition <= 0.5) {
     newMorph = map(morphPosition, 0, 0.5, 0, 1);
-    return sin(phase) + (newMorph * (saw(phase) - sin(phase)));
+    return sin(phase) + (newMorph * (ramp(phase) - sin(phase)));
   } else {
     newMorph = map(morphPosition, 0.51, 1, 0, 1);
-    return saw(phase) + (newMorph * (square(phase) - saw(phase)));
+    return ramp(phase) + (newMorph * (triangle(phase) - ramp(phase)));
   }
 }
 
