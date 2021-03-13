@@ -160,13 +160,12 @@ const knobs = [
   },
   {
     name: "Morph",
-    description: "Morph between Sin, Saw, and Square LFOs.",
+    description: "Morph between sine -> triangle -> saw -> square.",
     parameter: "morph",
     inputProps: {
       step: 0.001,
       min: 0,
       max: 1,
-
     }
   }
 ];
