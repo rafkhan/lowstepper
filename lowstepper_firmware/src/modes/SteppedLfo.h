@@ -43,6 +43,14 @@ double ramp(double phase)
   return -1 * ((phase - PI) / PI);
 }
 
+double saw(double phase) {
+  if (phase <= PI) {
+    return phase / PI;
+  }
+
+  return ((phase - PI) / PI) - 1;
+}
+
 double square(double phase)
 {
   if (phase >= PI)
@@ -70,12 +78,15 @@ double map(double x, double in_min, double in_max, double out_min, double out_ma
 double getMorphedOutput(double morphPosition, double phase)
 {
   double newMorph;
-  if(morphPosition <= 0.5) {
-    newMorph = map(morphPosition, 0, 0.5, 0, 1);
-    return sin(phase) + (newMorph * (ramp(phase) - sin(phase)));
+  if(morphPosition <= 0.33) {
+    newMorph = map(morphPosition, 0, 0.33, 0, 1);
+    return sin(phase) + (newMorph * (triangle(phase) - sin(phase)));
+  } else if(morphPosition > 0.33 && morphPosition <= 0.66) {
+    newMorph = map(morphPosition, 0.34, 0.66, 0, 1);
+    return triangle(phase) + (newMorph * (saw(phase) - triangle(phase)));
   } else {
-    newMorph = map(morphPosition, 0.51, 1, 0, 1);
-    return ramp(phase) + (newMorph * (triangle(phase) - ramp(phase)));
+    newMorph = map(morphPosition, 0.67, 1, 0, 1);
+    return saw(phase) + (newMorph * (square(phase) - saw(phase)));
   }
 }
 
