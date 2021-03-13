@@ -80,7 +80,7 @@ async function sketch(p: five) {
       if (!module) return { y: 0, y2: false };
     
       const d = Date.now();
-      const y = module._tickLFO(d);
+      const y = -1 * module._tickLFO(d);
       trigHandler.gateA(false);
 
       let wasTriggered = false;
