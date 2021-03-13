@@ -75,6 +75,9 @@ double map(double x, double in_min, double in_max, double out_min, double out_ma
  * I(w, x, f, g) = f(x) + w(g(x) - f(x))
  * I(x) = morphed wave function
  */
+
+// TODO: stop computing the same thing more than once!!!
+// TODO: CLEAN UP THIS LOGIC.
 double getMorphedOutput(double morphPosition, double phase)
 {
   double newMorph;
