@@ -1481,7 +1481,7 @@
   )
 
   (module XZM2CRKM2DGFBB45SCCB:LED_XZM2CRKM2DGFBB45SCCB (layer F.Cu) (tedit 6043D454) (tstamp 6052FF19)
-    (at 60.062 58.266)
+    (at 250.19 88.9)
     (path /605B2E30)
     (fp_text reference D2 (at -0.218 -2.1564) (layer F.SilkS)
       (effects (font (size 0.64 0.64) (thickness 0.015)))
@@ -1512,7 +1512,7 @@
   )
 
   (module XZM2CRKM2DGFBB45SCCB:LED_XZM2CRKM2DGFBB45SCCB (layer F.Cu) (tedit 6043D454) (tstamp 6052FF05)
-    (at 70.612 54.356)
+    (at 260.985 88.9)
     (path /60521D00)
     (fp_text reference D1 (at -0.218 -2.1564) (layer F.SilkS)
       (effects (font (size 0.64 0.64) (thickness 0.015)))
