@@ -495,7 +495,7 @@
   )
 
   (module Potentiometer_THT:Potentiometer_Alpha_RD901F-40-00D_Single_Vertical (layer F.Cu) (tedit 5C6C6C14) (tstamp 60534924)
-    (at 267.843 132.715 270)
+    (at 267.843 130.175 270)
     (descr "Potentiometer, vertical, 9mm, single, http://www.taiwanalpha.com.tw/downloads?target=products&id=113")
     (tags "potentiometer vertical 9mm single")
     (path /6035CF23)
@@ -542,7 +542,7 @@
   )
 
   (module Potentiometer_THT:Potentiometer_Alpha_RD901F-40-00D_Single_Vertical (layer F.Cu) (tedit 5C6C6C14) (tstamp 60534975)
-    (at 267.843 113.411 270)
+    (at 267.843 112.141 270)
     (descr "Potentiometer, vertical, 9mm, single, http://www.taiwanalpha.com.tw/downloads?target=products&id=113")
     (tags "potentiometer vertical 9mm single")
     (path /6035CF17)
@@ -636,7 +636,7 @@
   )
 
   (module Potentiometer_THT:Potentiometer_Alpha_RD901F-40-00D_Single_Vertical (layer F.Cu) (tedit 5C6C6C14) (tstamp 60534A17)
-    (at 248.031 132.461 270)
+    (at 248.031 129.921 270)
     (descr "Potentiometer, vertical, 9mm, single, http://www.taiwanalpha.com.tw/downloads?target=products&id=113")
     (tags "potentiometer vertical 9mm single")
     (path /5FF754DE)
@@ -683,7 +683,7 @@
   )
 
   (module Potentiometer_THT:Potentiometer_Alpha_RD901F-40-00D_Single_Vertical (layer F.Cu) (tedit 5C6C6C14) (tstamp 60534A68)
-    (at 248.031 113.157 270)
+    (at 248.031 111.887 270)
     (descr "Potentiometer, vertical, 9mm, single, http://www.taiwanalpha.com.tw/downloads?target=products&id=113")
     (tags "potentiometer vertical 9mm single")
     (path /5FF6E6BC)
