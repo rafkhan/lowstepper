@@ -1,18 +1,27 @@
 #ifndef MODES_H
 #define MODES_H
 
-#ifdef __EMSCRIPTEN__
-#include "../ui/ui_emscripten.h"
-#else
-#include "../ui/ui.h"
-#endif
+#include <cmath>
+#include <stdio.h>
 
-class Mode {
-  public:
-    float tick(UI ui);
-  private:
-    virtual uint32_t getTime(void);
-    virtual void writeToDAC(int value);
+class TrigWriter
+{
+public:
+  void setHighForDuration(uint32_t currentTime, uint32_t duration);
+  void sendTrig(uint32_t currentTime);
+};
+
+class Mode
+{
+public:
+  float tick(
+      double frequency,
+      double morph,
+      int divisions,
+      bool trigHigh,
+      double inputPhase);
+  virtual uint32_t getTime(void);
+  virtual void writeToDAC(int value);
 };
 
 #endif

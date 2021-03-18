@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <emscripten/emscripten.h>
 
-#include "src/modes/SteppedLfo.h"
+#include "src/modes/SteppedLfoGate.h"
+#include "src/modes/Mode.h"
 
 
 #define __EMSCRIPTEN__ 1
@@ -26,22 +27,43 @@ volatile bool trigHighA = false;
 volatile bool didSetTrigA = false;
 volatile bool shouldUseClockA = false;
 
-class SteppedLfoEmscripten : public SteppedLfo {
+//===========================================================
+// LFO STUB
+//===========================================================
+class SteppedLfoEmscripten : public SteppedLfoGate {
 public:
+  SteppedLfoEmscripten(TrigWriter tw) : SteppedLfoGate(tw) {};
   void writeToDAC(int value);
   uint32_t getTime(void);
 };
 
-uint32_t SteppedLfoEmscripten::getTime() {
-  return globalTime;
-}
-
+uint32_t SteppedLfoEmscripten::getTime() { return globalTime; }
 void SteppedLfoEmscripten::writeToDAC(int value) { /* do nothing :) */ } 
+
+
+//===========================================================
+// TW STUB
+//===========================================================
+class TrigWriterStub : public TrigWriter
+{
+  public:
+    void setHighForDuration(uint32_t currentTime, uint32_t duration);
+    void sendTrig(uint32_t currentTime);
+};
+
+void TrigWriterStub::setHighForDuration(uint32_t currentTime, uint32_t duration) {}
+void TrigWriterStub::sendTrig(uint32_t currentTime) {}
+
+TrigWriterStub tw;
+
+//===========================================================
+// EMSCRIPTEN CLASS
+//===========================================================
 
 class SteppedLfoEmpscriptenMode {
   public:
-    SteppedLfoEmscripten lfoA;
-    SteppedLfoEmscripten lfoB;
+    SteppedLfoEmscripten lfoA{tw};
+    SteppedLfoEmscripten lfoB{tw};
 };
 
 SteppedLfoEmpscriptenMode slem;
@@ -86,8 +108,8 @@ EMSCRIPTEN_KEEPALIVE float tickLFO(uint32_t t) {
     rateA,
     morphA,
     chunksA,
-    true,
-    trigHighA
+    trigHighA,
+    slem.lfoA.phase
   );
   trigHighA = false;
 }

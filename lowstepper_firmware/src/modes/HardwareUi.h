@@ -1,5 +1,5 @@
 #include "../ui/ui.h"
-#include "SteppedLfo.h"
+#include "SteppedLfoTrig.h"
 
 #define BPM_ENABLED true
 #define MIN_LFO_FREQ 0.01 

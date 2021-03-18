@@ -5,17 +5,18 @@
 #include <stdio.h>
 
 #include "./LfoFunctions.h"
+#include "./Mode.h"
 
-class SteppedLfo
+class SteppedLfoTrig : public Mode
 {
 public:
-  SteppedLfo();
+  SteppedLfoTrig(TrigWriter tw);
   float tick(
     double frequency,
     double morph,
     int divisions,
-    bool shouldUseTrigger,
-    bool trigHigh
+    bool trigHigh,
+    double inputPhase 
   );
 
   virtual void writeToDAC(int value);
@@ -28,27 +29,29 @@ public:
   volatile uint32_t lastMicros = 0;    // used for lfo calcs
   volatile double phase = 0;
   volatile float lastWriteValue = 0;
+  TrigWriter trigWriter;
 };
 
-SteppedLfo::SteppedLfo(
+SteppedLfoTrig::SteppedLfoTrig(
   // TODO provide here instead in subclasses:
   // DAC writer
-  // Trig writer
   // Time Provider
+  TrigWriter tw
 )
 {
   lastMicros = this->getTime();
+  this->trigWriter = tw;
 }
 
-float SteppedLfo::tick(
+float SteppedLfoTrig::tick(
   double frequency,
   double morph,
   int divisions,
-
-  // trig
-  bool shouldUseTrigger,
-  bool trigHigh
+  bool trigHigh,
+  double inputPhase // used for smooth multimode switching
 ) {
+  this->phase = inputPhase;
+
   // Figure out if LFO should be running
   if (trigHigh)
   {
@@ -68,10 +71,11 @@ float SteppedLfo::tick(
     double inc = (deltaTimeMicro / (1000000.0 / frequency)) * TWO_PI;
     this->phase += inc;
 
-    // Check if segment is complete, stop LFO if so
     if (this->phase >= ((TWO_PI / divisions) * nextStopPosition))
     {
       incrementNextStep(divisions);
+
+      // Stop if in Trig mode
       lfoRunning = false;
     }
 
@@ -90,7 +94,7 @@ float SteppedLfo::tick(
   return lastWriteValue;
 }
 
-void SteppedLfo::incrementNextStep(int divisions)
+void SteppedLfoTrig::incrementNextStep(int divisions)
 {
   if (this->nextStopPosition >= divisions)
   {
@@ -102,11 +106,11 @@ void SteppedLfo::incrementNextStep(int divisions)
   }
 }
 
-uint32_t SteppedLfo::getTime() {
+uint32_t SteppedLfoTrig::getTime() {
   // THIS SHOULD NEVER BE CALLED
   return 1;
 }
 
-void SteppedLfo::writeToDAC(int value) { /* do nothing :) */ }
+void SteppedLfoTrig::writeToDAC(int value) { /* do nothing :) */ }
 
 #endif
