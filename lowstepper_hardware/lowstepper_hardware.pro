@@ -1,4 +1,4 @@
-update=Wednesday, March 24, 2021 at 07:38:48 pm
+update=Wednesday, March 24, 2021 at 08:39:55 pm
 version=1
 last_client=kicad
 [general]
@@ -76,14 +76,14 @@ Type=0
 Enabled=1
 [pcbnew/Layer.In1.Cu]
 Name=In1.Cu
-Type=2
+Type=0
 Enabled=1
 [pcbnew/Layer.In2.Cu]
 Name=In2.Cu
-Type=2
+Type=0
 Enabled=1
 [pcbnew/Layer.In3.Cu]
-Name=3V3PLANE
+Name=PLANE_A
 Type=1
 Enabled=1
 [pcbnew/Layer.In4.Cu]
