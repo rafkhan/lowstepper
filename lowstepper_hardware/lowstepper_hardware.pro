@@ -1,4 +1,4 @@
-update=Wednesday, March 24, 2021 at 08:39:55 pm
+update=Friday, March 26, 2021 at 12:46:04 pm
 version=1
 last_client=kicad
 [general]
@@ -87,7 +87,7 @@ Name=PLANE_A
 Type=1
 Enabled=1
 [pcbnew/Layer.In4.Cu]
-Name=GNDPLANE
+Name=PLANE_B
 Type=1
 Enabled=1
 [pcbnew/Layer.In5.Cu]
