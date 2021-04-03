@@ -2,20 +2,20 @@
 #include <emscripten/emscripten.h>
 
 #include "src/modes/SteppedLfoGate.h"
+#include "src/modes/SteppedLfoTrig.h"
 #include "src/modes/Mode.h"
 
 
 #define __EMSCRIPTEN__ 1
 
-int main(int argc, char ** argv) {
-  // tickLFO(0);
-  printf("Hello World\n");
-  printf("Hello World2\n");
+int main(int argc, char *argv[]) {
+  printf("printing to web console");
 }
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 volatile double globalBpm = 128;
 volatile uint32_t globalTime = 0;
@@ -30,16 +30,27 @@ volatile bool shouldUseClockA = false;
 //===========================================================
 // LFO STUB
 //===========================================================
-class SteppedLfoEmscripten : public SteppedLfoGate {
+class SteppedLfoGateEmscripten : public SteppedLfoGate {
 public:
   SteppedLfoEmscripten(TrigWriter tw) : SteppedLfoGate(tw) {};
   void writeToDAC(int value);
   uint32_t getTime(void);
 };
 
-uint32_t SteppedLfoEmscripten::getTime() { return globalTime; }
-void SteppedLfoEmscripten::writeToDAC(int value) { /* do nothing :) */ } 
+uint32_t SteppedLfoGateEmscripten::getTime() { return globalTime; }
+void SteppedLfoGateEmscripten::writeToDAC(int value) { /* do nothing :) */ }
 
+//
+
+class SteppedLfoTrigEmscripten : public SteppedLfoGate {
+public:
+  SteppedLfoEmscripten(TrigWriter tw) : SteppedLfoGate(tw) {};
+  void writeToDAC(int value);
+  uint32_t getTime(void);
+};
+
+uint32_t SteppedLfoTrigEmscripten::getTime() { return globalTime; }
+void SteppedLfoTrigEmscripten::writeToDAC(int value) { /* do nothing :) */ } 
 
 //===========================================================
 // TW STUB
@@ -62,8 +73,8 @@ TrigWriterStub tw;
 
 class SteppedLfoEmpscriptenMode {
   public:
-    SteppedLfoEmscripten lfoA{tw};
-    SteppedLfoEmscripten lfoB{tw};
+    SteppedLfoGateEmscripten lfoA{tw};
+    SteppedLfoTrigEmpscripten lfoA{tw};
 };
 
 SteppedLfoEmpscriptenMode slem;
@@ -109,7 +120,8 @@ EMSCRIPTEN_KEEPALIVE float tickLFO(uint32_t t) {
     morphA,
     chunksA,
     trigHighA,
-    slem.lfoA.phase
+    slem.lfoA.phase,
+    slem.lfoA.lastMicros
   );
   trigHighA = false;
 }

@@ -19,7 +19,8 @@ public:
       double morph,
       int divisions,
       bool trigHigh,
-      double inputPhase);
+      double inputPhase,
+      uint32_t lastTickTime);
   virtual uint32_t getTime(void);
   virtual void writeToDAC(int value);
 };

@@ -16,12 +16,12 @@ public:
     double morph,
     int divisions,
     bool trigHigh,
-    double inputPhase 
+    double inputPhase,
+    double lastTickTime
   );
 
   virtual void writeToDAC(int value);
   virtual uint32_t getTime(void);
-  void incrementNextStep(int divisions);
 
   // Internal state
   volatile bool lfoRunning = false;
@@ -45,8 +45,11 @@ float SteppedLfoGate::tick(
   double morph,
   int divisions,
   bool trigHigh,
-  double inputPhase // used for smooth multimode switching
+  double inputPhase,
+  double lastTickTime
 ) {
+  this->phase = inputPhase;
+  this->lastMicros = lastTickTime;
 
   // Always run high
   if (trigHigh)
@@ -72,19 +75,6 @@ float SteppedLfoGate::tick(
 
   lastMicros = this->getTime();
   return this->lastWriteValue;
-}
-
-
-void SteppedLfoGate::incrementNextStep(int divisions)
-{
-  if (this->nextStopPosition >= divisions)
-  {
-    this->nextStopPosition = 1.0;
-  }
-  else
-  {
-    this->nextStopPosition += 1.0;
-  }
 }
 
 uint32_t SteppedLfoGate::getTime() {

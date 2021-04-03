@@ -16,7 +16,8 @@ public:
     double morph,
     int divisions,
     bool trigHigh,
-    double inputPhase 
+    double inputPhase,
+    double lastTickTime
   );
 
   virtual void writeToDAC(int value);
@@ -48,9 +49,11 @@ float SteppedLfoTrig::tick(
   double morph,
   int divisions,
   bool trigHigh,
-  double inputPhase // used for smooth multimode switching
+  double inputPhase, // used for smooth multimode switching
+  double lastTickTime
 ) {
   this->phase = inputPhase;
+  this->lastMicros = lastTickTime;
 
   // Figure out if LFO should be running
   if (trigHigh)
