@@ -154,7 +154,6 @@ extern "C"
         &tw,
         mode->phase,
         mode->lastMicros);
-
     return f;
   }
 

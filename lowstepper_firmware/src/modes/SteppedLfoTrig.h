@@ -28,8 +28,6 @@ public:
   // Internal state
   volatile bool lfoRunning = false;
   volatile double nextStopPosition = 1;
-  volatile uint32_t lastMicros = 0;
-  volatile double phase = 0;
   volatile float lastWriteValue = 0;
 };
 
