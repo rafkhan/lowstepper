@@ -34,7 +34,7 @@ class TrigHandler {
   startAutoTriggerA(interval: number) {
     this.autoTrigHandler = setInterval(() => {
       this.gateA(true);
-      setTimeout(() => this.gateA(false), 1000);
+      setTimeout(() => this.gateA(false), 100);
     }, interval);
   }
 
