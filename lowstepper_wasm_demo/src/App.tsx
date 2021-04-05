@@ -81,7 +81,6 @@ async function sketch(p: five) {
     
       const d = Date.now();
       const y = -1 * module._tickLFOA(d);
-      console.log(module._getTrigA());
       trigHandler.gateA(false);
 
       let wasTriggered = false;

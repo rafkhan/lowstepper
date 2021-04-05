@@ -1886,8 +1886,6 @@ var _setMorphA = Module["_setMorphA"] = createExportWrapper("setMorphA");
 
 var _setChunksA = Module["_setChunksA"] = createExportWrapper("setChunksA");
 
-var _setModeA = Module["_setModeA"] = createExportWrapper("setModeA");
-
 var _getTrigA = Module["_getTrigA"] = createExportWrapper("getTrigA");
 
 var _tickLFOA = Module["_tickLFOA"] = createExportWrapper("tickLFOA");

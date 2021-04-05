@@ -81,6 +81,9 @@ extern "C"
 
   TrigWriterStub tw;
 
+  int MODE_COUNT = 2;
+  int modeIndex = 0;
+
   SteppedLfoTrigEmscripten t1 = SteppedLfoTrigEmscripten{};
   SteppedLfoTrigEmscripten t2 = SteppedLfoTrigEmscripten{};
   Mode<BaseMode *> mode1 = Mode<BaseMode *>{&t1, &t2};
@@ -133,10 +136,6 @@ extern "C"
     chunksA = c;
   }
 
-  EMSCRIPTEN_KEEPALIVE void setModeA(int mode)
-  {
-  }
-
   EMSCRIPTEN_KEEPALIVE uint32_t getTrigA()
   {
     return trigHighA;
@@ -145,7 +144,7 @@ extern "C"
   EMSCRIPTEN_KEEPALIVE float tickLFOA(uint32_t t)
   {
     globalTime = t;
-    BaseMode *mode = modeList[0].handlerA;
+    BaseMode *mode = modeList[modeIndex].handlerA;
     float f = mode->tick(
         rateA,
         morphA,
