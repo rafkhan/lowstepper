@@ -1874,9 +1874,9 @@ var ___wasm_call_ctors = Module["___wasm_call_ctors"] = createExportWrapper("__w
 
 var _main = Module["_main"] = createExportWrapper("main");
 
-var _setGlobalBpm = Module["_setGlobalBpm"] = createExportWrapper("setGlobalBpm");
-
 var _setGlobalTime = Module["_setGlobalTime"] = createExportWrapper("setGlobalTime");
+
+var _setBpmA = Module["_setBpmA"] = createExportWrapper("setBpmA");
 
 var _setGateA = Module["_setGateA"] = createExportWrapper("setGateA");
 
@@ -1886,7 +1886,9 @@ var _setMorphA = Module["_setMorphA"] = createExportWrapper("setMorphA");
 
 var _setChunksA = Module["_setChunksA"] = createExportWrapper("setChunksA");
 
-var _tickLFO = Module["_tickLFO"] = createExportWrapper("tickLFO");
+var _getTrigA = Module["_getTrigA"] = createExportWrapper("getTrigA");
+
+var _tickLFOA = Module["_tickLFOA"] = createExportWrapper("tickLFOA");
 
 var ___errno_location = Module["___errno_location"] = createExportWrapper("__errno_location");
 

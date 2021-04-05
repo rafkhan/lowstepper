@@ -5,17 +5,20 @@
 #include <stdio.h>
 
 #include "./LfoFunctions.h"
+#include "./BaseMode.h"
 
-class SteppedLfo
+class SteppedLfoTrig : public BaseMode
 {
 public:
-  SteppedLfo();
-  float tick(
+  SteppedLfoTrig();
+  virtual float tick(
     double frequency,
     double morph,
     int divisions,
-    bool shouldUseTrigger,
-    bool trigHigh
+    bool trigHigh,
+    TrigWriter *tw,
+    double inputPhase,
+    uint32_t lastTickTime
   );
 
   virtual void writeToDAC(int value);
@@ -25,30 +28,26 @@ public:
   // Internal state
   volatile bool lfoRunning = false;
   volatile double nextStopPosition = 1;
-  volatile uint32_t lastMicros = 0;    // used for lfo calcs
-  volatile double phase = 0;
   volatile float lastWriteValue = 0;
 };
 
-SteppedLfo::SteppedLfo(
-  // TODO provide here instead in subclasses:
-  // DAC writer
-  // Trig writer
-  // Time Provider
-)
+SteppedLfoTrig::SteppedLfoTrig()
 {
   lastMicros = this->getTime();
 }
 
-float SteppedLfo::tick(
+float SteppedLfoTrig::tick(
   double frequency,
   double morph,
   int divisions,
-
-  // trig
-  bool shouldUseTrigger,
-  bool trigHigh
+  bool trigHigh,
+  TrigWriter *tw,
+  double inputPhase, // used for smooth multimode switching
+  uint32_t lastTickTime
 ) {
+  this->phase = inputPhase;
+  this->lastMicros = lastTickTime;
+
   // Figure out if LFO should be running
   if (trigHigh)
   {
@@ -68,10 +67,11 @@ float SteppedLfo::tick(
     double inc = (deltaTimeMicro / (1000000.0 / frequency)) * TWO_PI;
     this->phase += inc;
 
-    // Check if segment is complete, stop LFO if so
     if (this->phase >= ((TWO_PI / divisions) * nextStopPosition))
     {
       incrementNextStep(divisions);
+
+      // Stop if in Trig mode
       lfoRunning = false;
     }
 
@@ -86,11 +86,11 @@ float SteppedLfo::tick(
     this->writeToDAC((int) (lastWriteValue * 2000.0) + 2050.0);
   }
 
-  lastMicros = this->getTime();
+  this->lastMicros = this->getTime();
   return lastWriteValue;
 }
 
-void SteppedLfo::incrementNextStep(int divisions)
+void SteppedLfoTrig::incrementNextStep(int divisions)
 {
   if (this->nextStopPosition >= divisions)
   {
@@ -102,11 +102,11 @@ void SteppedLfo::incrementNextStep(int divisions)
   }
 }
 
-uint32_t SteppedLfo::getTime() {
+uint32_t SteppedLfoTrig::getTime() {
   // THIS SHOULD NEVER BE CALLED
   return 1;
 }
 
-void SteppedLfo::writeToDAC(int value) { /* do nothing :) */ }
+void SteppedLfoTrig::writeToDAC(int value) { /* do nothing :) */ }
 
 #endif

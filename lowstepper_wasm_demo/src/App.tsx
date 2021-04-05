@@ -20,13 +20,13 @@ class TrigHandler {
     this.wasmModule = m;
   }
 
-  gateA(high: boolean): void {
+  gateA(b: boolean): void {
     if(!this.wasmModule) {
       return;
     }
 
-    this.wasmModule._setGateA(high);
-    if(high) {
+    this.wasmModule._setGateA(b);
+    if(b) {
       this.triggedA = true;
     }
   };
@@ -80,7 +80,7 @@ async function sketch(p: five) {
       if (!module) return { y: 0, y2: false };
     
       const d = Date.now();
-      const y = -1 * module._tickLFO(d);
+      const y = -1 * module._tickLFOA(d);
       trigHandler.gateA(false);
 
       let wasTriggered = false;
@@ -123,7 +123,7 @@ async function sketch(p: five) {
     yvalues = new Array(p.floor(w / xspacing));
     yvalues_TRIG = new Array(p.floor(w / xspacing));
     module = await lowstepperWasm();
-    module._tickLFO(Date.now());
+    module._tickLFOA(Date.now());
 
     trigHandler.setWasmModule(module);
   };

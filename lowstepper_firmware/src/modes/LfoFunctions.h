@@ -1,3 +1,5 @@
+#ifndef LFO_FUNCTIONS_H 
+#define LFO_FUNCTIONS_H
 
 #include "../util.h"
 
@@ -86,3 +88,5 @@ double getMorphedOutput(double morphPosition, double phase)
     return saw(phase) + (newMorph * (square(phase) - saw(phase)));
   }
 }
+
+#endif

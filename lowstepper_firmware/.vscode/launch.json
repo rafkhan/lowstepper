@@ -1,5 +1,5 @@
 // AUTOMATICALLY GENERATED FILE. PLEASE DO NOT MODIFY IT MANUALLY
-
+//
 // PIO Unified Debugger
 //
 // Documentation: https://docs.platformio.org/page/plus/debugging.html
@@ -15,12 +15,12 @@
             "executable": "/Users/rafy/Developer/lowstepper/lowstepper_firmware/.pio/build/teensy35/firmware.elf",
             "projectEnvName": "teensy35",
             "toolchainBinDir": "/Users/rafy/.platformio/packages/toolchain-gccarmnoneeabi/bin",
+            "internalConsoleOptions": "openOnSessionStart",
             "svdPath": "/Users/rafy/.platformio/platforms/teensy/misc/svd/MK64F12.svd",
             "preLaunchTask": {
                 "type": "PlatformIO",
                 "task": "Pre-Debug"
-            },
-            "internalConsoleOptions": "openOnSessionStart"
+            }
         },
         {
             "type": "platformio-debug",
@@ -29,8 +29,8 @@
             "executable": "/Users/rafy/Developer/lowstepper/lowstepper_firmware/.pio/build/teensy35/firmware.elf",
             "projectEnvName": "teensy35",
             "toolchainBinDir": "/Users/rafy/.platformio/packages/toolchain-gccarmnoneeabi/bin",
-            "svdPath": "/Users/rafy/.platformio/platforms/teensy/misc/svd/MK64F12.svd",
-            "internalConsoleOptions": "openOnSessionStart"
+            "internalConsoleOptions": "openOnSessionStart",
+            "svdPath": "/Users/rafy/.platformio/platforms/teensy/misc/svd/MK64F12.svd"
         }
     ]
 }

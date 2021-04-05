@@ -1,18 +1,25 @@
-#ifndef MODES_H
-#define MODES_H
+#ifndef MODE_H
+#define MODE_H
 
-#ifdef __EMSCRIPTEN__
-#include "../ui/ui_emscripten.h"
-#else
-#include "../ui/ui.h"
-#endif
+#include <cmath>
+#include "BaseMode.h"
 
+template <class T>
 class Mode {
   public:
-    float tick(UI ui);
-  private:
-    virtual uint32_t getTime(void);
-    virtual void writeToDAC(int value);
+    T handlerA;
+    T handlerB;
+    uint8_t ledRed;
+    uint8_t ledGreen;
+    uint8_t ledBlue;
+
+  Mode(T a, T b); 
 };
+
+template<>
+Mode<BaseMode*>::Mode(BaseMode* a, BaseMode* b) {
+  this->handlerA = a;
+  this->handlerB = b;
+}
 
 #endif
