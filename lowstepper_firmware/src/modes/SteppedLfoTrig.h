@@ -5,19 +5,20 @@
 #include <stdio.h>
 
 #include "./LfoFunctions.h"
-#include "./Mode.h"
+#include "./BaseMode.h"
 
-class SteppedLfoTrig : public Mode
+class SteppedLfoTrig : public BaseMode
 {
 public:
-  SteppedLfoTrig(TrigWriter tw);
-  float tick(
+  SteppedLfoTrig();
+  virtual float tick(
     double frequency,
     double morph,
     int divisions,
     bool trigHigh,
+    TrigWriter *tw,
     double inputPhase,
-    double lastTickTime
+    uint32_t lastTickTime
   );
 
   virtual void writeToDAC(int value);
@@ -27,21 +28,14 @@ public:
   // Internal state
   volatile bool lfoRunning = false;
   volatile double nextStopPosition = 1;
-  volatile uint32_t lastMicros = 0;    // used for lfo calcs
+  volatile uint32_t lastMicros = 0;
   volatile double phase = 0;
   volatile float lastWriteValue = 0;
-  TrigWriter trigWriter;
 };
 
-SteppedLfoTrig::SteppedLfoTrig(
-  // TODO provide here instead in subclasses:
-  // DAC writer
-  // Time Provider
-  TrigWriter tw
-)
+SteppedLfoTrig::SteppedLfoTrig()
 {
   lastMicros = this->getTime();
-  this->trigWriter = tw;
 }
 
 float SteppedLfoTrig::tick(
@@ -49,8 +43,9 @@ float SteppedLfoTrig::tick(
   double morph,
   int divisions,
   bool trigHigh,
+  TrigWriter *tw,
   double inputPhase, // used for smooth multimode switching
-  double lastTickTime
+  uint32_t lastTickTime
 ) {
   this->phase = inputPhase;
   this->lastMicros = lastTickTime;
@@ -93,7 +88,7 @@ float SteppedLfoTrig::tick(
     this->writeToDAC((int) (lastWriteValue * 2000.0) + 2050.0);
   }
 
-  lastMicros = this->getTime();
+  this->lastMicros = this->getTime();
   return lastWriteValue;
 }
 

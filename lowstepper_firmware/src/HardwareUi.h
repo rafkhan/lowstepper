@@ -1,4 +1,4 @@
-#include "../ui/ui.h"
+#include "ui/ui.h"
 #include "SteppedLfoTrig.h"
 
 #define BPM_ENABLED true

@@ -5,19 +5,20 @@
 #include <stdio.h>
 
 #include "./LfoFunctions.h"
-#include "./Mode.h"
+#include "./BaseMode.h"
 
-class SteppedLfoGate : public Mode
+class SteppedLfoGate : public BaseMode
 {
 public:
-  SteppedLfoGate(TrigWriter tw);
-  float tick(
+  SteppedLfoGate();
+  virtual float tick(
     double frequency,
     double morph,
     int divisions,
     bool trigHigh,
+    TrigWriter *tw,
     double inputPhase,
-    double lastTickTime
+    uint32_t lastTickTime
   );
 
   virtual void writeToDAC(int value);
@@ -26,18 +27,12 @@ public:
   // Internal state
   volatile bool lfoRunning = false;
   volatile double nextStopPosition = 1;
-  volatile uint32_t lastMicros = 0;    // used for lfo calcs
-  volatile double phase = 0;
   volatile float lastWriteValue = 0;
-  TrigWriter trigWriter;
 };
 
-SteppedLfoGate::SteppedLfoGate(
-  TrigWriter tw
-)
+SteppedLfoGate::SteppedLfoGate()
 {
   lastMicros = this->getTime();
-  this->trigWriter = tw;
 }
 
 float SteppedLfoGate::tick(
@@ -45,8 +40,9 @@ float SteppedLfoGate::tick(
   double morph,
   int divisions,
   bool trigHigh,
+  TrigWriter *tw,
   double inputPhase,
-  double lastTickTime
+  uint32_t lastTickTime
 ) {
   this->phase = inputPhase;
   this->lastMicros = lastTickTime;

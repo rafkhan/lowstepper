@@ -1,28 +1,25 @@
-#ifndef MODES_H
-#define MODES_H
+#ifndef MODE_H
+#define MODE_H
 
 #include <cmath>
-#include <stdio.h>
+#include "BaseMode.h"
 
-class TrigWriter
-{
-public:
-  void setHighForDuration(uint32_t currentTime, uint32_t duration);
-  void sendTrig(uint32_t currentTime);
+template <class T>
+class Mode {
+  public:
+    T handlerA;
+    T handlerB;
+    uint8_t ledRed;
+    uint8_t ledGreen;
+    uint8_t ledBlue;
+
+  Mode(T a, T b); 
 };
 
-class Mode
-{
-public:
-  float tick(
-      double frequency,
-      double morph,
-      int divisions,
-      bool trigHigh,
-      double inputPhase,
-      uint32_t lastTickTime);
-  virtual uint32_t getTime(void);
-  virtual void writeToDAC(int value);
-};
+template<>
+Mode<BaseMode*>::Mode(BaseMode* a, BaseMode* b) {
+  this->handlerA = a;
+  this->handlerB = b;
+}
 
 #endif
