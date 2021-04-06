@@ -16,7 +16,6 @@ public:
     double morph,
     int divisions,
     bool trigHigh,
-    TrigWriter *tw,
     double inputPhase,
     uint32_t lastTickTime
   );
@@ -40,7 +39,6 @@ float SteppedLfoGate::tick(
   double morph,
   int divisions,
   bool trigHigh,
-  TrigWriter *tw,
   double inputPhase,
   uint32_t lastTickTime
 ) {

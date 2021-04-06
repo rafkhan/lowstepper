@@ -16,7 +16,6 @@ public:
     double morph,
     int divisions,
     bool trigHigh,
-    TrigWriter *tw,
     double inputPhase,
     uint32_t lastTickTime
   );
@@ -41,7 +40,6 @@ float SteppedLfoTrig::tick(
   double morph,
   int divisions,
   bool trigHigh,
-  TrigWriter *tw,
   double inputPhase, // used for smooth multimode switching
   uint32_t lastTickTime
 ) {

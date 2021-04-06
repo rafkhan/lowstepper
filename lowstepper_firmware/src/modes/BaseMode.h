@@ -20,7 +20,6 @@ public:
       double morph,
       int divisions,
       bool trigHigh,
-      TrigWriter *tw,
       double inputPhase,
       uint32_t lastTickTime
     ) = 0;

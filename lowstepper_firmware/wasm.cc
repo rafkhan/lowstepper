@@ -150,7 +150,6 @@ extern "C"
         morphA,
         chunksA,
         trigHighA,
-        &tw,
         mode->phase,
         mode->lastMicros);
     return f;
