@@ -5,6 +5,7 @@ emcc wasm.cc -o wasm.js -s MODULARIZE -s EXPORTED_RUNTIME_METHODS=['ccall'] -s W
 
 emcc wasm.cc -o wasm.js -s WASM=1 -std=c++1z \
     -s MODULARIZE -s EXPORTED_RUNTIME_METHODS=['ccall'] \
+    -s LLD_REPORT_UNDEFINED \
     -g4 -s ASSERTIONS=2 -s SAFE_HEAP=1 -s STACK_OVERFLOW_CHECK=1 \
     --source-map-base /static/js/
 
