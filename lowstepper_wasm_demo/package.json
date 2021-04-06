@@ -14,6 +14,7 @@
     "react": "17.0.0",
     "react-dom": "17.0.0",
     "react-p5-wrapper": "2.3.0",
+    "react-rotary-knob": "^1.1.8",
     "react-scripts": "^4.0.1"
   },
   "devDependencies": {
