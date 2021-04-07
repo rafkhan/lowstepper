@@ -184,13 +184,8 @@ const knobs = [
     }
   },
   {
-<<<<<<< HEAD
     name: "MORPH",
-    description: "Morph between Sin, Saw, and Square LFOs.",
-=======
-    name: "Morph",
     description: "Morph between sine -> triangle -> saw -> square.",
->>>>>>> 8a2b563642c58888d0b4d69359e5ea74cbca6be3
     parameter: "morph",
     inputProps: {
       step: 0.001,
