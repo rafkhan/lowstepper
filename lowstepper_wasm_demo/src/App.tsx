@@ -6,6 +6,8 @@ import P5Wrapper from "react-p5-wrapper";
 
 import five from "p5";
 
+import { Knob } from "react-rotary-knob";
+
 class TrigHandler {
   wasmModule: any;
   triggedA: boolean;
@@ -44,6 +46,40 @@ class TrigHandler {
     }
   }
 }
+
+class LimitedKnob extends React.Component<{style:any, min:any, max:any, unlockDistance:any, preciseMode:any, width:any, height:any }, { value: any, min: any, max:any }>{
+    constructor(props: any) {
+      super(props);
+      this.state = {
+        value: props.value, 
+        min: props.min, 
+        max: props.max 
+      };
+      this.handleOnChange = this.handleOnChange.bind(this);
+    }
+
+    handleOnChange(val: any) {
+      //ignore change if distance is greater than defined
+      //here we use a distance of 200 because our max value is 1000
+      //change if needed
+      const maxDistance = 200;
+      let distance = Math.abs(val - this.state.value);
+      if (distance > maxDistance) {
+        return;
+      } else {
+        this.setState({ value: val });
+      }
+    }
+    render() {
+     //let { this.state.value, ...rest } = this.props;
+
+     /* return (
+        <Knob value={this.state.value} onChange={this.handleOnChange} {...rest} />
+      );*/
+      return <Knob onChange={this.handleOnChange} min={this.state.min} max={this.state.max} value={this.state.value}/>
+    
+    }
+  }
 
 const trigHandler = new TrigHandler();
 
@@ -137,18 +173,7 @@ async function sketch(p: five) {
 
 const knobs = [
   {
-    name: "Chunks",
-    description: "Break an LFO into 1-10 chunks. Each chunk is played in sequence when gate or trigger is activated.",
-    parameter: "chunks",
-    inputProps: {
-      step: 1,
-      min: 1,
-      max: 10,
-
-    }
-  },
-  {
-    name: "Rate",
+    name: "RATE",
     description: "Adjust the frequency of the LFO.",
     parameter: "rate",
     inputProps: {
@@ -159,13 +184,24 @@ const knobs = [
     }
   },
   {
-    name: "Morph",
+    name: "MORPH",
     description: "Morph between sine -> triangle -> saw -> square.",
     parameter: "morph",
     inputProps: {
       step: 0.001,
       min: 0,
       max: 1,
+    }
+  },
+  {
+    name: "CHUNKS",
+    description: "Break an LFO into 1-10 chunks. Each chunk is played in sequence when gate or trigger is activated.",
+    parameter: "chunks",
+    inputProps: {
+      step: 1,
+      min: 1,
+      max: 10,
+
     }
   }
 ];
@@ -180,39 +216,323 @@ export default function App() {
   });
 
   return (
+
     <div className="App">
-      <P5Wrapper sketch={sketch} {...state} />
+    <img className="guide" src="static/images/interface_guide.png" />
+      <img className="white_hole top left" src="static/images/ico_white_hole.png" />
+      <img className="white_hole top right" src="static/images/ico_white_hole.png" />
+      <h1>LowStepper</h1>
 
-      <div className="container">
-        <div>
-          <h2 className="parameterName">Trig</h2>
-          <p className="parameterDescription">Click here to trigger the LFO.</p>
-          <button onMouseDown={(e) =>  {
-            setState({ ...state, "gate": true })
-          }}
-          onMouseUp={(e) => {
-            setState({ ...state, "gate": false })
-          }}
-          onMouseOut={() => {
-            setState({ ...state, "gate": false })
-          }}>
-            Trig
-          </button>
+      <div className="container sideWrapper">
+        <div className="buttonWrapper white first_row">
+            <button className="button" onMouseDown={(e) =>  {
+              setState({ ...state, "gate": true })
+            }}
+            onMouseUp={(e) => {
+              setState({ ...state, "gate": false })
+            }}
+            onMouseOut={() => {
+              setState({ ...state, "gate": false })
+            }}>
+            </button>
+            <h3 className="parameterName">EOC</h3>
+        </div>       
 
-          <button onClick={() => {
+        <div className="buttonWrapper white">
+            <button className="button" onMouseDown={(e) =>  {
+              setState({ ...state, "gate": true })
+            }}
+            onMouseUp={(e) => {
+              setState({ ...state, "gate": false })
+            }}
+            onMouseOut={() => {
+              setState({ ...state, "gate": false })
+            }}>
+            </button>
+        </div>
+
+        <div className="buttonWrapper white third_row">
+            <button className="button" onMouseDown={(e) =>  {
+              setState({ ...state, "gate": true })
+            }}
+            onMouseUp={(e) => {
+              setState({ ...state, "gate": false })
+            }}
+            onMouseOut={() => {
+              setState({ ...state, "gate": false })
+            }}>
+            </button>
+            <h3 className="parameterName outsTitle">OUTS</h3>
+        </div>
+
+        <div className="buttonWrapper white">
+            <button className="button" onMouseDown={(e) =>  {
+              setState({ ...state, "gate": true })
+            }}
+            onMouseUp={(e) => {
+              setState({ ...state, "gate": false })
+            }}
+            onMouseOut={() => {
+              setState({ ...state, "gate": false })
+            }}>
+            </button>
+        </div>
+
+      </div>
+      <div className="container trigBigWrapper">
+        <div className="trigWrapper">
+          
+          <div className="buttonWrapper red">
+            <button className="button" onMouseDown={(e) =>  {
+              setState({ ...state, "gate": true })
+            }}
+            onMouseUp={(e) => {
+              setState({ ...state, "gate": false })
+            }}
+            onMouseOut={() => {
+              setState({ ...state, "gate": false })
+            }}>
+            </button>
+          </div>
+
+          <h3 className="parameterName">TRIG <img src="static/images/ico_trig.png" /></h3>
+
+          <button className="autoTrigBtn" onClick={() => {
             if(trigHandler.autoTrigHandler) {
               trigHandler.stopAutoTriggerA();
               return;
             }
 
             trigHandler.startAutoTriggerA(1000);
-          }}>TOGGLE AUTO TRIG (fixed 1000ms)</button>
+          }}>AUTO TRIG (1000ms)</button>
 
         </div>
+        <div className="trigWrapper">
+          <div>
+              <div className="buttonWrapper red">
+                <button className="button" onMouseDown={(e) =>  {
+                  setState({ ...state, "gate": true })
+                }}
+                onMouseUp={(e) => {
+                  setState({ ...state, "gate": false })
+                }}
+                onMouseOut={() => {
+                  setState({ ...state, "gate": false })
+                }}>
+                </button>
+              </div>
+              <h3 className="parameterName">CLK <img src="static/images/ico_clock.png" /></h3>
+            </div>
+        </div>
+        <div className="trigWrapper">
+          <div>
+              <div className="buttonWrapper red">
+                <button className="button" onMouseDown={(e) =>  {
+                  setState({ ...state, "gate": true })
+                }}
+                onMouseUp={(e) => {
+                  setState({ ...state, "gate": false })
+                }}
+                onMouseOut={() => {
+                  setState({ ...state, "gate": false })
+                }}>
+                </button>
+              </div>
+               <h3 className="parameterName">RST <img src="static/images/ico_reset.png" /></h3>
+            </div>
+        </div>
+        
+        <div className="trigWrapper">
+          <div>
+              <div className="buttonWrapper blue">
+                <button className="button" onMouseDown={(e) =>  {
+                  setState({ ...state, "gate": true })
+                }}
+                onMouseUp={(e) => {
+                  setState({ ...state, "gate": false })
+                }}
+                onMouseOut={() => {
+                  setState({ ...state, "gate": false })
+                }}>
+                </button>
+              </div>
+            </div>
+        </div>
+
+        <div className="trigWrapper">
+          <div>
+              <div className="buttonWrapper blue">
+                <button className="button" onMouseDown={(e) =>  {
+                  setState({ ...state, "gate": true })
+                }}
+                onMouseUp={(e) => {
+                  setState({ ...state, "gate": false })
+                }}
+                onMouseOut={() => {
+                  setState({ ...state, "gate": false })
+                }}>
+                </button>
+              </div>
+            </div>
+        </div>
+
+        <div className="trigWrapper">
+          <div>
+              <div className="buttonWrapper blue">
+                <button className="button" onMouseDown={(e) =>  {
+                  setState({ ...state, "gate": true })
+                }}
+                onMouseUp={(e) => {
+                  setState({ ...state, "gate": false })
+                }}
+                onMouseOut={() => {
+                  setState({ ...state, "gate": false })
+                }}>
+                </button>
+              </div>
+            </div>
+        </div>
+        
+        <div className="whiteLine"></div>
+
+        <div className="trigWrapper">
+          <div>
+              <div className="buttonWrapper red">
+                <button className="button" onMouseDown={(e) =>  {
+                  setState({ ...state, "gate": true })
+                }}
+                onMouseUp={(e) => {
+                  setState({ ...state, "gate": false })
+                }}
+                onMouseOut={() => {
+                  setState({ ...state, "gate": false })
+                }}>
+                </button>
+              </div>
+            </div>
+            <h3 className="parameterName">RATE</h3>
+        </div>
+
+        <div className="trigWrapper">
+          <div>
+              <div className="buttonWrapper red">
+                <button className="button" onMouseDown={(e) =>  {
+                  setState({ ...state, "gate": true })
+                }}
+                onMouseUp={(e) => {
+                  setState({ ...state, "gate": false })
+                }}
+                onMouseOut={() => {
+                  setState({ ...state, "gate": false })
+                }}>
+                </button>
+              </div>
+            </div>
+            <h3 className="parameterName">MORPH</h3>
+        </div>
+
+        <div className="trigWrapper">
+          <div>
+              <div className="buttonWrapper red">
+                <button className="button" onMouseDown={(e) =>  {
+                  setState({ ...state, "gate": true })
+                }}
+                onMouseUp={(e) => {
+                  setState({ ...state, "gate": false })
+                }}
+                onMouseOut={() => {
+                  setState({ ...state, "gate": false })
+                }}>
+                </button>
+              </div>
+            </div>
+            <h3 className="parameterName">CHUNKS</h3>
+        </div>
+
+        <div className="trigWrapper">
+          <div>
+              <div className="buttonWrapper blue">
+                <button className="button" onMouseDown={(e) =>  {
+                  setState({ ...state, "gate": true })
+                }}
+                onMouseUp={(e) => {
+                  setState({ ...state, "gate": false })
+                }}
+                onMouseOut={() => {
+                  setState({ ...state, "gate": false })
+                }}>
+                </button>
+              </div>
+            </div>
+        </div>
+
+        <div className="trigWrapper">
+          <div>
+              <div className="buttonWrapper blue">
+                <button className="button" onMouseDown={(e) =>  {
+                  setState({ ...state, "gate": true })
+                }}
+                onMouseUp={(e) => {
+                  setState({ ...state, "gate": false })
+                }}
+                onMouseOut={() => {
+                  setState({ ...state, "gate": false })
+                }}>
+                </button>
+              </div>
+            </div>
+        </div>
+
+        <div className="trigWrapper">
+          <div>
+              <div className="buttonWrapper blue">
+                <button className="button" onMouseDown={(e) =>  {
+                  setState({ ...state, "gate": true })
+                }}
+                onMouseUp={(e) => {
+                  setState({ ...state, "gate": false })
+                }}
+                onMouseOut={() => {
+                  setState({ ...state, "gate": false })
+                }}>
+                </button>
+              </div>
+            </div>
+        </div>
+
+      </div>
+      
+      <P5Wrapper sketch={sketch} {...state} />
+      <div className="container potentiometerWrapper">
         {knobs.map((currentKnob) => (
-          <div key={currentKnob.name}>
+          <div className="wrapper_potentiometer" key={currentKnob.name}>
+            <div className="bg_potentiometer"></div>
             <h2 className="parameterName"> {currentKnob.name}</h2>
+            <div className="bgKnob knobB">
+              <LimitedKnob
+                style={{ display: "inline-block" }}
+                min={currentKnob.inputProps.min}
+                max={currentKnob.inputProps.max}
+                unlockDistance={0}
+                preciseMode={false}
+                width={300}
+                height={300} 
+              />
+            </div>
+            <div className="bgKnob knobA">
+              <LimitedKnob
+                style={{ display: "inline-block" }}
+                min={currentKnob.inputProps.min}
+                max={currentKnob.inputProps.max}
+                unlockDistance={0}
+                preciseMode={false}
+                width={300}
+                height={300} 
+              />
+            </div>
+            
             <p className="parameterDescription"> {currentKnob.description}</p>
+            
             <input
               type="range"
               onChange={(e) =>
@@ -224,6 +544,9 @@ export default function App() {
           </div>
         ))}
       </div>
+      <img className="white_hole bottom left" src="static/images/ico_white_hole.png" />
+      <img className="white_hole bottom right" src="static/images/ico_white_hole.png" />
+      <img className="okay_logo" src="static/images/okay_logo.png" />
     </div>
   );
 }
