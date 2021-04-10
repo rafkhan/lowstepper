@@ -7,19 +7,24 @@
  * ground = input is high
  * V+ = input is low
  */
-GateIn::GateIn(int pinNum) {
+GateIn::GateIn(int pinNum, int pinSense) {
   this->pin = pinNum;
+  this->pinSense = pinSense;
   this->isPinLow = false;
   this->isTrigHigh = false;
+  this->cableSensed = false;
 }
 
 GateIn::~GateIn() {}
 
 void GateIn::init() {
+  pinMode(this->pinSense, INPUT_PULLUP);
   pinMode(this->pin, INPUT);
 }
 
 void GateIn::scan(void) {
+  cableSensed = digitalReadFast(this->pinSense);
+
   int value = digitalReadFast(this->pin);
 
   // If the pin goes low, but isn't already low, toggle gate on.
@@ -49,4 +54,8 @@ bool GateIn::checkTrigHigh(void) {
 // Gates are high if the pin is low
 bool GateIn::checkGateHigh(void) {
   return isPinLow;
+}
+
+bool GateIn::hasCablePluggedIn(void) {
+  return cableSensed;
 }

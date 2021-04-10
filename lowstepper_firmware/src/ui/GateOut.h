@@ -1,7 +1,9 @@
 #ifndef TRIG_OUT_H
 #define TRIG_OUT_H
 
-class TrigOut 
+#include <cmath>
+
+class GateOut 
 {
 private:
   int pin;
@@ -12,8 +14,8 @@ private:
   void setHigh(void);
   void setLow(void);
 public:
-  TrigOut(int pinNum);
-  ~TrigOut();
+  GateOut(int pinNum);
+  ~GateOut();
 
   void init(void);
   void setHighForDuration(uint32_t currentTime, uint32_t duration);
