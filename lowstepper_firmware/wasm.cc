@@ -39,57 +39,54 @@ extern "C"
   volatile bool shouldUseClockB = false;
 
   //===========================================================
-  // LFO STUB
+  // STUB
   //===========================================================
 
-  class SteppedLfoTrigEmscripten : public SteppedLfoTrig
+  class TimeProviderStub : public TimeProvider
   {
   public:
-    void writeToDAC(int value);
-    uint32_t getTime(void);
+    virtual uint32_t getTime(void);
   };
 
-  uint32_t SteppedLfoTrigEmscripten::getTime() { return globalTime; }
-  void SteppedLfoTrigEmscripten::writeToDAC(int value)
-  { /* do nothing :) */
-  }
-
-  class SteppedLfoGateEmscripten : public SteppedLfoGate
+  uint32_t TimeProviderStub::getTime()
   {
-  public:
-    void writeToDAC(int value);
-    uint32_t getTime(void);
-  };
-
-  uint32_t SteppedLfoGateEmscripten::getTime() { return globalTime; }
-  void SteppedLfoGateEmscripten::writeToDAC(int value)
-  { /* do nothing :) */
+    return globalTime;
   }
 
-  //===========================================================
-  // TW STUB
-  //===========================================================
   class TrigWriterStub : public TrigWriter
   {
   public:
-    void setHighForDuration(uint32_t currentTime, uint32_t duration);
-    void sendTrig(uint32_t currentTime);
+    virtual void setHighForDuration(uint32_t currentTime, uint32_t duration);
+    virtual void sendTrig(uint32_t currentTime);
   };
-
   void TrigWriterStub::setHighForDuration(uint32_t currentTime, uint32_t duration) {}
   void TrigWriterStub::sendTrig(uint32_t currentTime) {}
 
-  TrigWriterStub tw;
+  class DACWriterStub : public DACWriter
+  {
+  public:
+    virtual void write(uint32_t value);
+  };
+
+  void
+  DACWriterStub::write(uint32_t value)
+  {
+    // Do nothing.
+  }
+
+  TimeProviderStub *timeProvider = new TimeProviderStub();
+  TrigWriterStub *trigWriter = new TrigWriterStub();
+  DACWriterStub *dacWriter = new DACWriterStub();
 
   int MODE_COUNT = 2;
   int modeIndex = 0;
 
-  SteppedLfoTrigEmscripten t1 = SteppedLfoTrigEmscripten{};
-  SteppedLfoTrigEmscripten t2 = SteppedLfoTrigEmscripten{};
+  SteppedLfoTrig t1 = SteppedLfoTrig{timeProvider, trigWriter, dacWriter};
+  SteppedLfoTrig t2 = SteppedLfoTrig{timeProvider, trigWriter, dacWriter};
   Mode<BaseMode *> mode1 = Mode<BaseMode *>{&t1, &t2};
 
-  SteppedLfoGateEmscripten g1 = SteppedLfoGateEmscripten{};
-  SteppedLfoGateEmscripten g2 = SteppedLfoGateEmscripten{};
+  SteppedLfoGate g1 = SteppedLfoGate{timeProvider, trigWriter, dacWriter};
+  SteppedLfoGate g2 = SteppedLfoGate{timeProvider, trigWriter, dacWriter};
   Mode<BaseMode *> mode2 = Mode<BaseMode *>{&g1, &g2};
 
   Mode<BaseMode *> modeList[] = {mode1, mode2};
@@ -150,7 +147,6 @@ extern "C"
         morphA,
         chunksA,
         trigHighA,
-        &tw,
         mode->phase,
         mode->lastMicros);
     return f;

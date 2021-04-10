@@ -10,19 +10,16 @@
 class SteppedLfoGate : public BaseMode
 {
 public:
-  SteppedLfoGate();
+  SteppedLfoGate(TimeProvider *tp,
+                 TrigWriter *tw,
+                 DACWriter *dw);
   virtual float tick(
-    double frequency,
-    double morph,
-    int divisions,
-    bool trigHigh,
-    TrigWriter *tw,
-    double inputPhase,
-    uint32_t lastTickTime
-  );
-
-  virtual void writeToDAC(int value);
-  virtual uint32_t getTime(void);
+      double frequency,
+      double morph,
+      int divisions,
+      bool trigHigh,
+      double inputPhase,
+      uint32_t lastTickTime);
 
   // Internal state
   volatile bool lfoRunning = false;
@@ -30,9 +27,16 @@ public:
   volatile float lastWriteValue = 0;
 };
 
-SteppedLfoGate::SteppedLfoGate()
+SteppedLfoGate::SteppedLfoGate(
+  TimeProvider *tp,
+  TrigWriter *tw,
+  DACWriter *dw
+)
 {
-  lastMicros = this->getTime();
+  this->timeProvider = tp;
+  this->trigWriter = tw;
+  this->dacWriter = dw;
+  lastMicros = this->timeProvider->getTime();
 }
 
 float SteppedLfoGate::tick(
@@ -40,7 +44,6 @@ float SteppedLfoGate::tick(
   double morph,
   int divisions,
   bool trigHigh,
-  TrigWriter *tw,
   double inputPhase,
   uint32_t lastTickTime
 ) {
@@ -53,31 +56,24 @@ float SteppedLfoGate::tick(
     lfoRunning = true;
   }
 
-
   if (lfoRunning)
   {
-    uint32_t deltaTimeMicro = this->getTime() - lastMicros;
+    uint32_t deltaTimeMicro = this->timeProvider->getTime() - lastMicros;
     double inc = (deltaTimeMicro / (1000000.0 / frequency)) * TWO_PI;
 
     this->phase += inc;
-    if(this->phase > TWO_PI) {
+    if (this->phase > TWO_PI)
+    {
       this->phase = this->phase - TWO_PI;
     }
 
     this->lastWriteValue = getMorphedOutput(morph, phase);
 
-    this->writeToDAC((int) (lastWriteValue * 2000.0) + 2050.0);
+    this->dacWriter->write((int)(lastWriteValue * 2000.0) + 2050.0);
   }
 
-  lastMicros = this->getTime();
+  lastMicros = this->timeProvider->getTime();
   return this->lastWriteValue;
 }
-
-uint32_t SteppedLfoGate::getTime() {
-  // THIS SHOULD NEVER BE CALLED
-  return 1;
-}
-
-void SteppedLfoGate::writeToDAC(int value) { /* do nothing :) */ }
 
 #endif

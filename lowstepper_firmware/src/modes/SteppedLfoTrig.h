@@ -10,41 +10,42 @@
 class SteppedLfoTrig : public BaseMode
 {
 public:
-  SteppedLfoTrig();
+  SteppedLfoTrig(TimeProvider *tp,
+                 TrigWriter *tw,
+                 DACWriter *dw);
   virtual float tick(
+      double frequency,
+      double morph,
+      int divisions,
+      bool trigHigh,
+      double inputPhase,
+      uint32_t lastTickTime);
+
+  volatile bool lfoRunning = false;
+  volatile double nextStopPosition = 1;
+  volatile float lastWriteValue = 0;
+  void incrementNextStep(int divisions);
+};
+
+SteppedLfoTrig::SteppedLfoTrig(
+    TimeProvider *tp,
+    TrigWriter *tw,
+    DACWriter *dw)
+{
+  this->timeProvider = tp;
+  this->trigWriter = tw;
+  this->dacWriter = dw;
+  lastMicros = this->timeProvider->getTime();
+}
+
+float SteppedLfoTrig::tick(
     double frequency,
     double morph,
     int divisions,
     bool trigHigh,
-    TrigWriter *tw,
-    double inputPhase,
-    uint32_t lastTickTime
-  );
-
-  virtual void writeToDAC(int value);
-  virtual uint32_t getTime(void);
-  void incrementNextStep(int divisions);
-
-  // Internal state
-  volatile bool lfoRunning = false;
-  volatile double nextStopPosition = 1;
-  volatile float lastWriteValue = 0;
-};
-
-SteppedLfoTrig::SteppedLfoTrig()
+    double inputPhase, // used for smooth multimode switching
+    uint32_t lastTickTime)
 {
-  lastMicros = this->getTime();
-}
-
-float SteppedLfoTrig::tick(
-  double frequency,
-  double morph,
-  int divisions,
-  bool trigHigh,
-  TrigWriter *tw,
-  double inputPhase, // used for smooth multimode switching
-  uint32_t lastTickTime
-) {
   this->phase = inputPhase;
   this->lastMicros = lastTickTime;
 
@@ -63,7 +64,7 @@ float SteppedLfoTrig::tick(
 
   if (lfoRunning)
   {
-    uint32_t deltaTimeMicro = this->getTime() - lastMicros;
+    uint32_t deltaTimeMicro = this->timeProvider->getTime() - lastMicros;
     double inc = (deltaTimeMicro / (1000000.0 / frequency)) * TWO_PI;
     this->phase += inc;
 
@@ -83,10 +84,10 @@ float SteppedLfoTrig::tick(
 
     lastWriteValue = getMorphedOutput(morph, phase);
 
-    this->writeToDAC((int) (lastWriteValue * 2000.0) + 2050.0);
+    this->dacWriter->write((int)(lastWriteValue * 2000.0) + 2050.0);
   }
 
-  this->lastMicros = this->getTime();
+  this->lastMicros = this->timeProvider->getTime();
   return lastWriteValue;
 }
 
@@ -101,12 +102,5 @@ void SteppedLfoTrig::incrementNextStep(int divisions)
     this->nextStopPosition += 1.0;
   }
 }
-
-uint32_t SteppedLfoTrig::getTime() {
-  // THIS SHOULD NEVER BE CALLED
-  return 1;
-}
-
-void SteppedLfoTrig::writeToDAC(int value) { /* do nothing :) */ }
 
 #endif
