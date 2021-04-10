@@ -18,11 +18,13 @@ IntervalTimer main_timer;
 static constexpr uint32_t CORE_ISR_FREQ = 3000U; // how much faster can I make this? lmao
 static constexpr uint32_t CORE_TIMER_RATE = (1000000UL / CORE_ISR_FREQ);
 
-void FASTRUN main_timer_ISR() {
+void FASTRUN main_timer_ISR()
+{
   // MAIN CODE HERE
 }
 
-void setup() {
+void setup()
+{
   analogWriteResolution(12);
 
   // power alive light
@@ -34,35 +36,34 @@ void setup() {
   main_timer.begin(main_timer_ISR, CORE_TIMER_RATE);
 }
 
-void loop() {
+void loop()
+{
   UI *ui = getUI();
   // Block interrupts when reading hardware I/O
   noInterrupts()
-  // allow interrupts again
-  ui->scan();
+      // allow interrupts again
+      ui->scan();
   interrupts()
 
 #if DEBUG_POT_VALUES
-  Serial.printf(
-    "POTS:\tRATE_A: %d \t RATE_B: %d \t MORPH_A: %d \t MORPH_B: %d \t CHUNKS_A: %d \t CHUNKS_B: %d\n",
-    ui->potInRateA->getValue(),
-    ui->potInRateB->getValue(),
-    ui->potInMorphA->getValue(),
-    ui->potInMorphB->getValue(),
-    ui->potInChunksA->getValue(),
-    ui->potInChunksB->getValue()
-  );
+      Serial.printf(
+          "POTS:\tRATE_A: %d \t RATE_B: %d \t MORPH_A: %d \t MORPH_B: %d \t CHUNKS_A: %d \t CHUNKS_B: %d\n",
+          ui->potInRateA->getValue(),
+          ui->potInRateB->getValue(),
+          ui->potInMorphA->getValue(),
+          ui->potInMorphB->getValue(),
+          ui->potInChunksA->getValue(),
+          ui->potInChunksB->getValue());
 #endif
 
 #if DEBUG_CV_IN_VALUES
   Serial.printf(
-    "CV:\tRATE_A: %d \t RATE_B: %d \t MORPH_A: %d \t MORPH_B: %d \t CHUNKS_A: %d \t CHUNKS_B: %d\n",
-    ui->cvInRateA->getValue(),
-    ui->cvInRateB->getValue(),
-    ui->cvInMorphA->getValue(),
-    ui->cvInMorphB->getValue(),
-    ui->cvInChunksA->getValue(),
-    ui->cvInChunksB->getValue()
-  );
+      "CV:\tRATE_A: %d \t RATE_B: %d \t MORPH_A: %d \t MORPH_B: %d \t CHUNKS_A: %d \t CHUNKS_B: %d\n",
+      ui->cvInRateA->getValue(),
+      ui->cvInRateB->getValue(),
+      ui->cvInMorphA->getValue(),
+      ui->cvInMorphB->getValue(),
+      ui->cvInChunksA->getValue(),
+      ui->cvInChunksB->getValue());
 #endif
 }
