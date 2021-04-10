@@ -15,8 +15,6 @@
 ▐█▌.▐▌▐█.█▌▐█ ▪▐▌▐█▀·.▐█▄▪▐█ ▐█▀·.██▐█▌ ▐█▌·██▌▐▀▐█▄▄▌▐█▄▪▐█▐█▌█▌▪▄█▀▐█▄▄▌▐█•█▌
  ▀█▄▀▪·▀  ▀ ▀  ▀  ▀ •  ▀▀▀▀   ▀ • ▀▀ █▪ ▀▀▀ ▀▀▀ · ▀▀▀  ▀▀▀▀ ▀▀▀·▀▀▀ • ▀▀▀ .▀  ▀
 ```
-https://okaysynthesizer.com/
-
 
 LowStepper, a synth module by [Okay Synthesizer](https://okaysynthesizer.com/) <3
 
