@@ -7,7 +7,7 @@
 ███████ ██████   ███ ███  ███████    ██    ███████ ██      ██      ███████ ██   ██ 
                                                                                    
 
-                       AN OPEN SOURCE EURORACK MODULE
+                  AN OPEN SOURCE EURORACK MODULE CREATED BY
  
       ▄ •▄  ▄▄▄· ▄· ▄▌.▄▄ ·  ▄· ▄▌ ▐ ▄ ▄▄▄▄▄ ▄ .▄▄▄▄ ..▄▄ · ▪  ·▄▄▄▄•▄▄▄ .▄▄▄  
 ▪     █▌▄▌▪▐█ ▀█▐█▪██▌▐█ ▀. ▐█▪██▌•█▌▐█•██  ██▪▐█▀▄.▀·▐█ ▀. ██ ▪▀·.█▌▀▄.▀·▀▄ █·
@@ -15,7 +15,12 @@
 ▐█▌.▐▌▐█.█▌▐█ ▪▐▌▐█▀·.▐█▄▪▐█ ▐█▀·.██▐█▌ ▐█▌·██▌▐▀▐█▄▄▌▐█▄▪▐█▐█▌█▌▪▄█▀▐█▄▄▌▐█•█▌
  ▀█▄▀▪·▀  ▀ ▀  ▀  ▀ •  ▀▀▀▀   ▀ • ▀▀ █▪ ▀▀▀ ▀▀▀ · ▀▀▀  ▀▀▀▀ ▀▀▀·▀▀▀ • ▀▀▀ .▀  ▀
 ```
-Lowstepper Eurorack Module.
+https://okaysynthesizer.com/
+
+
+LowStepper, a synth module by [Okay Synthesizer](https://okaysynthesizer.com/) <3
+
+
 See a very basic demo at https://lowstepper.vercel.app/ 
 
 
