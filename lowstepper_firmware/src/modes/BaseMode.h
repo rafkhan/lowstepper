@@ -3,11 +3,23 @@
 
 #include <cmath>
 
+class TimeProvider
+{
+public:
+  virtual uint32_t getTime(void) = 0;
+};
+
 class TrigWriter
 {
 public:
-  void setHighForDuration(uint32_t currentTime, uint32_t duration);
-  void sendTrig(uint32_t currentTime);
+  virtual void setHighForDuration(uint32_t currentTime, uint32_t duration) = 0;
+  virtual void sendTrig(uint32_t currentTime) = 0;
+};
+
+class DACWriter
+{
+public:
+  virtual void write(uint32_t value) = 0;
 };
 
 class BaseMode
@@ -15,6 +27,11 @@ class BaseMode
 public:
   volatile uint32_t lastMicros = 0;
   volatile double phase = 0;
+
+  TimeProvider* timeProvider;
+  TrigWriter* trigWriter;
+  DACWriter* dacWriter;
+
   virtual float tick(
       double frequency,
       double morph,
@@ -23,8 +40,6 @@ public:
       double inputPhase,
       uint32_t lastTickTime
     ) = 0;
-  virtual uint32_t getTime(void) = 0;
-  virtual void writeToDAC(int value) = 0;
 };
 
 #endif
