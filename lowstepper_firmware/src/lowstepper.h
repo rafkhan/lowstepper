@@ -11,6 +11,10 @@
 
 UI ui;
 
+UI* getUI() {
+  return &ui;
+}
+
 int MODE_COUNT = 2;
 int modeIndex = 0;
 
