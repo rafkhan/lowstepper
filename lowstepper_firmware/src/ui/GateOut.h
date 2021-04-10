@@ -2,8 +2,9 @@
 #define TRIG_OUT_H
 
 #include <cmath>
+#include "../modes/BaseMode.h"
 
-class GateOut 
+class GateOut : public TrigWriter
 {
 private:
   int pin;
@@ -18,8 +19,9 @@ public:
   ~GateOut();
 
   void init(void);
-  void setHighForDuration(uint32_t currentTime, uint32_t duration);
-  void tick(uint32_t currentTime);
+  virtual void setHighForDuration(uint32_t currentTime, uint32_t duration);
+  virtual void sendTrig(uint32_t currentTime);
+  virtual void tick(uint32_t currentTime);
 };
 
 #endif

@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include <cmath>
 
-#include "util.h"
 #include "ui/UI.h"
+// #include "lowstepper.h"
 
 // Timer related stuff
 IntervalTimer main_timer;
@@ -25,7 +25,7 @@ void setup() {
   pinMode(13, OUTPUT);
   digitalWrite(13, HIGH);
 
-  ui.init();
+  // ui.init();
 
   main_timer.begin(main_timer_ISR, CORE_TIMER_RATE);
 }
@@ -33,7 +33,7 @@ void setup() {
 void loop() {
   // Block interrupts when reading hardware I/O
   noInterrupts()
-  ui.scan();
+  // ui.scan();
   // allow interrupts again
   interrupts()
 }

@@ -14,6 +14,7 @@ class TrigWriter
 public:
   virtual void setHighForDuration(uint32_t currentTime, uint32_t duration) = 0;
   virtual void sendTrig(uint32_t currentTime) = 0;
+  virtual void tick(uint32_t currentTime) = 0;
 };
 
 class DACWriter

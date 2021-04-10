@@ -23,6 +23,8 @@ void GateOut::setHighForDuration(uint32_t currentTime, uint32_t duration) {
   this->setHigh();
 }
 
+void GateOut::sendTrig(uint32_t currentTime) {}
+
 void GateOut::setHigh(void) {
   digitalWriteFast(this->pin, HIGH);
   isHigh = true;
