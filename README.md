@@ -1,6 +1,7 @@
 # Lowstepper
 
-Lowstepper Eurorack Module. 
+Lowstepper Eurorack Module.
+See a very basic demo at https://lowstepper.vercel.app/ 
 
 
 ## Components
