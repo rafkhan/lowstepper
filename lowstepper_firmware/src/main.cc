@@ -51,8 +51,8 @@ void loop()
   UI *ui = getUI();
   // Block interrupts when reading hardware I/O
   noInterrupts()
-      // allow interrupts again
       ui->scan();
+  // allow interrupts again
   interrupts()
 
   /********************************************
@@ -113,7 +113,8 @@ void loop()
   {
     debug_cv_phase = 0;
   }
-  while (debug_cv_usec < 500) {
+  while (debug_cv_usec < 500)
+  {
 
     // wait
   }
