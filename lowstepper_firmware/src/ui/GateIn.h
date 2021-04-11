@@ -15,9 +15,9 @@ public:
 
   void init(void);
   void scan(void);
-  bool checkGateHigh(void);
   bool checkTrigHigh(void);
-  bool hasCablePluggedIn(void);
+  bool isGateHigh(void);
+  bool isCablePluggedIn(void);
 };
 
 #endif

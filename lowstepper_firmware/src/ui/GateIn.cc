@@ -52,10 +52,10 @@ bool GateIn::checkTrigHigh(void) {
 }
 
 // Gates are high if the pin is low
-bool GateIn::checkGateHigh(void) {
+bool GateIn::isGateHigh(void) {
   return isPinLow;
 }
 
-bool GateIn::hasCablePluggedIn(void) {
+bool GateIn::isCablePluggedIn(void) {
   return cableSensed;
 }

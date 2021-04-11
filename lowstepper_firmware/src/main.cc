@@ -6,7 +6,7 @@
 
 #define DEBUG_POT_VALUES 0
 #define DEBUG_CV_IN_VALUES 0
-#define DEBUG_TRIGGER_IN 1
+#define DEBUG_TRIGGER_IN 0
 #define DEBUG_TRIGGER_OUT 1
 #define DEBUG_CV_OUT 1
 
@@ -36,6 +36,16 @@ void setup()
   main_timer.begin(main_timer_ISR, CORE_TIMER_RATE);
 }
 
+#if DEBUG_CV_OUT
+float debug_cv_phase = 0.0;
+elapsedMicros debug_cv_usec = 0;
+#endif
+
+#if DEBUG_TRIGGER_OUT
+uint32_t debug_eoc_a_time = millis();
+uint32_t debug_eoc_b_time = millis();
+#endif
+
 void loop()
 {
   UI *ui = getUI();
@@ -44,6 +54,11 @@ void loop()
       // allow interrupts again
       ui->scan();
   interrupts()
+
+  /********************************************
+ * DEBUG CODE BELOW
+ * ENABLE VIA FLAGS AT THE TOP OF THIS FILE 
+ ********************************************/
 
 #if DEBUG_POT_VALUES
       Serial.printf(
@@ -65,5 +80,60 @@ void loop()
       ui->cvInMorphB->getValue(),
       ui->cvInChunksA->getValue(),
       ui->cvInChunksB->getValue());
+#endif
+
+#if DEBUG_TRIGGER_IN
+  Serial.printf(
+      "TRIG_A: %d/%d,\t CLK_A: %d/%d, RST_A: %d/%d",
+      ui->trigInA->isCablePluggedIn(),
+      ui->trigInA->isGateHigh(),
+      ui->clockInA->isCablePluggedIn(),
+      ui->clockInA->isGateHigh(),
+      ui->resetInA->isCablePluggedIn(),
+      ui->resetInA->isGateHigh());
+
+  Serial.printf(
+      "TRIG_B: %d/%d,\t CLK_B: %d/%d, RST_B: %d/%d",
+      ui->trigInB->isCablePluggedIn(),
+      ui->trigInB->isGateHigh(),
+      ui->clockInB->isCablePluggedIn(),
+      ui->clockInB->isGateHigh(),
+      ui->resetInB->isCablePluggedIn(),
+      ui->resetInB->isGateHigh());
+#endif
+
+#if DEBUG_CV_OUT
+  double y = sin(debug_cv_phase);
+  float valA = y * 2000.0 + 2050.0;
+  float valB = y * -2000.0 + 2050.0;
+  ui->cvOutA->write(valA);
+  ui->cvOutB->write(valB);
+  debug_cv_phase = debug_cv_phase + 0.02;
+  if (debug_cv_phase >= TWO_PI)
+  {
+    debug_cv_phase = 0;
+  }
+  while (debug_cv_usec < 500) {
+
+    // wait
+  }
+  debug_cv_usec = debug_cv_usec - 500;
+#endif
+
+#if DEBUG_TRIGGER_OUT
+  if ((millis() - debug_eoc_a_time) > 1000)
+  {
+    ui->eocA->setHighForDuration(millis(), 500);
+    debug_eoc_a_time = millis();
+  }
+
+  if ((millis() - debug_eoc_b_time) > 500)
+  {
+    ui->eocB->setHighForDuration(millis(), 250);
+    debug_eoc_b_time = millis();
+  }
+
+  ui->eocA->tick(millis());
+  ui->eocB->tick(millis());
 #endif
 }
