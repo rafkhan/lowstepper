@@ -6,9 +6,9 @@
 
 #define DEBUG_POT_VALUES 0
 #define DEBUG_CV_IN_VALUES 0
-#define DEBUG_TRIGGER_IN 0
-#define DEBUG_TRIGGER_OUT 1
-#define DEBUG_CV_OUT 1
+#define DEBUG_TRIGGER_IN 1
+#define DEBUG_TRIGGER_OUT 0
+#define DEBUG_CV_OUT 0
 
 // Timer related stuff
 IntervalTimer main_timer;
@@ -84,7 +84,7 @@ void loop()
 
 #if DEBUG_TRIGGER_IN
   Serial.printf(
-      "TRIG_A: %d/%d,\t CLK_A: %d/%d, RST_A: %d/%d",
+      "TRIG_A: %d/%d,\t CLK_A: %d/%d,\t RST_A: %d/%d\t",
       ui->trigInA->isCablePluggedIn(),
       ui->trigInA->isGateHigh(),
       ui->clockInA->isCablePluggedIn(),
@@ -93,7 +93,7 @@ void loop()
       ui->resetInA->isGateHigh());
 
   Serial.printf(
-      "TRIG_B: %d/%d,\t CLK_B: %d/%d, RST_B: %d/%d",
+      "TRIG_B: %d/%d,\t CLK_B: %d/%d,\t RST_B: %d/%d\n",
       ui->trigInB->isCablePluggedIn(),
       ui->trigInB->isGateHigh(),
       ui->clockInB->isCablePluggedIn(),
@@ -115,7 +115,6 @@ void loop()
   }
   while (debug_cv_usec < 500)
   {
-
     // wait
   }
   debug_cv_usec = debug_cv_usec - 500;
