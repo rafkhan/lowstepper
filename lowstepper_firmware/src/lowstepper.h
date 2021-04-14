@@ -31,14 +31,19 @@ uint32_t LSTimeProvider::getTime()
 LSTimeProvider *timeProvider = new LSTimeProvider();
 
 SteppedLfoTrig t1 = SteppedLfoTrig{timeProvider, ui.eocA, ui.cvOutA};
-SteppedLfoTrig t2 = SteppedLfoTrig{timeProvider, ui.eocA, ui.cvOutA};
+SteppedLfoTrig t2 = SteppedLfoTrig{timeProvider, ui.eocB, ui.cvOutB};
 Mode<BaseMode *> mode1 = Mode<BaseMode *>{&t1, &t2};
 
-SteppedLfoGate g1 = SteppedLfoGate{timeProvider, ui.eocB, ui.cvOutB};
+SteppedLfoGate g1 = SteppedLfoGate{timeProvider, ui.eocA, ui.cvOutA};
 SteppedLfoGate g2 = SteppedLfoGate{timeProvider, ui.eocB, ui.cvOutB};
 Mode<BaseMode *> mode2 = Mode<BaseMode *>{&g1, &g2};
 
 Mode<BaseMode *> modeList[] = {mode1, mode2};
+
+int modeNumber = 0;
+void tick() {
+  
+}
 
 // Used to track state in between hardware ticks
 class LfoState {

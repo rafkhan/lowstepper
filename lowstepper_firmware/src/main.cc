@@ -5,16 +5,14 @@
 #include "lowstepper.h"
 
 #define DEBUG_POT_VALUES 0
-#define DEBUG_CV_IN_VALUES 0
-#define DEBUG_TRIGGER_IN 1
+#define DEBUG_CV_IN_VALUES 1
+#define DEBUG_TRIGGER_IN 0
 #define DEBUG_TRIGGER_OUT 0
 #define DEBUG_CV_OUT 0
 
 // Timer related stuff
 IntervalTimer main_timer;
 
-// copied from O_C
-// TODO check these values
 static constexpr uint32_t CORE_ISR_FREQ = 3000U; // how much faster can I make this? lmao
 static constexpr uint32_t CORE_TIMER_RATE = (1000000UL / CORE_ISR_FREQ);
 
@@ -55,7 +53,7 @@ void loop()
   // allow interrupts again
   interrupts()
 
-  /********************************************
+/********************************************
  * DEBUG CODE BELOW
  * ENABLE VIA FLAGS AT THE TOP OF THIS FILE 
  ********************************************/
