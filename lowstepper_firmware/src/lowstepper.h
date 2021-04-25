@@ -10,14 +10,15 @@
 #define MAX_LFO_FREQ 20000
 
 UI ui;
+UI* ui_ptr = &ui;
 
 UI* getUI() {
-  return &ui;
+  return ui_ptr;
 }
 
-int MODE_COUNT = 2;
-int modeIndex = 0;
-
+/*
+ * Real time code for hardware
+ */
 class LSTimeProvider: public TimeProvider
 {
 public:
@@ -30,51 +31,79 @@ uint32_t LSTimeProvider::getTime()
 }
 LSTimeProvider *timeProvider = new LSTimeProvider();
 
-SteppedLfoTrig t1 = SteppedLfoTrig{timeProvider, ui.eocA, ui.cvOutA};
-SteppedLfoTrig t2 = SteppedLfoTrig{timeProvider, ui.eocB, ui.cvOutB};
-Mode<BaseMode *> mode1 = Mode<BaseMode *>{&t1, &t2};
+/*
+ * The actual LFOs!
+ */
+SteppedLfoTrig t1 = SteppedLfoTrig{timeProvider, ui_ptr->eocA, ui_ptr->cvOutA};
+SteppedLfoTrig t2 = SteppedLfoTrig{timeProvider, ui_ptr->eocB, ui_ptr->cvOutB};
 
-SteppedLfoGate g1 = SteppedLfoGate{timeProvider, ui.eocA, ui.cvOutA};
-SteppedLfoGate g2 = SteppedLfoGate{timeProvider, ui.eocB, ui.cvOutB};
-Mode<BaseMode *> mode2 = Mode<BaseMode *>{&g1, &g2};
+SteppedLfoGate g1 = SteppedLfoGate{timeProvider, ui_ptr->eocA, ui_ptr->cvOutA};
+SteppedLfoGate g2 = SteppedLfoGate{timeProvider, ui_ptr->eocB, ui_ptr->cvOutB};
 
-Mode<BaseMode *> modeList[] = {mode1, mode2};
-
-int modeNumber = 0;
-void tick() {
-  
-}
-
-// Used to track state in between hardware ticks
-class LfoState {
+/*
+ * External LFO state
+ */
+class LowStepperState {
   public:
+    uint32_t lastBpmTime = 0;
     double bpm = 0;
-    double calculateBpm(bool);
+    BaseMode* activeMode;
+
+    LowStepperState(BaseMode* mode);
+    void tick(void);
 };
 
-double LfoState::calculateBpm(bool clockHigh)
-{
-  // if (clockHigh)
-  // {
-  //   uint32_t delta = (micros() - this->lastBpmMicros);
-  //   double newBpm = (60000.0 / (delta / 1000)) / 4;
-  //   this->lastBpmMicros = micros();
-  //   return newBpm;
-  // }
-
-  return this->bpm;
+LowStepperState::LowStepperState(BaseMode* mode) {
+  this->activeMode = mode;
 }
 
+void LowStepperState::tick(void) {
+  double freq;
+  uint32_t tickTime = timeProvider->getTime();
+  double potRateA = map((double) ui_ptr->potInRateA->getValue(), 1, 1023, 1, 5);
 
+  if(ui_ptr->clockInA->isCablePluggedIn()) {
+    if (ui_ptr->clockInA->checkTrigHigh())
+    {
+      uint32_t delta = (tickTime - this->lastBpmTime);
+      this->bpm = (60000.0 / (delta / 1000)) / 4;
+      this->lastBpmTime = tickTime;
+    }
 
-  // if(BPM_ENABLED) {
-  //   lfoStateA.bpm = lfoStateA.calculateBpm(ui.clockInA->checkTrigHigh());
-  //   int potRateA = map(ui.potInRateA->getValue(), 1, 1023, 1, 5);
-  //   lfoFreqA = lfoStateA.bpm / (15 * pow(2, potRateA));
-  // } else {
-  //   lfoFreqA = map((double) ui.potInRateA->getValue(), 1, 1023, MIN_LFO_FREQ, MAX_LFO_FREQ);
-  // }
+    freq = this->bpm / (15 * pow(2.0, potRateA));
+    if (this->bpm <= 0.1) {
+      //TODO remove duplicate
+      freq = map((double) ui_ptr->potInRateA->getValue(), 1, 1023, 0.01, 20000);
+    }
+  } else {
+    freq = map((double) ui_ptr->potInRateA->getValue(), 1, 1023, 0.01, 20000);
+  }
 
-  // int chunksA = map(ui.potInSegmentDivideA->getValue(), 1, 1023, 1, 8);
-  // double morphA = map((double) ui.potInMorphA->getValue(), 1, 1023, 0, 1);
+  int chunksAPot = map(ui_ptr->potInChunksA->getValue(), 1, 1023, 1, 16);
+  int chunksACV = map(ui_ptr->cvInChunksA->getValue(), 1, 1023, 1, 16);
 
+  double morphAPot = map((double) ui_ptr->potInMorphA->getValue(), 1, 1023, 0, 1);
+  double morphACV = map((double) ui_ptr->cvInMorphA->getValue(), 1, 1023, 0, 1);
+
+  bool isTrigHigh = ui_ptr->trigInA->checkTrigHigh();
+
+  this->activeMode->tick(
+    freq,
+    morphAPot,
+    chunksAPot,
+    isTrigHigh,
+    this->activeMode->phase,
+    this->activeMode->lastMicros
+  ); 
+}
+
+LowStepperState channelA{&t1};
+LowStepperState channelB{&t2};
+
+void selectaRunThaRecord(void) {
+  uint32_t tickTime = timeProvider->getTime();
+  ui_ptr->eocA->tick(tickTime);
+  ui_ptr->eocB->tick(tickTime);
+  channelA.tick();
+  channelB.tick();
+}

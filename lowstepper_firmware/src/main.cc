@@ -5,21 +5,21 @@
 #include "lowstepper.h"
 
 #define DEBUG_POT_VALUES 0
-#define DEBUG_CV_IN_VALUES 1
+#define DEBUG_CV_IN_VALUES 0
 #define DEBUG_TRIGGER_IN 0
 #define DEBUG_TRIGGER_OUT 0
 #define DEBUG_CV_OUT 0
 
 // Timer related stuff
-IntervalTimer main_timer;
+// IntervalTimer main_timer;
 
-static constexpr uint32_t CORE_ISR_FREQ = 3000U; // how much faster can I make this? lmao
-static constexpr uint32_t CORE_TIMER_RATE = (1000000UL / CORE_ISR_FREQ);
+// static constexpr uint32_t CORE_ISR_FREQ = 3000U; // how much faster can I make this? lmao
+// static constexpr uint32_t CORE_TIMER_RATE = (1000000UL / CORE_ISR_FREQ);
 
-void FASTRUN main_timer_ISR()
-{
-  // MAIN CODE HERE
-}
+// void FASTRUN main_timer_ISR()
+// {
+//   // MAIN CODE HERE
+// }
 
 void setup()
 {
@@ -31,7 +31,7 @@ void setup()
 
   getUI()->init();
 
-  main_timer.begin(main_timer_ISR, CORE_TIMER_RATE);
+  // main_timer.begin(main_timer_ISR, CORE_TIMER_RATE);
 }
 
 #if DEBUG_CV_OUT
@@ -46,18 +46,15 @@ uint32_t debug_eoc_b_time = millis();
 
 void loop()
 {
-  UI *ui = getUI();
   // Block interrupts when reading hardware I/O
-  noInterrupts()
-      ui->scan();
+    UI *ui = getUI();
+    ui->scan();
   // allow interrupts again
-  interrupts()
 
 /********************************************
  * DEBUG CODE BELOW
  * ENABLE VIA FLAGS AT THE TOP OF THIS FILE 
  ********************************************/
-
 #if DEBUG_POT_VALUES
       Serial.printf(
           "POTS:\tRATE_A: %d \t RATE_B: %d \t MORPH_A: %d \t MORPH_B: %d \t CHUNKS_A: %d \t CHUNKS_B: %d\n",
@@ -134,4 +131,6 @@ void loop()
   ui->eocA->tick(millis());
   ui->eocB->tick(millis());
 #endif
+
+  selectaRunThaRecord();
 }
