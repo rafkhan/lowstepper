@@ -50,17 +50,27 @@ class LowStepperState {
     BaseMode* activeMode;
 
     LowStepperState(BaseMode* mode);
-    void tick(void);
+    void tick(
+      PotIn* potRatePtr,
+      PotIn* potInChunksPtr,
+      PotIn* potInMorphPtr,
+      GateIn* gateIn
+    );
 };
 
 LowStepperState::LowStepperState(BaseMode* mode) {
   this->activeMode = mode;
 }
 
-void LowStepperState::tick(void) {
+void LowStepperState::tick(
+  PotIn* potRatePtr,
+  PotIn* potInChunksPtr,
+  PotIn* potInMorphPtr,
+  GateIn* gateIn
+) {
   double freq;
   uint32_t tickTime = timeProvider->getTime();
-  double potRateA = map((double) ui_ptr->potInRateA->getValue(), 1, 1023, 1, 5);
+  double potRateA = map((double) potRatePtr->getValue(), 1, 1023, 1, 5);
 
   if(ui_ptr->clockInA->isCablePluggedIn()) {
     if (ui_ptr->clockInA->checkTrigHigh())
@@ -73,19 +83,19 @@ void LowStepperState::tick(void) {
     freq = this->bpm / (15 * pow(2.0, potRateA));
     if (this->bpm <= 0.1) {
       //TODO remove duplicate
-      freq = map((double) ui_ptr->potInRateA->getValue(), 1, 1023, 0.01, 20000);
+      freq = map((double) potRatePtr->getValue(), 1, 1023, 0.01, 10);
     }
   } else {
-    freq = map((double) ui_ptr->potInRateA->getValue(), 1, 1023, 0.01, 20000);
+    freq = map((double) potRatePtr->getValue(), 1, 1023, 0.01, 10);
   }
 
-  int chunksAPot = map(ui_ptr->potInChunksA->getValue(), 1, 1023, 1, 16);
-  int chunksACV = map(ui_ptr->cvInChunksA->getValue(), 1, 1023, 1, 16);
+  int chunksAPot = map(potInChunksPtr->getValue(), 1, 1023, 1, 16);
+  // int chunksACV = map(ui_ptr->cvInChunksA->getValue(), 1, 1023, 1, 16);
 
-  double morphAPot = map((double) ui_ptr->potInMorphA->getValue(), 1, 1023, 0, 1);
-  double morphACV = map((double) ui_ptr->cvInMorphA->getValue(), 1, 1023, 0, 1);
+  double morphAPot = map((double) potInMorphPtr->getValue(), 1, 1023, 0, 1);
+  // double morphACV = map((double) ui_ptr->cvInMorphA->getValue(), 1, 1023, 0, 1);
 
-  bool isTrigHigh = ui_ptr->trigInA->checkTrigHigh();
+  bool isTrigHigh = gateIn->checkTrigHigh();
 
   this->activeMode->tick(
     freq,
@@ -104,6 +114,16 @@ void selectaRunThaRecord(void) {
   uint32_t tickTime = timeProvider->getTime();
   ui_ptr->eocA->tick(tickTime);
   ui_ptr->eocB->tick(tickTime);
-  channelA.tick();
-  channelB.tick();
+  channelA.tick(
+    ui_ptr->potInRateA,
+    ui_ptr->potInChunksA,
+    ui_ptr->potInMorphA,
+    ui_ptr->trigInA
+  );
+  channelB.tick(
+    ui_ptr->potInRateB,
+    ui_ptr->potInChunksB,
+    ui_ptr->potInMorphB,
+    ui_ptr->trigInB
+  );
 }
