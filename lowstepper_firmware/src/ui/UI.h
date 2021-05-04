@@ -4,20 +4,10 @@
 #include <Arduino.h>
 
 #include "GateIn.h"
+#include "GateOut.h"
 #include "PotIn.h"
 #include "CVIn.h"
-#include "TrigOut.h"
-
-#define PIN_DAC1 A22
-#define PIN_DAC0 A21
-#define PIN_TRIG_IN_A A20
-#define PIN_CLOCK_IN_A A19
-#define PIN_RATE_POT_A A9
-#define PIN_SEGMENT_DIVIDE_POT_A A8
-#define PIN_MORPH_POT_A A7
-#define PIN_RATE_CV_A 0
-#define PIN_SEGMENT_DIVIDE_CV_A 0
-#define PIN_MORPH_CV_A A6
+#include "CVOut.h"
 
 class UI
 {
@@ -28,32 +18,40 @@ public:
   void scan(void);
   int combineAnalogInputs(int, int);
 
+  //Outputs
+  CVOut* cvOutA;
+  CVOut* cvOutB;
+
+  // EOC
+  GateOut* eocA;
+  GateOut* eocB;
+
+  // TRIGGER INPUTS
   GateIn* trigInA;
-  GateIn* trigInB;
-
   GateIn* clockInA;
+  GateIn* resetInA;
+
+  GateIn* trigInB;
   GateIn* clockInB;
+  GateIn* resetInB;
 
+  // POT INPUTS
   PotIn* potInRateA;
-  PotIn* potInRateB;
-
-  PotIn* potInSegmentDivideA;
-  PotIn* potInSegmentDivideB;
-
   PotIn* potInMorphA;
+  PotIn* potInChunksA;
+
+  PotIn* potInRateB;
   PotIn* potInMorphB;
+  PotIn* potInChunksB;
 
+  // CV INPUTS
   CVIn* cvInRateA;
-  CVIn* cvInRateB;
-
-  CVIn* cvInSegmentDivideA;
-  CVIn* cvInSegmentDivideB;
-
   CVIn* cvInMorphA;
-  CVIn* cvInMorphB;
+  CVIn* cvInChunksA;
 
-  TrigOut* eocA;
-  TrigOut* eocB;
+  CVIn* cvInRateB;
+  CVIn* cvInMorphB;
+  CVIn* cvInChunksB;
 };
 
 #endif

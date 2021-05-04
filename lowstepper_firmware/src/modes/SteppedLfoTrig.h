@@ -82,10 +82,10 @@ float SteppedLfoTrig::tick(
       this->phase = TWO_PI;
     }
 
-    lastWriteValue = getMorphedOutput(morph, phase);
+    lastWriteValue = -1 * getMorphedOutput(morph, phase);
 
     this->dacWriter->write((int)(lastWriteValue * 2000.0) + 2050.0);
-  }
+  } 
 
   this->lastMicros = this->timeProvider->getTime();
   return lastWriteValue;

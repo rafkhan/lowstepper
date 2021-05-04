@@ -1,85 +1,112 @@
-#include "ui.h"
+#include "UI.h"
+#include "GateIn.h"
+#include "GateOut.h"
+#include "PotIn.h"
+#include "CVIn.h"
+#include "pins.h"
 
 UI::UI() {
-  this->trigInA = new GateIn(PIN_TRIG_IN_A);
-  this->trigInB = new GateIn(0);
+  // Triggers
+  this->trigInA = new GateIn(PIN_TRIG_IN_A, PIN_TRIG_IN_A_SENSE);
+  this->clockInA = new GateIn(PIN_CLK_IN_A, PIN_CLK_IN_A_SENSE);
+  this->resetInA = new GateIn(PIN_RESET_IN_A, PIN_RESET_IN_A_SENSE);
 
-  this->clockInA = new GateIn(PIN_CLOCK_IN_A);
-  this->clockInB = new GateIn(0);
-  
+  this->trigInB = new GateIn(PIN_TRIG_IN_B, PIN_TRIG_IN_B_SENSE);
+  this->clockInB = new GateIn(PIN_CLK_IN_B, PIN_CLK_IN_B_SENSE);
+  this->resetInB = new GateIn(PIN_RESET_IN_B, PIN_RESET_IN_B_SENSE);
+
+  // Pots
   this->potInRateA = new PotIn(PIN_RATE_POT_A);
-  this->potInRateB = new PotIn(0);
-
-  this->potInSegmentDivideA = new PotIn(PIN_SEGMENT_DIVIDE_POT_A);
-  this->potInSegmentDivideB = new PotIn(0);
-  
   this->potInMorphA = new PotIn(PIN_MORPH_POT_A);
-  this->potInMorphB = new PotIn(0);
+  this->potInChunksA = new PotIn(PIN_CHUNK_POT_A);
 
-  this->cvInRateA = new CVIn(PIN_RATE_POT_A);
-  this->cvInRateB = new CVIn(0);
-
-  this->cvInSegmentDivideA = new CVIn(PIN_SEGMENT_DIVIDE_CV_A);
-  this->cvInSegmentDivideB = new CVIn(0);
-
+  this->potInRateB = new PotIn(PIN_RATE_POT_B);
+  this->potInMorphB = new PotIn(PIN_MORPH_POT_B);
+  this->potInChunksB = new PotIn(PIN_CHUNK_POT_B);
+  
+  // CV in
+  this->cvInRateA = new CVIn(PIN_RATE_CV_A);
   this->cvInMorphA = new CVIn(PIN_MORPH_CV_A);
-  this->cvInMorphB = new CVIn(0);
+  this->cvInChunksA = new CVIn(PIN_CHUNK_CV_A);
 
-  this->eocA = new TrigOut(0);
-  this->eocB = new TrigOut(0);
+  this->cvInRateB = new CVIn(PIN_RATE_CV_B);
+  this->cvInMorphB = new CVIn(PIN_MORPH_CV_B);
+  this->cvInChunksB = new CVIn(PIN_CHUNK_CV_B);
+
+  // EOC
+  this->eocA = new GateOut(PIN_EOC_A);
+  this->eocB = new GateOut(PIN_EOC_B);
+
+  // CV Out
+  this->cvOutA = new CVOut(PIN_DAC_OUT_A);
+  this->cvOutB = new CVOut(PIN_DAC_OUT_B);
 }
 
 void UI::init(void) {
-  trigInA->init();
-  trigInB->init();
+  // Triggers
+  this->trigInA->init();
+  this->clockInA->init();
+  this->resetInA->init();
 
-  clockInA->init();
-  clockInB->init();
+  this->trigInB->init();
+  this->clockInB->init();
+  this->resetInB->init();
 
-  potInRateA->init();
-  potInRateB->init();
+  // Pots
+  this->potInRateA->init();
+  this->potInMorphA->init();
+  this->potInChunksA->init();
 
-  potInSegmentDivideA->init();
-  potInSegmentDivideB->init();
+  this->potInRateB->init();
+  this->potInMorphB->init();
+  this->potInChunksB->init();
+  
+  // CV in
+  this->cvInRateA->init();
+  this->cvInMorphA->init();
+  this->cvInChunksA->init();
 
-  potInMorphA->init();
-  potInMorphB->init();
+  this->cvInRateB->init();
+  this->cvInMorphB->init();
+  this->cvInChunksB->init();
 
-  cvInRateA->init();
-  cvInRateB->init();
+  // EOC
+  this->eocA->init();
+  this->eocB->init();
 
-  cvInSegmentDivideA->init();
-  cvInSegmentDivideB->init();
-
-  cvInMorphA->init();
-  cvInMorphB->init();
+  // CV Out
+  this->cvOutA->init();
+  this->cvOutB->init();
 }
 
 // get the everything from external hardware
 void UI::scan(void) {
-  trigInA->scan();
-  trigInB->scan();
+  // Triggers
+  this->trigInA->scan();
+  this->clockInA->scan();
+  this->resetInA->scan();
 
-  clockInA->scan();
-  clockInB->scan();
+  this->trigInB->scan();
+  this->clockInB->scan();
+  this->resetInB->scan();
 
-  potInRateA->scan();
-  potInRateB->scan();
+  // Pots
+  this->potInRateA->scan();
+  this->potInMorphA->scan();
+  this->potInChunksA->scan();
 
-  potInSegmentDivideA->scan();
-  potInSegmentDivideB->scan();
+  this->potInRateB->scan();
+  this->potInMorphB->scan();
+  this->potInChunksB->scan();
+  
+  // CV in
+  this->cvInRateA->scan();
+  this->cvInMorphA->scan();
+  this->cvInChunksA->scan();
 
-  potInMorphA->scan();
-  potInMorphB->scan();
-
-  cvInRateA->scan();
-  cvInRateB->scan();
-
-  cvInSegmentDivideA->scan();
-  cvInSegmentDivideB->scan();
-
-  cvInMorphA->scan();
-  cvInMorphB->scan();
+  this->cvInRateB->scan();
+  this->cvInMorphB->scan();
+  this->cvInChunksB->scan();
 }
 
 int UI::combineAnalogInputs(int potInput, int cvInput)

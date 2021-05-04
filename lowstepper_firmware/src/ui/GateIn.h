@@ -5,16 +5,19 @@ class GateIn
 {
 private:
   int pin;
+  int pinSense;
   bool isPinLow;
   bool isTrigHigh;
+  bool cableSensed;
 public:
-  GateIn(int pinNum);
+  GateIn(int pinNum, int pinSense);
   ~GateIn();
 
   void init(void);
   void scan(void);
-  bool checkGateHigh(void);
   bool checkTrigHigh(void);
+  bool isGateHigh(void);
+  bool isCablePluggedIn(void);
 };
 
 #endif

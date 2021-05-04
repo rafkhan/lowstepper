@@ -50,15 +50,16 @@ float SteppedLfoGate::tick(
   this->phase = inputPhase;
   this->lastMicros = lastTickTime;
 
-  // Always run high
+  // if (trigHigh)
+  // {
+  //   lfoRunning = true;
+  // } else {
+  //   lfoRunning = false;
+  // }
+
   if (trigHigh)
   {
-    lfoRunning = true;
-  }
-
-  if (lfoRunning)
-  {
-    uint32_t deltaTimeMicro = this->timeProvider->getTime() - lastMicros;
+    uint32_t deltaTimeMicro = this->timeProvider->getTime() - this->lastMicros;
     double inc = (deltaTimeMicro / (1000000.0 / frequency)) * TWO_PI;
 
     this->phase += inc;

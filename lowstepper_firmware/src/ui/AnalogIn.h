@@ -5,14 +5,14 @@ class AnalogIn
 {
 private:
   int pin;
-  double value;
+  int value;
 public:
   AnalogIn(int pinNum);
   ~AnalogIn();
 
   void init(void);
   void scan(void);
-  double getValue();
+  int getValue();
 };
 
 #endif

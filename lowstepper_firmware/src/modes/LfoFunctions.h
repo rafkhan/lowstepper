@@ -3,8 +3,13 @@
 
 #include "../util.h"
 
+#ifndef PI
 #define PI 3.14159265359
+#endif
+
+#ifndef TWO_PI
 #define TWO_PI 6.28318530718
+#endif
 
 /**
  * All of the following functions take a phase input from 0 - TWO_PI

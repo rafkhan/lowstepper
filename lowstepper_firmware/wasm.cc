@@ -58,9 +58,11 @@ extern "C"
   public:
     virtual void setHighForDuration(uint32_t currentTime, uint32_t duration);
     virtual void sendTrig(uint32_t currentTime);
+    virtual void tick(uint32_t currentTime);
   };
   void TrigWriterStub::setHighForDuration(uint32_t currentTime, uint32_t duration) {}
   void TrigWriterStub::sendTrig(uint32_t currentTime) {}
+  void TrigWriterStub::tick(uint32_t currentTime) {}
 
   class DACWriterStub : public DACWriter
   {
