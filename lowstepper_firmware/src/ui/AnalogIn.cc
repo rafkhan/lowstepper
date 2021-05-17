@@ -14,7 +14,7 @@ void AnalogIn::init() {
 }
 
 void AnalogIn::scan() {
-  this->value = analogRead(this->pin);
+  this->value = 1024 - analogRead(this->pin);
 }
 
 int AnalogIn::getValue() {

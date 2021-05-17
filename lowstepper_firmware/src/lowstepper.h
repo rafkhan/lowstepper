@@ -6,8 +6,15 @@
 #include "ui/ui.h"
 
 #define BPM_ENABLED true
-#define MIN_LFO_FREQ 0.01 
-#define MAX_LFO_FREQ 20000
+#define MIN_LFO_FREQ 0.03125 // == 1/64 
+#define MAX_LFO_FREQ 16
+
+double combinePotAndCvValue(double potInput, double cvInput) {
+  double v = potInput + (cvInput - 511.0);
+  if (v > 1023) { return 1023.0; }
+  if (v <= 0) { return 0.0; }
+  return v;
+}
 
 UI ui;
 UI* ui_ptr = &ui;
@@ -54,6 +61,9 @@ class LowStepperState {
       PotIn* potRatePtr,
       PotIn* potInChunksPtr,
       PotIn* potInMorphPtr,
+      CVIn* cvInRate,
+      CVIn* cvInMorph,
+      CVIn* cvInChunks,
       GateIn* gateIn
     );
 };
@@ -63,14 +73,17 @@ LowStepperState::LowStepperState(BaseMode* mode) {
 }
 
 void LowStepperState::tick(
-  PotIn* potRatePtr,
-  PotIn* potInChunksPtr,
-  PotIn* potInMorphPtr,
+  PotIn* potRate,
+  PotIn* potInChunks,
+  PotIn* potInMorph,
+  CVIn* cvInRate,
+  CVIn* cvInMorph,
+  CVIn* cvInChunks,
   GateIn* gateIn
 ) {
   double freq;
   uint32_t tickTime = timeProvider->getTime();
-  double potRateA = map((double) potRatePtr->getValue(), 1, 1023, 1, 5);
+
 
   if(ui_ptr->clockInA->isCablePluggedIn()) {
     if (ui_ptr->clockInA->checkTrigHigh())
@@ -80,27 +93,60 @@ void LowStepperState::tick(
       this->lastBpmTime = tickTime;
     }
 
+    double potRateA = map(
+      combinePotAndCvValue(
+        potRate->getValue(),
+        cvInRate->getValue()
+      ),
+      1, 1023, 1, 5
+    );
+
     freq = this->bpm / (15 * pow(2.0, potRateA));
+
     if (this->bpm <= 0.1) {
       //TODO remove duplicate
-      freq = map((double) potRatePtr->getValue(), 1, 1023, 0.01, 10);
+      freq = map(
+        combinePotAndCvValue(
+        potRate->getValue(),
+        cvInRate->getValue()
+        ),
+        1, 1023, MIN_LFO_FREQ, MAX_LFO_FREQ
+      );
     }
   } else {
-    freq = map((double) potRatePtr->getValue(), 1, 1023, 0.01, 10);
+    freq = map(
+      combinePotAndCvValue(
+        potRate->getValue(),
+        cvInRate->getValue()
+      ),
+      1, 1023, MIN_LFO_FREQ, MAX_LFO_FREQ
+    );
   }
 
-  int chunksAPot = map(potInChunksPtr->getValue(), 1, 1023, 1, 16);
-  // int chunksACV = map(ui_ptr->cvInChunksA->getValue(), 1, 1023, 1, 16);
+  int chunks = map(
+    combinePotAndCvValue(
+      (double) potInChunks->getValue(),
+      (double) cvInChunks->getValue()
+    ),
+    1, 1023, 1, 8
+  );
 
-  double morphAPot = map((double) potInMorphPtr->getValue(), 1, 1023, 0, 1);
-  // double morphACV = map((double) ui_ptr->cvInMorphA->getValue(), 1, 1023, 0, 1);
+  double morph = map(
+    combinePotAndCvValue(
+      (double) potInMorph->getValue(),
+      (double) cvInMorph->getValue()
+    ),
+    1, 1023, 0, 1
+  );
 
   bool isTrigHigh = gateIn->checkTrigHigh();
 
+  // Serial.println(morph);
+
   this->activeMode->tick(
     freq,
-    morphAPot,
-    chunksAPot,
+    morph,
+    chunks,
     isTrigHigh,
     this->activeMode->phase,
     this->activeMode->lastMicros
@@ -113,17 +159,23 @@ LowStepperState channelB{&t2};
 void selectaRunThaRecord(void) {
   uint32_t tickTime = timeProvider->getTime();
   ui_ptr->eocA->tick(tickTime);
-  ui_ptr->eocB->tick(tickTime);
+  // ui_ptr->eocB->tick(tickTime);
   channelA.tick(
     ui_ptr->potInRateA,
     ui_ptr->potInChunksA,
     ui_ptr->potInMorphA,
+    ui_ptr->cvInRateA,
+    ui_ptr->cvInMorphA,
+    ui_ptr->cvInChunksA,
     ui_ptr->trigInA
   );
-  channelB.tick(
-    ui_ptr->potInRateB,
-    ui_ptr->potInChunksB,
-    ui_ptr->potInMorphB,
-    ui_ptr->trigInB
-  );
+  // channelB.tick(
+  //   ui_ptr->potInRateB,
+  //   ui_ptr->potInChunksB,
+  //   ui_ptr->potInMorphB,
+  //   ui_ptr->cvInRateB,
+  //   ui_ptr->cvInMorphB,
+  //   ui_ptr->cvInChunksB,
+  //   ui_ptr->trigInB
+  // );
 }
