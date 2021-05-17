@@ -70,10 +70,9 @@ float SteppedLfoTrig::tick(
 
     if (this->phase >= ((TWO_PI / divisions) * nextStopPosition))
     {
-      incrementNextStep(divisions);
-
-      // Stop if in Trig mode
       lfoRunning = false;
+      incrementNextStep(divisions);
+      this->trigWriter->setHighForDuration(timeProvider->getTime(), 1000);
     }
 
     if (this->phase >= TWO_PI)
