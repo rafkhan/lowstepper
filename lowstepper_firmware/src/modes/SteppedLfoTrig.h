@@ -72,7 +72,7 @@ float SteppedLfoTrig::tick(
     {
       lfoRunning = false;
       incrementNextStep(divisions);
-      this->trigWriter->setHighForDuration(timeProvider->getTime(), 1000);
+      this->trigWriter->setHighForDuration(timeProvider->getTime(), 2000);
     }
 
     if (this->phase >= TWO_PI)
