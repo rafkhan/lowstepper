@@ -6,8 +6,8 @@
 #include "ui/ui.h"
 
 #define BPM_ENABLED true
-#define MIN_LFO_FREQ 0.03125 // == 1/64 
-#define MAX_LFO_FREQ 16
+#define MIN_LFO_FREQ 0.0078125 // == 1/128
+#define MAX_LFO_FREQ 4
 
 double combinePotAndCvValue(double potInput, double cvInput) {
   double v = potInput + (cvInput - 511.0);
@@ -124,10 +124,10 @@ void LowStepperState::tick(
   }
 
   int chunks = map(
-    combinePotAndCvValue(
+    // combinePotAndCvValue(
       (double) potInChunks->getValue(),
-      (double) cvInChunks->getValue()
-    ),
+      // (double) cvInChunks->getValue()
+    // ),
     1, 1023, 1, 8
   );
 
@@ -140,8 +140,6 @@ void LowStepperState::tick(
   );
 
   bool isTrigHigh = gateIn->checkTrigHigh();
-
-  // Serial.println(morph);
 
   this->activeMode->tick(
     freq,
@@ -159,7 +157,7 @@ LowStepperState channelB{&t2};
 void selectaRunThaRecord(void) {
   uint32_t tickTime = timeProvider->getTime();
   ui_ptr->eocA->tick(tickTime);
-  // ui_ptr->eocB->tick(tickTime);
+  ui_ptr->eocB->tick(tickTime);
   channelA.tick(
     ui_ptr->potInRateA,
     ui_ptr->potInChunksA,
@@ -169,13 +167,15 @@ void selectaRunThaRecord(void) {
     ui_ptr->cvInChunksA,
     ui_ptr->trigInA
   );
-  // channelB.tick(
-  //   ui_ptr->potInRateB,
-  //   ui_ptr->potInChunksB,
-  //   ui_ptr->potInMorphB,
-  //   ui_ptr->cvInRateB,
-  //   ui_ptr->cvInMorphB,
-  //   ui_ptr->cvInChunksB,
-  //   ui_ptr->trigInB
-  // );
+
+  channelB.tick(
+    ui_ptr->potInRateB,
+    ui_ptr->potInChunksB,
+    ui_ptr->potInMorphB,
+    // TEMPORARY NORMALLED CV BECAUSE HARDWARE ISSUES
+    ui_ptr->cvInRateA,
+    ui_ptr->cvInMorphA,
+    ui_ptr->cvInChunksA,
+    ui_ptr->trigInB
+  );
 }

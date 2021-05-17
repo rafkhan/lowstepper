@@ -4,7 +4,7 @@
 #include "ui/UI.h"
 #include "lowstepper.h"
 
-#define DEBUG_POT_VALUES 0
+#define DEBUG_POT_VALUES 1
 #define DEBUG_CV_IN_VALUES 0
 #define DEBUG_TRIGGER_IN 0
 #define DEBUG_TRIGGER_OUT 0
