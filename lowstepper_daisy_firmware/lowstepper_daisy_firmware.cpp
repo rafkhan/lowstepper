@@ -6,26 +6,23 @@ using namespace daisysp;
 
 DaisySeed hw;
 
+float SAMPLE_RATE = 48000;
+
 void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out, size_t size)
 {
-	for (size_t i = 0; i < size; i++)
-	{
-		out[0][i] = in[0][i];
-		out[1][i] = in[1][i];
-	}
+	// for (size_t i = 0; i < size; i++)
+	// {
+	// 	out[0][i] = in[0][i];
+	// 	out[1][i] = in[1][i];
+	// }
 }
 
 int main(void)
 {
-	bool led_state;
-	led_state = true;
-
+	hw.SetAudioSampleRate(SaiHandle::Config::SampleRate::SAI_48KHZ);
 	hw.Configure();
 	hw.Init();
 	hw.StartAudio(AudioCallback);
-	while(1) {
-		hw.SetLed(led_state);
-		led_state = !led_state;
-		System::Delay(500);
-	}
+
+	while(1) {}
 }
