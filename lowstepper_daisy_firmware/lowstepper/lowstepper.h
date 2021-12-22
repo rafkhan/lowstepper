@@ -1,31 +1,17 @@
-#ifndef BASEMODE_H
-#define BASEMODE_H
+#include "LowStepperChannel.h"
+#include <cstddef>
 
-#include <stdint.h>
+typedef void (* LSCallback) (LowStepperOutput[], size_t);
 
-class GateOutput
-{
-public:
-  virtual void outputGateForDuration(uint32_t sampleDuration) = 0;
-  virtual void outputTrig(void) = 0;
-  virtual void tick(void) = 0;
-};
-
-struct LowStepperOutput {
-  bool eocGateHigh;
-  float cvOutput; 
-};
-
-class LowStepper 
-{
-  private:
-    volatile double phase = 0;
+class LowStepper {
   public:
-    LowStepper();
-    virtual LowStepperOutput tick(
-      float frequency,
-      bool trigIn
-    ) = 0;
-};
+    LowStepper(LowStepperChannel *a, LowStepperChannel *b);
+    LowStepperOutput* tick();
 
-#endif
+  private:
+    LowStepperChannel* lsA;
+    LowStepperChannel* lsB;
+
+    float lastPhaseA = 0.0f;
+    float lastPhaseB = 0.0f;
+};
