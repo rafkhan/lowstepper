@@ -58,7 +58,7 @@ int main(void)
 
 	osc.Init(sampleRate);
 	osc.SetWaveform(osc.WAVE_SIN);
-	osc.SetFreq(1); // audible freq
+	osc.SetFreq(0.1); // audible freq
 	osc.SetAmp(1);
 
 	seed.StartAudio(AudioCallback);
