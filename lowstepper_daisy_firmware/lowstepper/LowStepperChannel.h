@@ -17,15 +17,16 @@ struct LowStepperOutput {
   float phase;
 };
 
+struct LowStepperInput {
+  float phase;
+  float frequency;
+};
+
 class LowStepperChannel
 {
   public:
     LowStepperChannel();
-    LowStepperOutput tick(
-      float frequency,
-      float inputPhase,
-      bool trigIn
-    );
+    LowStepperOutput tick(LowStepperInput);
 };
 
 #endif

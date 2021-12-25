@@ -7,6 +7,7 @@
     "initializer_list": "cpp",
     "regex": "cpp",
     "utility": "cpp",
-    "cstddef": "cpp"
+    "cstddef": "cpp",
+    "chrono": "cpp"
   }
 }

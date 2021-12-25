@@ -1,17 +1,13 @@
 #include "LowStepper.h"
 #include "LowStepperChannel.h"
 
-LowStepper::LowStepper(LowStepperChannel *a, LowStepperChannel *b) {
-  this->lsA = a;
-  this->lsB = b;
+LowStepper::LowStepper(LowStepperChannel *channels, size_t channelCount) {
+  this->channels = channels;
+  this->channelCount = channelCount;
 }
 
-LowStepperOutput* LowStepper::tick() {
-  LowStepperOutput outA = this->lsA->tick(1, this->lastPhaseA, true);
-  LowStepperOutput outB = this->lsB->tick(2, this->lastPhaseB, true);
-  this->lastPhaseA = outA.phase;
-  this->lastPhaseB = outA.phase;
-
-  LowStepperOutput outs [2]  = {outA, outB};
-  return outs;
+void LowStepper::tick(LowStepperInput *inputs, LowStepperOutput outputs[]) {
+  for(int c = 0; c < (int) this->channelCount; c++) {
+    outputs[c] = this->channels[c].tick(inputs[c]);
+  }
 }

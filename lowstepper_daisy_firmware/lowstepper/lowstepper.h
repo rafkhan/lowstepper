@@ -5,13 +5,10 @@ typedef void (* LSCallback) (LowStepperOutput[], size_t);
 
 class LowStepper {
   public:
-    LowStepper(LowStepperChannel *a, LowStepperChannel *b);
-    LowStepperOutput* tick();
+    LowStepper(LowStepperChannel *channels, size_t channelCount);
+    void tick(LowStepperInput *inputs, LowStepperOutput outputs[]);
 
   private:
-    LowStepperChannel* lsA;
-    LowStepperChannel* lsB;
-
-    float lastPhaseA = 0.0f;
-    float lastPhaseB = 0.0f;
+    LowStepperChannel* channels;
+    size_t channelCount;
 };
