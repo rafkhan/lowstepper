@@ -1,0 +1,37 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#(c) SnapEDA 2016 (snapeda.com)
+#This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA) with Design Exception 1.0
+#
+# PJ398SM-12
+#
+DEF PJ398SM-12 J 0 40 Y N 1 L N
+F0 "J" -200 100 50 H V L BNN
+F1 "PJ398SM-12" -200 -350 50 H V L BNN
+F2 "THONK_PJ398SM-12" 0 0 50 H I L BNN
+F3 "" 0 0 50 H I L BNN
+F4 "14.5 mm" 0 0 50 H I L BNN "MAXIMUM_PACKAGE_HEIGHT"
+F5 "Thonk" 0 0 50 H I L BNN "MANUFACTURER"
+F6 "1" 0 0 50 H I L BNN "PARTREV"
+F7 "Manufacturer Recommendations" 0 0 50 H I L BNN "STANDARD"
+DRAW
+P 2 0 0 10 200 0 -200 0 N
+P 2 0 0 10 200 -200 -50 -200 N
+P 2 0 0 10 -200 0 -200 -50 N
+P 2 0 0 10 -200 -50 -175 -50 N
+P 2 0 0 10 -175 -50 -175 -150 N
+P 2 0 0 10 -175 -150 -225 -150 N
+P 2 0 0 10 -225 -150 -225 -50 N
+P 2 0 0 10 -225 -50 -200 -50 N
+P 2 0 0 10 -50 -200 -75 -175 N
+P 2 0 0 10 -75 -175 -100 -200 N
+P 2 0 0 10 0 -100 0 -200 N
+P 3 0 0 10 0 -170 10 -140 -10 -140 f
+P 2 0 0 10 0 -100 200 -100 N
+X ~ 1 300 0 100 L 40 40 0 0 P 
+X ~ 2 300 -100 100 L 40 40 0 0 P 
+X ~ 3 300 -200 100 L 40 40 0 0 P 
+ENDDRAW
+ENDDEF
+#
+# End Library

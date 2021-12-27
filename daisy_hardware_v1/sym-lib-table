@@ -1,0 +1,4 @@
+(sym_lib_table
+  (lib (name "lowstepper_internal_lib")(type "KiCad")(uri "${KIPRJMOD}/lowstepper_internal_lib.kicad_sym")(options "")(descr ""))
+  (lib (name "PJ398SM-12")(type "Legacy")(uri "${KIPRJMOD}/external_libraries/PJ398SM-12/PJ398SM-12.lib")(options "")(descr ""))
+)
