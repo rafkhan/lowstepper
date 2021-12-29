@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name "lowstepper_internal_footprint_lib")(type "KiCad")(uri "${KIPRJMOD}/lowstepper_internal_footprint_lib.pretty")(options "")(descr ""))
+)
