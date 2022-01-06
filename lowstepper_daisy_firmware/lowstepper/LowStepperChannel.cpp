@@ -4,16 +4,21 @@
 #include "util.h"
 #include "config.h"
 
-float sampleLength = (1.0f/48000.0f)*1000000.0f;
 
-LowStepperChannel::LowStepperChannel() {}
+LowStepperChannel::LowStepperChannel(float sampleRate) {
+  this->sampleRate = sampleRate;
+  this->sampleLength = (1.0f/sampleRate)*1000000.0f;
+}
 
 LowStepperOutput LowStepperChannel::tick(LowStepperInput input) {
-    float phaseIncrement = (sampleLength / (1000000.0 / input.frequency)) * TWO_PI;
+    float phaseIncrement = (this->sampleLength / (1000000.0 / input.frequency)) * TWO_PI;
     float phase = input.phase + phaseIncrement;
-    if (phase > TWO_PI)
+    float startPhase = TWO_PI * input.start;
+    float endPhase = startPhase + (TWO_PI * input.length);
+
+    if (phase > endPhase)
     {
-      phase = phase - TWO_PI;
+      phase = startPhase + (phase - endPhase);
     }
 
     LowStepperOutput output;

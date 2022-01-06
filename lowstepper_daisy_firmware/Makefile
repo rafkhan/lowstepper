@@ -1,6 +1,8 @@
 # Project Name
 TARGET = lowstepper_daisy_firmware
 
+LDFLAGS += -u _printf_float
+
 # Sources
 CPP_SOURCES = lowstepper_daisy_firmware.cpp
 CPP_SOURCES += lowstepper/LowStepper.cpp

@@ -20,12 +20,17 @@ struct LowStepperOutput {
 struct LowStepperInput {
   float phase;
   float frequency;
+  float start; // 0 - 1
+  float length; // 0 - 1
 };
 
 class LowStepperChannel
 {
+  private:
+    float sampleRate;
+    float sampleLength;
   public:
-    LowStepperChannel();
+    LowStepperChannel(float sampleRate);
     LowStepperOutput tick(LowStepperInput);
 };
 
