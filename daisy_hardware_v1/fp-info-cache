@@ -1,4 +1,4 @@
-19799848565838928
+19801490320714748
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -84480,8 +84480,8 @@ DAISY_SEED_OKAYSYNTH
 
 
 0
-0
-0
+40
+40
 lowstepper_internal_footprint_lib
 THONK_PJ398SM-12
 
@@ -84489,3 +84489,10 @@ THONK_PJ398SM-12
 0
 3
 3
+lowstepper_internal_footprint_lib
+dailywell_sw_spdt
+
+
+0
+0
+0
