@@ -40,15 +40,11 @@ uint8_t x = 0;
 
 const size_t channelCount = 2;
 LowStepperOutput outputs[channelCount] = { NULL, NULL };
-LowStepper *lowStepper;
-
-// Init output array
 LowStepperOutput o { 0, 0, false };
 LowStepperOutput o2 { 0, 0, false };
-// o.phase = 0;
-// o.cvOutput = 0;
-// o.eocGateHigh = false;
+LowStepper *lowStepper;
 
+int counter = 0;
 
 void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 									 AudioHandle::InterleavingOutputBuffer out,
@@ -56,29 +52,41 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 {
 
 	x = dsy_gpio_read(&gate_in);
+	counter = (counter + 1) % 4;
 
-	// cvIn = hw.adc.GetFloat(0);
+	switch(counter) {
+		case 0:
+			ratePot = hw.adc.GetMuxFloat(0, 0);
+			break;
+		case 1:
+			morphPot = hw.adc.GetMuxFloat(0, 1);
+			break;
+		case 2:
+			startPot = hw.adc.GetMuxFloat(0, 2);
+			break;
+		case 3:
+			endPot = hw.adc.GetMuxFloat(0, 3);
+			break;
+	}
 
-	// ratePot = hw.adc.GetMuxFloat(0, 0);
-	// morphPot = hw.adc.GetMuxFloat(0, 1);
 	// startPot = hw.adc.GetMuxFloat(0, 2);
-	// endPot = hw.adc.GetMuxFloat(0, 3);
 
 	// Read hardware state into memory for entire block of samples
 
 	for (size_t n = 0; n < size; n += 2)
 	{
 		LowStepperInput input;
-		input.frequency = 1;
+		input.frequency = 100;
 		input.phase = outputs[0].phase;
 		input.start = 0.8f;
 		input.length = 0.5;
 
 		LowStepperInput input2;
-		input2.frequency = 2;
+		input2.frequency = 20;
 		input2.phase = outputs[1].phase;
 		input2.start = 0.1f;
 		input2.length = 1;
+
 		LowStepperInput inputs[2] = { input, input2 };
 
 		// Process inputs array, dump into outputs array
@@ -87,8 +95,10 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 		float y = outputs[0].cvOutput;
 		cvCh1 = outputs[0].cvOutput;
 		cvCh2 = outputs[1].cvOutput;
-		out[n] = y;
-		out[n + 1] = y * -1.0f;
+
+		// Don't do anything.
+		out[n] = 0;
+		out[n + 1] = 0;
 	}
 }
 
@@ -96,7 +106,7 @@ void initAdc() {
 	// Init ADC
 	AdcChannelConfig adc[1];
 	// adc[0].InitSingle(hw.GetPin(15));
-	adc[0].InitMux(hw.GetPin(15), 4, hw.GetPin(14), hw.GetPin(13), hw.GetPin(12));
+	adc[0].InitMux(hw.GetPin(15), 4, hw.GetPin(4), hw.GetPin(3), hw.GetPin(2));
 	hw.adc.Init(adc, 1);
 	hw.adc.Start();
 }
@@ -145,7 +155,6 @@ int main(void)
 	// Init Daisy
 	hw.Configure();
 	hw.Init();
-	hw.SetAudioBlockSize(32);
 	hw.SetAudioSampleRate(SaiHandle::Config::SampleRate::SAI_48KHZ);
 	sampleRate = hw.AudioSampleRate();
 
@@ -164,17 +173,17 @@ int main(void)
 	LowStepperChannel *lsChannels[channelCount] = { channelA, channelB }; // use this
 	lowStepper = new LowStepper(lsChannels, channelCount);
 
+	hw.SetAudioBlockSize(1);
 	hw.StartAudio(AudioCallback);
  
 	for (;;)
 	{
 		writeDac();
 
-		// hw.PrintLine("RATE: %f\tMORPH: %f\tSTART: %f\tEND: %f\t", ratePot, morphPot, startPot, endPot);
-		// if(x) {
-		// 	hw.PrintLine("HIGH");
-		// } else {
-		// 	hw.PrintLine("LOW");
-		// }
+
+#if DEBUG
+		hw.PrintLine("RATE: %f\tMORPH: %f\tSTART: %f\tEND: %f\t", ratePot, morphPot, startPot, endPot);
+#endif
 	}
+
 }
