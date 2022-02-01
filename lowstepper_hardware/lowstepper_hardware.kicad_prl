@@ -1,8 +1,8 @@
 {
   "board": {
-    "active_layer": 31,
+    "active_layer": 0,
     "active_layer_preset": "",
-    "auto_track_width": false,
+    "auto_track_width": true,
     "hidden_nets": [],
     "high_contrast_mode": 0,
     "net_color_mode": 1,
@@ -61,11 +61,11 @@
       35,
       36
     ],
-    "visible_layers": "7f0ffff_80000007",
+    "visible_layers": "000ffff_8000001f",
     "zone_display_mode": 0
   },
   "meta": {
-    "filename": "daisy_hardware_v1.kicad_prl",
+    "filename": "lowstepper_hardware.kicad_prl",
     "version": 3
   },
   "project": {

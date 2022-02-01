@@ -31,6 +31,17 @@
             "toolchainBinDir": "/Users/rafy/.platformio/packages/toolchain-gccarmnoneeabi/bin",
             "internalConsoleOptions": "openOnSessionStart",
             "svdPath": "/Users/rafy/.platformio/platforms/teensy/misc/svd/MK64F12.svd"
+        },
+        {
+            "type": "platformio-debug",
+            "request": "launch",
+            "name": "PIO Debug (without uploading)",
+            "executable": "/Users/rafy/Developer/lowstepper/lowstepper_firmware/.pio/build/teensy35/firmware.elf",
+            "projectEnvName": "teensy35",
+            "toolchainBinDir": "/Users/rafy/.platformio/packages/toolchain-gccarmnoneeabi/bin",
+            "internalConsoleOptions": "openOnSessionStart",
+            "svdPath": "/Users/rafy/.platformio/platforms/teensy/misc/svd/MK64F12.svd",
+            "loadMode": "manual"
         }
     ]
 }

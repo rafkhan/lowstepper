@@ -1,0 +1,5 @@
+Ref,Val,Package,PosX,PosY,Rot,Side
+"J6","Conn_01x18_Male","PinHeader_1x18_P2.54mm_Vertical",-67.686400,-41.148000,90.000000,bottom
+"J9","Conn_01x18_Male","PinHeader_1x18_P2.54mm_Vertical",-24.536400,-142.748000,-90.000000,bottom
+"J20","Conn_01x18_Female","PinSocket_1x18_P2.54mm_Vertical",-67.686400,-162.789000,90.000000,bottom
+"J21","Conn_01x18_Female","PinSocket_1x18_P2.54mm_Vertical",-24.536400,-264.007600,-90.000000,bottom
