@@ -69,8 +69,6 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 			break;
 	}
 
-	// startPot = hw.adc.GetMuxFloat(0, 2);
-
 	// Read hardware state into memory for entire block of samples
 
 	for (size_t n = 0; n < size; n += 2)
@@ -134,10 +132,6 @@ void initDac() {
 	hw.dac.WriteValue(DacHandle::Channel::BOTH, 0);
 	hw.dac.WriteValue(DacHandle::Channel::ONE, 0); // CV0
 	hw.dac.WriteValue(DacHandle::Channel::TWO, 0); // CV1
-}
-
-void initLowstepperApplication(void) {
-
 }
 
 void writeDac(void) {
