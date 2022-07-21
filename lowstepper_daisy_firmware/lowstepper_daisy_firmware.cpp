@@ -31,10 +31,43 @@ float cvCh1 = 0;
 float cvCh2 = 0;
 float cvIn = 0;
 
-float ratePot = 0;
-float morphPot = 0;
-float startPot = 0;
-float endPot = 0;
+float mux1In0 = 0;
+float mux1In1 = 0;
+float mux1In2 = 0;
+float mux1In3 = 0;
+float mux1In4 = 0;
+float mux1In5 = 0;
+float mux1In6 = 0;
+float mux1In7 = 0;
+
+float mux2In0 = 0;
+float mux2In1 = 0;
+float mux2In2 = 0;
+float mux2In3 = 0;
+float mux2In4 = 0;
+float mux2In5 = 0;
+float mux2In6 = 0;
+float mux2In7 = 0;
+
+const int MUX1ADC = 28;
+const int MUX1S0 = 27;
+const int MUX1S1 = 26;
+const int MUX1S2 = 25;
+
+const int MUX2ADC = 24;
+const int MUX2S0 = 3;
+const int MUX2S1 = 2;
+const int MUX2S2 = 1;
+
+const int SYNC_A = 14;
+const int SYNC_B = 12;
+const int RESET_A = 15;
+const int RESET_B = 16;
+
+const int RESET_B_DETECT = 6;
+const int SYNC_B_DETECT = 7;
+const int RESET_A_DETECT = 8;
+const int SYNC_A_DETECT = 9;
 
 uint8_t x = 0;
 
@@ -52,20 +85,59 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 {
 
 	x = dsy_gpio_read(&gate_in);
-	counter = (counter + 1) % 4;
+	counter = (counter + 1) % 7;
 
 	switch(counter) {
 		case 0:
-			ratePot = hw.adc.GetMuxFloat(0, 0);
+			mux1In0 = hw.adc.GetMuxFloat(0, 0);
 			break;
 		case 1:
-			morphPot = hw.adc.GetMuxFloat(0, 1);
+			mux1In1 = hw.adc.GetMuxFloat(0, 1);
 			break;
 		case 2:
-			startPot = hw.adc.GetMuxFloat(0, 2);
+			mux1In2 = hw.adc.GetMuxFloat(0, 2);
 			break;
 		case 3:
-			endPot = hw.adc.GetMuxFloat(0, 3);
+			mux1In3 = hw.adc.GetMuxFloat(0, 3);
+			break;
+		case 4:
+			mux1In4 = hw.adc.GetMuxFloat(0, 4);
+			break;
+		case 5:
+			mux1In5 = hw.adc.GetMuxFloat(0, 5);
+			break;
+		case 6:
+			mux1In6 = hw.adc.GetMuxFloat(0, 6);
+			break;
+		case 7:
+			mux1In7 = hw.adc.GetMuxFloat(0, 7);
+			break;
+	}
+
+	switch(counter) {
+		case 0:
+			mux2In1 = hw.adc.GetMuxFloat(1, 0);
+			break;
+		case 1:
+			mux2In1 = hw.adc.GetMuxFloat(1, 1);
+			break;
+		case 2:
+			mux2In2 = hw.adc.GetMuxFloat(1, 2);
+			break;
+		case 3:
+			mux2In3 = hw.adc.GetMuxFloat(1, 3);
+			break;
+		case 4:
+			mux2In4 = hw.adc.GetMuxFloat(1, 4);
+			break;
+		case 5:
+			mux2In5 = hw.adc.GetMuxFloat(1, 5);
+			break;
+		case 6:
+			mux2In6 = hw.adc.GetMuxFloat(1, 6);
+			break;
+		case 7:
+			mux2In7 = hw.adc.GetMuxFloat(1, 7);
 			break;
 	}
 
@@ -100,17 +172,17 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 	}
 }
 
+
+
 void initAdc() {
-	// Init ADC
-	AdcChannelConfig adc[1];
-	// adc[0].InitSingle(hw.GetPin(15));
-	adc[0].InitMux(hw.GetPin(15), 4, hw.GetPin(4), hw.GetPin(3), hw.GetPin(2));
-	hw.adc.Init(adc, 1);
+	AdcChannelConfig adc[2];
+	adc[0].InitMux(hw.GetPin(MUX1ADC), 8, hw.GetPin(MUX1S0), hw.GetPin(MUX1S1), hw.GetPin(MUX1S2));
+	adc[1].InitMux(hw.GetPin(MUX2ADC), 8, hw.GetPin(MUX2S0), hw.GetPin(MUX2S1), hw.GetPin(MUX2S2));
+	hw.adc.Init(adc, 2);
 	hw.adc.Start();
 }
 
 void initGpioIn() {
-	// INIT GPIO
 	gate_in.pin  = hw.GetPin(1);
 	gate_in.mode = DSY_GPIO_MODE_INPUT;
 	gate_in.pull = DSY_GPIO_PULLUP;
@@ -154,6 +226,8 @@ int main(void)
 
 #if DEBUG
   hw.StartLog();
+	// Logger<LOGGER_SEMIHOST>::StartLog();
+	System::Delay(500);
 #endif
 
 	initDac();
@@ -176,7 +250,11 @@ int main(void)
 
 
 #if DEBUG
-		hw.PrintLine("RATE: %f\tMORPH: %f\tSTART: %f\tEND: %f\t", ratePot, morphPot, startPot, endPot);
+		// Logger<LOGGER_SEMIHOST>::PrintLine("test");
+		// hw.PrintLine("RATE: %f\tMORPH: %f\tSTART: %f\tEND: %f\t", ratePot, morphPot, startPot, endPot);
+		// hw.PrintLine("RATE2: %f\tMORPH2: %f\tSTART2: %f\tEND2: %f\t", ratePot2, morphPot2, startPot2, endPot2);
+		// hw.PrintLine("%f", mux2In5);
+		// System::Delay(10);
 #endif
 	}
 
