@@ -13,14 +13,24 @@ uint16_t mapFFII(float x, float in_min, float in_max, int out_min, int out_max)
 	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
-#define PIN_GATE_IN 2 // this is the daisy pin number
-
 using namespace daisy;
 using namespace daisysp;
 
+Metro tick;
+int eocAValue = 1;
+int eocBValue = 0;
+
 // hardware objects
 static DaisySeed hw;
-dsy_gpio gate_in;
+
+dsy_gpio gpioResetA;
+uint8_t gpioResetAValue = 0;
+
+dsy_gpio gpioResetDetectA;
+uint8_t gpioResetDetectAValue = 0;
+
+GPIO gpioOutEocA;
+GPIO gpioOutEocB;
 
 // Config
 float sampleRate;
@@ -49,6 +59,7 @@ float mux2In5 = 0;
 float mux2In6 = 0;
 float mux2In7 = 0;
 
+// PIN MAPPING
 const int MUX1ADC = 28;
 const int MUX1S0 = 27;
 const int MUX1S1 = 26;
@@ -59,17 +70,12 @@ const int MUX2S0 = 3;
 const int MUX2S1 = 2;
 const int MUX2S2 = 1;
 
-const int SYNC_A = 14;
-const int SYNC_B = 12;
-const int RESET_A = 15;
-const int RESET_B = 16;
 
-const int RESET_B_DETECT = 6;
-const int SYNC_B_DETECT = 7;
-const int RESET_A_DETECT = 8;
-const int SYNC_A_DETECT = 9;
+#define PIN_RESET_A 13	
+#define PIN_RESET_DETECT_A 8
 
-uint8_t x = 0;
+#define PIN_EOC_A 20
+#define PIN_EOC_B 19
 
 const size_t channelCount = 2;
 LowStepperOutput outputs[channelCount] = { NULL, NULL };
@@ -79,14 +85,8 @@ LowStepper *lowStepper;
 
 int counter = 0;
 
-void AudioCallback(AudioHandle::InterleavingInputBuffer in,
-									 AudioHandle::InterleavingOutputBuffer out,
-									 size_t size)
-{
-
-	x = dsy_gpio_read(&gate_in);
-	counter = (counter + 1) % 7;
-
+void readAdc() {
+	counter = (counter + 1) % 8;
 	switch(counter) {
 		case 0:
 			mux1In0 = hw.adc.GetMuxFloat(0, 0);
@@ -116,7 +116,7 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 
 	switch(counter) {
 		case 0:
-			mux2In1 = hw.adc.GetMuxFloat(1, 0);
+			mux2In0 = hw.adc.GetMuxFloat(1, 0);
 			break;
 		case 1:
 			mux2In1 = hw.adc.GetMuxFloat(1, 1);
@@ -139,6 +139,27 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 		case 7:
 			mux2In7 = hw.adc.GetMuxFloat(1, 7);
 			break;
+	}
+}
+
+void AudioCallback(AudioHandle::InterleavingInputBuffer in,
+									 AudioHandle::InterleavingOutputBuffer out,
+									 size_t size)
+{
+
+	gpioResetAValue = dsy_gpio_read(&gpioResetA);
+	gpioResetDetectAValue = dsy_gpio_read(&gpioResetDetectA);
+	readAdc();
+
+	if(tick.Process()) {
+		// dsy_gpio_write(&gpioOutEocA, eocAValue);
+		// dsy_gpio_write(&gpioOutEocB, eocBValue);
+		// gpioOutEocA.Write(eocAValue);
+		// gpioOutEocB.Write(eocBValue);
+		// eocAValue	= !eocAValue;
+		// eocBValue	= !eocBValue;
+		// gpioOutEocA.Toggle();
+		// gpioOutEocB.Toggle();
 	}
 
 	// Read hardware state into memory for entire block of samples
@@ -166,13 +187,13 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 		cvCh1 = outputs[0].cvOutput;
 		cvCh2 = outputs[1].cvOutput;
 
-		// Don't do anything.
+		// Don't do anything on audio output
 		out[n] = 0;
 		out[n + 1] = 0;
 	}
+
+
 }
-
-
 
 void initAdc() {
 	AdcChannelConfig adc[2];
@@ -183,14 +204,29 @@ void initAdc() {
 }
 
 void initGpioIn() {
-	gate_in.pin  = hw.GetPin(1);
-	gate_in.mode = DSY_GPIO_MODE_INPUT;
-	gate_in.pull = DSY_GPIO_PULLUP;
-	dsy_gpio_init(&gate_in);
+	gpioResetA.pin  = hw.GetPin(PIN_RESET_A);
+	gpioResetA.mode = DSY_GPIO_MODE_INPUT;
+	gpioResetA.pull = DSY_GPIO_PULLUP;
+	dsy_gpio_init(&gpioResetA);
+
+	gpioResetDetectA.pin  = hw.GetPin(PIN_RESET_DETECT_A);
+	gpioResetDetectA.mode = DSY_GPIO_MODE_INPUT;
+	gpioResetDetectA.pull = DSY_GPIO_PULLUP;
+	dsy_gpio_init(&gpioResetDetectA);
 }
 
 void initGpioOut() {
+	// gpioOutEocA.pin  = hw.GetPin(PIN_EOC_A);
+	// gpioOutEocA.mode = DSY_GPIO_MODE_OUTPUT_PP;
+	// gpioOutEocA.pull = DSY_GPIO_NOPULL;
+	// dsy_gpio_init(&gpioOutEocA);
 
+	// gpioOutEocB.pin  = hw.GetPin(PIN_EOC_B);
+	// gpioOutEocB.mode = DSY_GPIO_MODE_OUTPUT_PP;
+	// gpioOutEocB.pull = DSY_GPIO_NOPULL;
+	// dsy_gpio_init(&gpioOutEocB);
+
+	// gpioOutEocA.Init() 
 }
 
 void initDac() {
@@ -223,10 +259,10 @@ int main(void)
 	hw.Init();
 	hw.SetAudioSampleRate(SaiHandle::Config::SampleRate::SAI_48KHZ);
 	sampleRate = hw.AudioSampleRate();
+	tick.Init(10.f, sampleRate);
 
 #if DEBUG
   hw.StartLog();
-	// Logger<LOGGER_SEMIHOST>::StartLog();
 	System::Delay(500);
 #endif
 
@@ -235,7 +271,7 @@ int main(void)
 	initGpioIn();
 	initGpioOut();
 
-	// Do not remove from main, application will segfault lol
+	// NOTE TO SELF: Do not move from main, application will segfault lol
 	LowStepperChannel *channelA = new LowStepperChannel(sampleRate); // don't use this
 	LowStepperChannel *channelB = new LowStepperChannel(sampleRate);; // don't use this
 	LowStepperChannel *lsChannels[channelCount] = { channelA, channelB }; // use this
@@ -250,11 +286,11 @@ int main(void)
 
 
 #if DEBUG
-		// Logger<LOGGER_SEMIHOST>::PrintLine("test");
-		// hw.PrintLine("RATE: %f\tMORPH: %f\tSTART: %f\tEND: %f\t", ratePot, morphPot, startPot, endPot);
-		// hw.PrintLine("RATE2: %f\tMORPH2: %f\tSTART2: %f\tEND2: %f\t", ratePot2, morphPot2, startPot2, endPot2);
-		// hw.PrintLine("%f", mux2In5);
-		// System::Delay(10);
+		// hw.PrintLine("1: %f\t2: %f\t3: %f\t4: %f\t5:%f\t6:%f\t7:%f\t8:%f\t", mux1In0, mux1In1, mux1In2, mux1In3, mux1In4, mux1In5, mux1In6, mux1In7);
+		hw.PrintLine("1: %f\t2: %f\t3: %f\t4: %f\t5:%f\t6:%f\t7:%f\t8:%f\t", mux2In0, mux2In1, mux2In2, mux2In3, mux2In4, mux2In5, mux2In6, mux2In7);
+		// hw.PrintLine("RESET A: %d\tRESET DETECT A:%d", gpioResetAValue, gpioResetDetectAValue);
+		// hw.PrintLine("%d / %d", eocAValue, eocBValue);
+		System::Delay(10);
 #endif
 	}
 
