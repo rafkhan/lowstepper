@@ -4,7 +4,7 @@
 struct LowStepperOutput {
   bool eocGateHigh;
   float cvOutput;
-  float phase;
+  float phase; // used for next calculation
 };
 
 struct LowStepperInput {

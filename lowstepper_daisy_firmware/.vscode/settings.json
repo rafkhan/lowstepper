@@ -8,6 +8,9 @@
     "regex": "cpp",
     "utility": "cpp",
     "cstddef": "cpp",
-    "chrono": "cpp"
+    "chrono": "cpp",
+    "*.tcc": "cpp",
+    "fstream": "cpp",
+    "cstdint": "cpp"
   }
 }

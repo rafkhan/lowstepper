@@ -23,7 +23,7 @@ LowStepperOutput LowStepperChannel::tick(LowStepperInput input) {
 
     LowStepperOutput output;
     output.cvOutput = sin(phase);
-    output.eocGateHigh = false;
+    output.eocGateHigh = false; // TODO: update eventually
     output.phase = phase;
     return output;
 }
