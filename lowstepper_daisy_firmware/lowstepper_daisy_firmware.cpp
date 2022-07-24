@@ -16,7 +16,6 @@ uint16_t mapFFII(float x, float in_min, float in_max, int out_min, int out_max)
 using namespace daisy;
 using namespace daisysp;
 
-Metro tick;
 int eocAValue = 1;
 int eocBValue = 0;
 
@@ -29,8 +28,9 @@ uint8_t gpioResetAValue = 0;
 dsy_gpio gpioResetDetectA;
 uint8_t gpioResetDetectAValue = 0;
 
-GPIO gpioOutEocA;
-GPIO gpioOutEocB;
+// dsy_gpio gate_output;
+// Metro tick;
+// bool metroValue = false;
 
 // Config
 float sampleRate;
@@ -147,20 +147,14 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 									 size_t size)
 {
 
+	// if(tick.Process()) {
+	// 	dsy_gpio_write(&gate_output, metroValue); 
+	// 	metroValue = !metroValue;
+	// }
+
 	gpioResetAValue = dsy_gpio_read(&gpioResetA);
 	gpioResetDetectAValue = dsy_gpio_read(&gpioResetDetectA);
 	readAdc();
-
-	if(tick.Process()) {
-		// dsy_gpio_write(&gpioOutEocA, eocAValue);
-		// dsy_gpio_write(&gpioOutEocB, eocBValue);
-		// gpioOutEocA.Write(eocAValue);
-		// gpioOutEocB.Write(eocBValue);
-		// eocAValue	= !eocAValue;
-		// eocBValue	= !eocBValue;
-		// gpioOutEocA.Toggle();
-		// gpioOutEocB.Toggle();
-	}
 
 	// Read hardware state into memory for entire block of samples
 
@@ -191,8 +185,6 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 		out[n] = 0;
 		out[n + 1] = 0;
 	}
-
-
 }
 
 void initAdc() {
@@ -259,7 +251,12 @@ int main(void)
 	hw.Init();
 	hw.SetAudioSampleRate(SaiHandle::Config::SampleRate::SAI_48KHZ);
 	sampleRate = hw.AudioSampleRate();
-	tick.Init(10.f, sampleRate);
+
+	// tick.Init(1.f, sampleRate);
+	// gate_output.pin  = hw.GetPin(PIN_EOC_A);
+	// gate_output.mode = DSY_GPIO_MODE_OUTPUT_PP;
+	// gate_output.pull = DSY_GPIO_PULLDOWN;
+	// dsy_gpio_init(&gate_output);
 
 #if DEBUG
   hw.StartLog();
@@ -287,10 +284,10 @@ int main(void)
 
 #if DEBUG
 		// hw.PrintLine("1: %f\t2: %f\t3: %f\t4: %f\t5:%f\t6:%f\t7:%f\t8:%f\t", mux1In0, mux1In1, mux1In2, mux1In3, mux1In4, mux1In5, mux1In6, mux1In7);
-		hw.PrintLine("1: %f\t2: %f\t3: %f\t4: %f\t5:%f\t6:%f\t7:%f\t8:%f\t", mux2In0, mux2In1, mux2In2, mux2In3, mux2In4, mux2In5, mux2In6, mux2In7);
+		// hw.PrintLine("1: %f\t2: %f\t3: %f\t4: %f\t5:%f\t6:%f\t7:%f\t8:%f\t", mux2In0, mux2In1, mux2In2, mux2In3, mux2In4, mux2In5, mux2In6, mux2In7);
 		// hw.PrintLine("RESET A: %d\tRESET DETECT A:%d", gpioResetAValue, gpioResetDetectAValue);
 		// hw.PrintLine("%d / %d", eocAValue, eocBValue);
-		System::Delay(10);
+		// System::Delay(10);
 #endif
 	}
 
