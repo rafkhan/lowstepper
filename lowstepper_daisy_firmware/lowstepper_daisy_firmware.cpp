@@ -1,10 +1,11 @@
 #include <cstddef>
+#include <cmath>
 #include "daisy_seed.h"
 #include "daisysp.h"
 
-#include "lowstepper/util.h"
 #include "lowstepper/LowStepper.h"
 #include "lowstepper/LowStepperChannel.h"
+#include "lowstepper/util.h"
 
 #define DEBUG 1
 
@@ -15,9 +16,6 @@ uint16_t mapFFII(float x, float in_min, float in_max, int out_min, int out_max)
 
 using namespace daisy;
 using namespace daisysp;
-
-int eocAValue = 1;
-int eocBValue = 0;
 
 // hardware objects
 static DaisySeed hw;
@@ -34,30 +32,10 @@ uint8_t gpioResetDetectAValue = 0;
 
 // Config
 float sampleRate;
-float sampleIncrementMicros;
 
 // Globals lol
 float cvCh1 = 0;
 float cvCh2 = 0;
-float cvIn = 0;
-
-float mux1In0 = 0;
-float mux1In1 = 0;
-float mux1In2 = 0;
-float mux1In3 = 0;
-float mux1In4 = 0;
-float mux1In5 = 0;
-float mux1In6 = 0;
-float mux1In7 = 0;
-
-float mux2In0 = 0;
-float mux2In1 = 0;
-float mux2In2 = 0;
-float mux2In3 = 0;
-float mux2In4 = 0;
-float mux2In5 = 0;
-float mux2In6 = 0;
-float mux2In7 = 0;
 
 // PIN MAPPING
 const int MUX1ADC = 28;
@@ -69,7 +47,6 @@ const int MUX2ADC = 24;
 const int MUX2S0 = 3;
 const int MUX2S1 = 2;
 const int MUX2S2 = 1;
-
 
 #define PIN_RESET_A 13	
 #define PIN_RESET_DETECT_A 8
@@ -83,63 +60,30 @@ LowStepperOutput o { 0, 0, false };
 LowStepperOutput o2 { 0, 0, false };
 LowStepper *lowStepper;
 
-int counter = 0;
+int adcCycleCounter = 0;
+float potInputs[8];
+float cvInputs[8];
+
+float getRateA() {
+	return combinePotAndCv(potInputs[1], cvInputs[7]);
+}
+
+float getMorphA() {
+	return combinePotAndCv(potInputs[2], cvInputs[5]);
+}
+
+float getStartA() {
+	return combinePotAndCv(potInputs[4], cvInputs[4]);
+}
+
+float getEndA() {
+	return combinePotAndCv(potInputs[6], cvInputs[6]);
+}
 
 void readAdc() {
-	counter = (counter + 1) % 8;
-	switch(counter) {
-		case 0:
-			mux1In0 = hw.adc.GetMuxFloat(0, 0);
-			break;
-		case 1:
-			mux1In1 = hw.adc.GetMuxFloat(0, 1);
-			break;
-		case 2:
-			mux1In2 = hw.adc.GetMuxFloat(0, 2);
-			break;
-		case 3:
-			mux1In3 = hw.adc.GetMuxFloat(0, 3);
-			break;
-		case 4:
-			mux1In4 = hw.adc.GetMuxFloat(0, 4);
-			break;
-		case 5:
-			mux1In5 = hw.adc.GetMuxFloat(0, 5);
-			break;
-		case 6:
-			mux1In6 = hw.adc.GetMuxFloat(0, 6);
-			break;
-		case 7:
-			mux1In7 = hw.adc.GetMuxFloat(0, 7);
-			break;
-	}
-
-	switch(counter) {
-		case 0:
-			mux2In0 = hw.adc.GetMuxFloat(1, 0);
-			break;
-		case 1:
-			mux2In1 = hw.adc.GetMuxFloat(1, 1);
-			break;
-		case 2:
-			mux2In2 = hw.adc.GetMuxFloat(1, 2);
-			break;
-		case 3:
-			mux2In3 = hw.adc.GetMuxFloat(1, 3);
-			break;
-		case 4:
-			mux2In4 = hw.adc.GetMuxFloat(1, 4);
-			break;
-		case 5:
-			mux2In5 = hw.adc.GetMuxFloat(1, 5);
-			break;
-		case 6:
-			mux2In6 = hw.adc.GetMuxFloat(1, 6);
-			break;
-		case 7:
-			mux2In7 = hw.adc.GetMuxFloat(1, 7);
-			break;
-	}
+	adcCycleCounter = (adcCycleCounter + 1) % 8;
+	potInputs[adcCycleCounter] = 1.0 - hw.adc.GetMuxFloat(0, adcCycleCounter);
+	cvInputs[adcCycleCounter] = hw.adc.GetMuxFloat(1, adcCycleCounter);
 }
 
 void AudioCallback(AudioHandle::InterleavingInputBuffer in,
@@ -156,19 +100,17 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 	gpioResetDetectAValue = dsy_gpio_read(&gpioResetDetectA);
 	readAdc();
 
-	// Read hardware state into memory for entire block of samples
-
 	for (size_t n = 0; n < size; n += 2)
 	{
 		LowStepperInput input;
-		input.frequency = 100;
 		input.phase = outputs[0].phase;
-		input.start = 0.8f;
-		input.length = 0.5;
+		input.frequency = LowStepper::mapRateInputToFrequency(getRateA());
+		input.start = potInputs[4];
+		input.length = potInputs[6];
 
 		LowStepperInput input2;
-		input2.frequency = 20;
 		input2.phase = outputs[1].phase;
+		input2.frequency = 20;
 		input2.start = 0.1f;
 		input2.length = 1;
 
@@ -177,7 +119,7 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 		// Process inputs array, dump into outputs array
 		lowStepper->tick(inputs, outputs);
 
-		float y = outputs[0].cvOutput;
+		// Copy data out of application to send to DAC
 		cvCh1 = outputs[0].cvOutput;
 		cvCh2 = outputs[1].cvOutput;
 
@@ -222,7 +164,6 @@ void initGpioOut() {
 }
 
 void initDac() {
-	// Init DAC
 	DacHandle::Config cfg;
 	cfg.bitdepth = DacHandle::BitDepth::BITS_12;
 	cfg.buff_state = DacHandle::BufferState::ENABLED;
@@ -237,12 +178,13 @@ void initDac() {
 void writeDac(void) {
 	uint16_t y1 = mapFFII(cvCh1, -1.0, 1.0, 0, 4095);
 	uint16_t y2 =	mapFFII(cvCh2, -1.0, 1.0, 0, 4095);
-	hw.dac.WriteValue(DacHandle::Channel::ONE, y1);
-	hw.dac.WriteValue(DacHandle::Channel::TWO, y2);
+
+	// accidentally reversed??
+	hw.dac.WriteValue(DacHandle::Channel::TWO, y1);
+	hw.dac.WriteValue(DacHandle::Channel::ONE, y2);
 }
 
-int main(void)
-{
+int main(void) {
 	outputs[0] = o;
 	outputs[1] = o2;
 
@@ -281,12 +223,12 @@ int main(void)
 	{
 		writeDac();
 
-
 #if DEBUG
 		// hw.PrintLine("1: %f\t2: %f\t3: %f\t4: %f\t5:%f\t6:%f\t7:%f\t8:%f\t", mux1In0, mux1In1, mux1In2, mux1In3, mux1In4, mux1In5, mux1In6, mux1In7);
 		// hw.PrintLine("1: %f\t2: %f\t3: %f\t4: %f\t5:%f\t6:%f\t7:%f\t8:%f\t", mux2In0, mux2In1, mux2In2, mux2In3, mux2In4, mux2In5, mux2In6, mux2In7);
 		// hw.PrintLine("RESET A: %d\tRESET DETECT A:%d", gpioResetAValue, gpioResetDetectAValue);
 		// hw.PrintLine("%d / %d", eocAValue, eocBValue);
+		hw.PrintLine("%f, %f", potInputs[1], cvInputs[7]);
 		// System::Delay(10);
 #endif
 	}

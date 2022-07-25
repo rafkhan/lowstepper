@@ -7,6 +7,7 @@ LDFLAGS += -u _printf_float
 CPP_SOURCES = lowstepper_daisy_firmware.cpp
 CPP_SOURCES += lowstepper/LowStepper.cpp
 CPP_SOURCES += lowstepper/LowStepperChannel.cpp
+CPP_SOURCES += lowstepper/util.cpp
 # CPP_SOURCES += AdditionalFile2.cpp
 
 # Library Locations

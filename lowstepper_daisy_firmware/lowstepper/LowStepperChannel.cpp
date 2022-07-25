@@ -2,8 +2,6 @@
 #include <math.h>
 #include "LowStepperChannel.h"
 #include "util.h"
-#include "config.h"
-
 
 LowStepperChannel::LowStepperChannel(float sampleRate) {
   this->sampleRate = sampleRate;
@@ -16,8 +14,7 @@ LowStepperOutput LowStepperChannel::tick(LowStepperInput input) {
     float startPhase = TWO_PI * input.start;
     float endPhase = startPhase + (TWO_PI * input.length);
 
-    if (phase > endPhase)
-    {
+    if (phase > endPhase) {
       phase = startPhase + (phase - endPhase);
     }
 
