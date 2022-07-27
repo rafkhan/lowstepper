@@ -19,11 +19,15 @@ float LowStepper::mapRateInputToFrequency(float input) {
   return mapFFFF(input, 0, 1, 0.1, 10);
 }
 
+float LowStepper::mapMorphInput(float input) {
+  return input;
+}
+
 float LowStepper::mapStartInput(float input) {
   return input;
 }
 
 float LowStepper::mapLengthInput(float input) {
-  return input;
+  return mapFFFF(input, 0, 1, 0.5, 1);
 }
 

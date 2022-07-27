@@ -13,6 +13,7 @@ LowStepperOutput LowStepperChannel::tick(LowStepperInput input) {
     float phase = input.phase + phaseIncrement;
     float startPhase = TWO_PI * input.start;
     float endPhase = startPhase + (TWO_PI * input.length);
+    // float endPhase = TWO_PI * input.length;
 
     if (phase > endPhase) {
       phase = startPhase + (phase - endPhase);

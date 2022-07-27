@@ -65,62 +65,31 @@ float getRateAInput() {
 }
 
 float getMorphAInput() {
-	return combinePotAndCv(potInputs[2], cvInputs[7]);
+	return combinePotAndCv(potInputs[0], cvInputs[7]);
 }
 
 float getStartAInput() {
-	return combinePotAndCv(potInputs[4], cvInputs[4]);
+	return combinePotAndCv(potInputs[4], cvInputs[6]);
 }
 
 float getLengthAInput() {
-	return combinePotAndCv(potInputs[6], cvInputs[6]);
+	return combinePotAndCv(potInputs[6], cvInputs[0]);
 }
 
-void readAdc() {
-	adcCycleCounter = (adcCycleCounter + 1) % 8;
-	potInputs[adcCycleCounter] = 1.0 - hw.adc.GetMuxFloat(0, adcCycleCounter);
-	cvInputs[adcCycleCounter] = 1.0 - hw.adc.GetMuxFloat(1, adcCycleCounter);
+float getRateBInput() {
+	return combinePotAndCv(potInputs[2], cvInputs[4]);
 }
 
-void AudioCallback(AudioHandle::InterleavingInputBuffer in,
-									 AudioHandle::InterleavingOutputBuffer out,
-									 size_t size)
-{
-	if(tick.Process()) {
-		metroValue = true;
-	}
+float getMorphBInput() {
+	return combinePotAndCv(potInputs[3], cvInputs[1]);
+}
 
-	gpioResetAValue = dsy_gpio_read(&gpioResetA);
-	gpioResetDetectAValue = dsy_gpio_read(&gpioResetDetectA);
-	readAdc();
+float getStartBInput() {
+	return combinePotAndCv(potInputs[5], cvInputs[2]);
+}
 
-	for (size_t n = 0; n < size; n += 2)
-	{
-		LowStepperInput input;
-		input.phase = outputs[0].phase;
-		input.frequency = LowStepper::mapRateInputToFrequency(getRateAInput());
-		input.start = LowStepper::mapStartInput(getStartAInput());
-		input.length = LowStepper::mapLengthInput(getLengthAInput());
-
-		LowStepperInput input2;
-		input2.phase = outputs[1].phase;
-		input2.frequency = 20;
-		input2.start = 0.1f;
-		input2.length = 1;
-
-		LowStepperInput inputs[2] = { input, input2 };
-
-		// Process inputs array, dump into outputs array
-		lowStepper->tick(inputs, outputs);
-
-		// Copy data out of application to send to DAC
-		cvCh1 = outputs[0].cvOutput;
-		cvCh2 = outputs[1].cvOutput;
-
-		// Don't do anything on audio output
-		out[n] = 0;
-		out[n + 1] = 0;
-	}
+float getLengthBInput() {
+	return combinePotAndCv(potInputs[7], cvInputs[3]);
 }
 
 void initAdc() {
@@ -169,13 +138,65 @@ void initDac() {
 	hw.dac.WriteValue(DacHandle::Channel::TWO, 0); // CV1
 }
 
-void writeDac(void) {
-	uint16_t y1 = mapFFII(cvCh1, -1.0, 1.0, 0, 4095);
-	uint16_t y2 =	mapFFII(cvCh2, -1.0, 1.0, 0, 4095);
+void readAdc() {
+	adcCycleCounter = (adcCycleCounter + 1) % 8;
+	potInputs[adcCycleCounter] = 1.0 - hw.adc.GetMuxFloat(0, adcCycleCounter);
+	cvInputs[adcCycleCounter] = 1.0 - hw.adc.GetMuxFloat(1, adcCycleCounter);
+}
+
+void writeDac() {
+	uint16_t y1 = mapFFII(cvCh1 * -1.0, -1.0, 1.0, 0, 4095);
+	uint16_t y2 =	mapFFII(cvCh2 * -1.0, -1.0, 1.0, 0, 4095);
 
 	// accidentally reversed??
 	hw.dac.WriteValue(DacHandle::Channel::TWO, y1);
 	hw.dac.WriteValue(DacHandle::Channel::ONE, y2);
+}
+
+void readGpioIn() {
+
+}
+
+void AudioCallback(AudioHandle::InterleavingInputBuffer in,
+									 AudioHandle::InterleavingOutputBuffer out,
+									 size_t size) {
+	if(tick.Process()) {
+		metroValue = true;
+	}
+
+	gpioResetAValue = dsy_gpio_read(&gpioResetA);
+	gpioResetDetectAValue = dsy_gpio_read(&gpioResetDetectA);
+	readAdc();
+
+	for (size_t n = 0; n < size; n += 2)
+	{
+		LowStepperInput inputA;
+		inputA.phase = outputs[0].phase;
+		inputA.frequency = LowStepper::mapRateInputToFrequency(getRateAInput());
+		inputA.morph = LowStepper::mapMorphInput(getMorphAInput());
+		inputA.start = LowStepper::mapStartInput(getStartAInput());
+		inputA.length = LowStepper::mapLengthInput(getLengthAInput());
+
+		LowStepperInput inputB;
+		inputB.phase = outputs[1].phase;
+		inputB.frequency = LowStepper::mapRateInputToFrequency(getRateBInput());
+		inputB.morph = LowStepper::mapMorphInput(getMorphBInput());
+		inputB.start = LowStepper::mapStartInput(getStartBInput());
+		inputB.length = LowStepper::mapLengthInput(getLengthBInput());
+
+		LowStepperInput inputs[2] = { inputA, inputB };
+
+		// Process inputs array, dump into outputs array
+		lowStepper->tick(inputs, outputs);
+
+		// Copy data out of application to send to DAC
+		cvCh1 = outputs[0].cvOutput;
+		cvCh2 = outputs[1].cvOutput;
+
+		// Don't do anything on audio output
+		out[n] = 0;
+		out[n + 1] = 0;
+	}
 }
 
 int main(void) {
