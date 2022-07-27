@@ -15,5 +15,15 @@ void LowStepper::tick(LowStepperInput *inputs, LowStepperOutput outputs[]) {
 }
 
 float LowStepper::mapRateInputToFrequency(float input) {
-  return mapFFFF(input, 0, 1, 0.001, 10);
+  // TODO: non-linear curve here.
+  return mapFFFF(input, 0, 1, 0.1, 10);
 }
+
+float LowStepper::mapStartInput(float input) {
+  return input;
+}
+
+float LowStepper::mapLengthInput(float input) {
+  return input;
+}
+

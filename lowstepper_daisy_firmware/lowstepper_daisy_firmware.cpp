@@ -9,11 +9,6 @@
 
 #define DEBUG 1
 
-uint16_t mapFFII(float x, float in_min, float in_max, int out_min, int out_max)
-{
-	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-}
-
 using namespace daisy;
 using namespace daisysp;
 
@@ -27,8 +22,8 @@ dsy_gpio gpioResetDetectA;
 uint8_t gpioResetDetectAValue = 0;
 
 // dsy_gpio gate_output;
-// Metro tick;
-// bool metroValue = false;
+Metro tick;
+bool metroValue = false;
 
 // Config
 float sampleRate;
@@ -64,37 +59,36 @@ int adcCycleCounter = 0;
 float potInputs[8];
 float cvInputs[8];
 
-float getRateA() {
-	return combinePotAndCv(potInputs[1], cvInputs[7]);
+// TODO: Fix all of these mappings...
+float getRateAInput() {
+	return combinePotAndCv(potInputs[1], cvInputs[5]);
 }
 
-float getMorphA() {
-	return combinePotAndCv(potInputs[2], cvInputs[5]);
+float getMorphAInput() {
+	return combinePotAndCv(potInputs[2], cvInputs[7]);
 }
 
-float getStartA() {
+float getStartAInput() {
 	return combinePotAndCv(potInputs[4], cvInputs[4]);
 }
 
-float getEndA() {
+float getLengthAInput() {
 	return combinePotAndCv(potInputs[6], cvInputs[6]);
 }
 
 void readAdc() {
 	adcCycleCounter = (adcCycleCounter + 1) % 8;
 	potInputs[adcCycleCounter] = 1.0 - hw.adc.GetMuxFloat(0, adcCycleCounter);
-	cvInputs[adcCycleCounter] = hw.adc.GetMuxFloat(1, adcCycleCounter);
+	cvInputs[adcCycleCounter] = 1.0 - hw.adc.GetMuxFloat(1, adcCycleCounter);
 }
 
 void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 									 AudioHandle::InterleavingOutputBuffer out,
 									 size_t size)
 {
-
-	// if(tick.Process()) {
-	// 	dsy_gpio_write(&gate_output, metroValue); 
-	// 	metroValue = !metroValue;
-	// }
+	if(tick.Process()) {
+		metroValue = true;
+	}
 
 	gpioResetAValue = dsy_gpio_read(&gpioResetA);
 	gpioResetDetectAValue = dsy_gpio_read(&gpioResetDetectA);
@@ -104,9 +98,9 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 	{
 		LowStepperInput input;
 		input.phase = outputs[0].phase;
-		input.frequency = LowStepper::mapRateInputToFrequency(getRateA());
-		input.start = potInputs[4];
-		input.length = potInputs[6];
+		input.frequency = LowStepper::mapRateInputToFrequency(getRateAInput());
+		input.start = LowStepper::mapStartInput(getStartAInput());
+		input.length = LowStepper::mapLengthInput(getLengthAInput());
 
 		LowStepperInput input2;
 		input2.phase = outputs[1].phase;
@@ -194,7 +188,8 @@ int main(void) {
 	hw.SetAudioSampleRate(SaiHandle::Config::SampleRate::SAI_48KHZ);
 	sampleRate = hw.AudioSampleRate();
 
-	// tick.Init(1.f, sampleRate);
+	tick.Init(2.f, sampleRate);
+
 	// gate_output.pin  = hw.GetPin(PIN_EOC_A);
 	// gate_output.mode = DSY_GPIO_MODE_OUTPUT_PP;
 	// gate_output.pull = DSY_GPIO_PULLDOWN;
@@ -224,12 +219,13 @@ int main(void) {
 		writeDac();
 
 #if DEBUG
-		// hw.PrintLine("1: %f\t2: %f\t3: %f\t4: %f\t5:%f\t6:%f\t7:%f\t8:%f\t", mux1In0, mux1In1, mux1In2, mux1In3, mux1In4, mux1In5, mux1In6, mux1In7);
-		// hw.PrintLine("1: %f\t2: %f\t3: %f\t4: %f\t5:%f\t6:%f\t7:%f\t8:%f\t", mux2In0, mux2In1, mux2In2, mux2In3, mux2In4, mux2In5, mux2In6, mux2In7);
-		// hw.PrintLine("RESET A: %d\tRESET DETECT A:%d", gpioResetAValue, gpioResetDetectAValue);
-		// hw.PrintLine("%d / %d", eocAValue, eocBValue);
-		hw.PrintLine("%f, %f", potInputs[1], cvInputs[7]);
-		// System::Delay(10);
+		if(metroValue) {
+			metroValue = false;
+			// hw.PrintLine("%f, %f", potInputs[1], cvInputs[7]);
+			hw.PrintLine("%f, %f, %f, %f, %f, %f, %f, %f", cvInputs[0], cvInputs[1], cvInputs[2], cvInputs[3], cvInputs[4], cvInputs[5], cvInputs[6], cvInputs[7]);
+			hw.PrintLine("%f, %f, %f, %f, %f, %f, %f, %f", potInputs[0], potInputs[1], potInputs[2], potInputs[3], potInputs[4], potInputs[5], potInputs[6], potInputs[7]);
+			hw.PrintLine("***");
+		}
 #endif
 	}
 
