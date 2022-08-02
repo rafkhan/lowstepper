@@ -3,6 +3,10 @@
 
 #include <cstdint>
 
+#ifndef PI
+#define PI 3.14159265359
+#endif
+
 #ifndef TWO_PI
 #define TWO_PI 6.28318530718f
 #endif
