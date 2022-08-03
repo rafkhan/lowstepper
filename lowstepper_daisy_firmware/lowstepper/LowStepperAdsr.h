@@ -1,7 +1,9 @@
+#ifndef LOWSTEPPER_ADSR_H 
+#define LOWSTEPPER_ADSR_H
+
 #include "sharedTypes.h"
 
-class LowStepperAdsr
-{
+class LowStepperAdsr {
   private:
     float sampleRate;
     float sampleLength;
@@ -9,3 +11,5 @@ class LowStepperAdsr
     LowStepperAdsr(float sampleRate);
     LowStepperOutput tick(LowStepperInput);
 };
+
+#endif

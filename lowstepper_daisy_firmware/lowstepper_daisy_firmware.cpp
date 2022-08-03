@@ -1,11 +1,15 @@
 #include <cstddef>
 #include <cmath>
+#include <limits.h>
+
 #include "daisy_seed.h"
 #include "daisysp.h"
 
 #include "lowstepper/LowStepper.h"
 #include "lowstepper/LowStepperChannel.h"
 #include "lowstepper/util.h"
+
+#include "hardware/GateInput.h"
 
 #define DEBUG 1
 
@@ -14,6 +18,7 @@ using namespace daisysp;
 
 // hardware objects
 static DaisySeed hw;
+GateInput syncA;
 
 dsy_gpio gpioResetA;
 uint8_t gpioResetAValue = 0;
@@ -27,6 +32,9 @@ bool metroValue = false;
 
 // Config
 float sampleRate;
+
+float bpm = 0;
+int samplesSinceLastSyncTick = 1;
 
 // Globals lol
 float cvCh1 = 0;
@@ -48,6 +56,8 @@ const int MUX2S2 = 1;
 
 #define PIN_EOC_A 20
 #define PIN_EOC_B 19
+
+GateInput resetA;
 
 const size_t channelCount = 2;
 LowStepperOutput outputs[channelCount] = { NULL, NULL };
@@ -100,18 +110,6 @@ void initAdc() {
 	hw.adc.Start();
 }
 
-void initGpioIn() {
-	gpioResetA.pin  = hw.GetPin(PIN_RESET_A);
-	gpioResetA.mode = DSY_GPIO_MODE_INPUT;
-	gpioResetA.pull = DSY_GPIO_PULLUP;
-	dsy_gpio_init(&gpioResetA);
-
-	gpioResetDetectA.pin  = hw.GetPin(PIN_RESET_DETECT_A);
-	gpioResetDetectA.mode = DSY_GPIO_MODE_INPUT;
-	gpioResetDetectA.pull = DSY_GPIO_PULLUP;
-	dsy_gpio_init(&gpioResetDetectA);
-}
-
 void initGpioOut() {
 	// gpioOutEocA.pin  = hw.GetPin(PIN_EOC_A);
 	// gpioOutEocA.mode = DSY_GPIO_MODE_OUTPUT_PP;
@@ -154,7 +152,7 @@ void writeDac() {
 }
 
 void readGpioIn() {
-
+	syncA.readHardware();
 }
 
 void AudioCallback(AudioHandle::InterleavingInputBuffer in,
@@ -164,12 +162,19 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 		metroValue = true;
 	}
 
-	gpioResetAValue = dsy_gpio_read(&gpioResetA);
-	gpioResetDetectAValue = dsy_gpio_read(&gpioResetDetectA);
 	readAdc();
+	readGpioIn();
 
 	for (size_t n = 0; n < size; n += 2)
 	{
+		if(syncA.triggerCheck()) {
+			bpm = 60.0f / ((samplesSinceLastSyncTick + 1.0f) * (1.0f/sampleRate)) / 4;
+			samplesSinceLastSyncTick = 0;
+		} else {
+			samplesSinceLastSyncTick++;
+			samplesSinceLastSyncTick = samplesSinceLastSyncTick % (INT_MAX - 1); // todo check this
+		}
+
 		LowStepperInput inputA;
 		inputA.phase = outputs[0].phase;
 		inputA.frequency = LowStepper::mapRateInputToFrequency(getRateAInput());
@@ -211,6 +216,11 @@ int main(void) {
 
 	tick.Init(2.f, sampleRate);
 
+	syncA.init(&hw, PIN_RESET_A, PIN_RESET_DETECT_A);
+	initDac();
+	initAdc();
+	initGpioOut();
+
 	// gate_output.pin  = hw.GetPin(PIN_EOC_A);
 	// gate_output.mode = DSY_GPIO_MODE_OUTPUT_PP;
 	// gate_output.pull = DSY_GPIO_PULLDOWN;
@@ -220,11 +230,6 @@ int main(void) {
   hw.StartLog();
 	System::Delay(500);
 #endif
-
-	initDac();
-	initAdc();
-	initGpioIn();
-	initGpioOut();
 
 	// NOTE TO SELF: Do not move from main, application will segfault lol
 	LowStepperChannel *channelA = new LowStepperChannel(sampleRate); // don't use this
@@ -243,9 +248,11 @@ int main(void) {
 		if(metroValue) {
 			metroValue = false;
 			// hw.PrintLine("%f, %f", potInputs[1], cvInputs[7]);
-			hw.PrintLine("%f, %f, %f, %f, %f, %f, %f, %f", cvInputs[0], cvInputs[1], cvInputs[2], cvInputs[3], cvInputs[4], cvInputs[5], cvInputs[6], cvInputs[7]);
-			hw.PrintLine("%f, %f, %f, %f, %f, %f, %f, %f", potInputs[0], potInputs[1], potInputs[2], potInputs[3], potInputs[4], potInputs[5], potInputs[6], potInputs[7]);
-			hw.PrintLine("***");
+			// hw.PrintLine("%f, %f, %f, %f, %f, %f, %f, %f", cvInputs[0], cvInputs[1], cvInputs[2], cvInputs[3], cvInputs[4], cvInputs[5], cvInputs[6], cvInputs[7]);
+			// hw.PrintLine("%f, %f, %f, %f, %f, %f, %f, %f", potInputs[0], potInputs[1], potInputs[2], potInputs[3], potInputs[4], potInputs[5], potInputs[6], potInputs[7]);
+			hw.PrintLine("%f, %d", bpm, samplesSinceLastSyncTick);
+			// hw.PrintLine("%d, %d, %d", syncA.isCablePluggedIn(), syncA.isGateHigh(), syncA.isGateHigh());
+			// hw.PrintLine("***");
 		}
 #endif
 	}

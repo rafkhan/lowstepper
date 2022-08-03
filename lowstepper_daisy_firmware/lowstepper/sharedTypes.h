@@ -7,6 +7,8 @@ struct LowStepperOutput {
   float phase;
 };
 
+// Input for LFO only
+// TODO: Rename this struct
 struct LowStepperInput {
   float phase;
   float frequency; // hz
