@@ -39,7 +39,7 @@ bool GateInput::isGateHigh(void) {
 }
 
 bool GateInput::isCablePluggedIn(void) {
-	return !this->gpioDetectValue;
+	return this->gpioDetectValue;
 }
 
 bool GateInput::triggerCheck(void) {

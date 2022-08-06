@@ -9,7 +9,7 @@ class LowStepper {
     void tick(LowStepperInput *inputs, LowStepperOutput outputs[]);
 
     // TODO move these to LFO specific code
-    static float mapRateInputToFrequency(float input); // Convert 0-1 value to frequency
+    static float mapRateInputToFrequency(float input, bool enableSync, float bpm); // Convert 0-1 value to frequency
     static float mapMorphInput(float input);
     static float mapStartInput(float input);
     static float mapLengthInput(float length);

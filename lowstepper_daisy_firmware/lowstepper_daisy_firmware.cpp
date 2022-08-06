@@ -7,6 +7,7 @@
 
 #include "lowstepper/LowStepper.h"
 #include "lowstepper/LowStepperChannel.h"
+#include "lowstepper/AverageBuffer.h"
 #include "lowstepper/util.h"
 
 #include "hardware/GateInput.h"
@@ -35,6 +36,7 @@ float sampleRate;
 
 float bpm = 0;
 int samplesSinceLastSyncTick = 1;
+AverageBuffer<float> bpmAverage{(size_t) 10, 0};
 
 // Globals lol
 float cvCh1 = 0;
@@ -165,26 +167,28 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 	readAdc();
 	readGpioIn();
 
-	for (size_t n = 0; n < size; n += 2)
-	{
+	for (size_t n = 0; n < size; n += 2) {
 		if(syncA.triggerCheck()) {
 			bpm = 60.0f / ((samplesSinceLastSyncTick + 1.0f) * (1.0f/sampleRate)) / 4;
+			bpmAverage.addValue(bpm);
 			samplesSinceLastSyncTick = 0;
 		} else {
 			samplesSinceLastSyncTick++;
 			samplesSinceLastSyncTick = samplesSinceLastSyncTick % (INT_MAX - 1); // todo check this
 		}
 
+		bool useSyncA = syncA.isCablePluggedIn() && (bpmAverage.getAverageValue() > 5);
+
 		LowStepperInput inputA;
 		inputA.phase = outputs[0].phase;
-		inputA.frequency = LowStepper::mapRateInputToFrequency(getRateAInput());
+		inputA.frequency = LowStepper::mapRateInputToFrequency(getRateAInput(), useSyncA, bpmAverage.getAverageValue());
 		inputA.morph = LowStepper::mapMorphInput(getMorphAInput());
 		inputA.start = LowStepper::mapStartInput(getStartAInput());
 		inputA.length = LowStepper::mapLengthInput(getLengthAInput());
 
 		LowStepperInput inputB;
 		inputB.phase = outputs[1].phase;
-		inputB.frequency = LowStepper::mapRateInputToFrequency(getRateBInput());
+		inputB.frequency = LowStepper::mapRateInputToFrequency(getRateBInput(), false, 0);
 		inputB.morph = LowStepper::mapMorphInput(getMorphBInput());
 		inputB.start = LowStepper::mapStartInput(getStartBInput());
 		inputB.length = LowStepper::mapLengthInput(getLengthBInput());
@@ -250,7 +254,7 @@ int main(void) {
 			// hw.PrintLine("%f, %f", potInputs[1], cvInputs[7]);
 			// hw.PrintLine("%f, %f, %f, %f, %f, %f, %f, %f", cvInputs[0], cvInputs[1], cvInputs[2], cvInputs[3], cvInputs[4], cvInputs[5], cvInputs[6], cvInputs[7]);
 			// hw.PrintLine("%f, %f, %f, %f, %f, %f, %f, %f", potInputs[0], potInputs[1], potInputs[2], potInputs[3], potInputs[4], potInputs[5], potInputs[6], potInputs[7]);
-			hw.PrintLine("%f, %d", bpm, samplesSinceLastSyncTick);
+			hw.PrintLine("%f,\t%f,\t%d,\t%d", bpm, bpmAverage.getAverageValue(), samplesSinceLastSyncTick, syncA.isCablePluggedIn());
 			// hw.PrintLine("%d, %d, %d", syncA.isCablePluggedIn(), syncA.isGateHigh(), syncA.isGateHigh());
 			// hw.PrintLine("***");
 		}
