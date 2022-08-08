@@ -1,7 +1,8 @@
+#include <cmath>
+
 #include "LowStepper.h"
 #include "LowStepperChannel.h"
-
-#include "./util.h"
+#include "util.h"
 
 LowStepper::LowStepper(LowStepperChannel **channels, size_t channelCount) {
   this->channels = channels;
@@ -17,7 +18,8 @@ void LowStepper::tick(LowStepperInput *inputs, LowStepperOutput outputs[]) {
 float LowStepper::mapRateInputToFrequency(float input, bool enableSync, float bpm) {
   if(enableSync) {
     float maxFreq = bpm / 60.0f;
-    return maxFreq;
+    float position = floor(mapFFFF(input, 0, 1, 17, 1)); // will never actually go to 17?
+    return maxFreq / position;
   } else {
     // TODO: non-linear curve here.
     return mapFFFF(input, 0, 1, 0.1, 10);
