@@ -262,8 +262,8 @@ int main(void) {
 			// hw.PrintLine("%f, %f, %f, %f, %f, %f, %f, %f", cvInputs[0], cvInputs[1], cvInputs[2], cvInputs[3], cvInputs[4], cvInputs[5], cvInputs[6], cvInputs[7]);
 			// hw.PrintLine("%f, %f, %f, %f, %f, %f, %f, %f", potInputs[0], potInputs[1], potInputs[2], potInputs[3], potInputs[4], potInputs[5], potInputs[6], potInputs[7]);
 			// hw.PrintLine("%f,\t%f,\t%d,\t%d", bpm, bpmAverage.getAverageValue(), samplesSinceLastSyncTick, syncA.isCablePluggedIn());
-			// hw.PrintLine("%d, %d, %f", syncA.isCablePluggedIn(), useSyncA, LowStepper::mapRateInputToFrequency(getRateAInput(), useSyncA, bpmAverageA.getAverageValue()));
-			hw.PrintLine("%f", LowStepper::mapStartInput(getStartAInput(), useSyncA));
+			hw.PrintLine("%d, %d, %f", syncA.isCablePluggedIn(), useSyncA, LowStepper::mapRateInputToFrequency(getRateAInput(), useSyncA, bpmAverageA.getAverageValue()));
+			// hw.PrintLine("%f", LowStepper::mapStartInput(getStartAInput(), useSyncA));
 			// hw.PrintLine("***");
 		}
 #endif
