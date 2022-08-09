@@ -20,6 +20,8 @@ struct LowStepperInput {
 
   // NOTE THIS IS NOW "END" AND NOT "LENGTH"
   float length; // 0 - 1 
+
+  bool shouldReset;
 };
 
 class LowStepperChannel

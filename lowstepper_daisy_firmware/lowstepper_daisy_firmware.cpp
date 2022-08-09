@@ -14,34 +14,6 @@
 
 #define DEBUG 1
 
-using namespace daisy;
-using namespace daisysp;
-
-// hardware objects
-static DaisySeed hw;
-GateInput syncA;
-
-dsy_gpio gpioResetA;
-uint8_t gpioResetAValue = 0;
-
-dsy_gpio gpioResetDetectA;
-uint8_t gpioResetDetectAValue = 0;
-
-// dsy_gpio gate_output;
-Metro tick;
-bool metroValue = false;
-
-// Config
-float sampleRate;
-
-float bpmA = 0;
-int samplesSinceLastSyncTickA = 1;
-AverageBuffer<float> bpmAverageA{(size_t) 10, 0};
-
-// Globals lol
-float cvCh1 = 0;
-float cvCh2 = 0;
-
 // PIN MAPPING
 const int MUX1ADC = 28;
 const int MUX1S0 = 27;
@@ -55,11 +27,22 @@ const int MUX2S2 = 1;
 
 #define PIN_SYNC_A 12	
 #define PIN_SYNC_DETECT_A 9
+#define PIN_RESET_A 13	
+#define PIN_RESET_DETECT_A 8
 
 #define PIN_EOC_A 20
 #define PIN_EOC_B 19
 
+using namespace daisy;
+using namespace daisysp;
+
+// hardware objects
+static DaisySeed hw;
+GateInput syncA;
 GateInput resetA;
+
+// Config
+float sampleRate;
 
 const size_t channelCount = 2;
 LowStepperOutput outputs[channelCount] = { NULL, NULL };
@@ -70,6 +53,19 @@ LowStepper *lowStepper;
 int adcCycleCounter = 0;
 float potInputs[8];
 float cvInputs[8];
+
+// Output values
+float cvCh1 = 0;
+float cvCh2 = 0;
+
+// TODO extract BPM code
+float bpmA = 0;
+int samplesSinceLastSyncTickA = 1;
+AverageBuffer<float> bpmAverageA{(size_t) 10, 0};
+
+// Metro for development
+Metro tick;
+bool metroValue = false;
 
 // TODO: Fix all of these mappings...
 float getRateAInput() {
@@ -128,6 +124,7 @@ void initGpioOut() {
 
 void initGpioIn() {
 	syncA.init(&hw, PIN_SYNC_A, PIN_SYNC_DETECT_A);
+	resetA.init(&hw, PIN_RESET_A, PIN_RESET_DETECT_A);
 }
 
 void initDac() {
@@ -159,6 +156,7 @@ void writeDac() {
 
 void readGpioIn() {
 	syncA.readHardware();
+	resetA.readHardware();
 }
 
 bool useSyncA;
@@ -192,6 +190,7 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 		inputA.morph = LowStepper::mapMorphInput(getMorphAInput());
 		inputA.start = LowStepper::mapStartInput(getStartAInput(), useSyncA);
 		inputA.length = LowStepper::mapLengthInput(getLengthAInput(), useSyncA);
+		inputA.shouldReset = resetA.triggerCheck();
 
 		LowStepperInput inputB;
 		inputB.phase = outputs[1].phase;
@@ -199,7 +198,8 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 		inputB.morph = LowStepper::mapMorphInput(getMorphBInput());
 		inputB.start = LowStepper::mapStartInput(getStartBInput(), false);
 		inputB.length = LowStepper::mapLengthInput(getLengthBInput(), false);
-
+		inputB.shouldReset = false;
+ 
 		LowStepperInput inputs[2] = { inputA, inputB };
 
 		// Process inputs array, dump into outputs array
@@ -262,7 +262,8 @@ int main(void) {
 			// hw.PrintLine("%f, %f, %f, %f, %f, %f, %f, %f", cvInputs[0], cvInputs[1], cvInputs[2], cvInputs[3], cvInputs[4], cvInputs[5], cvInputs[6], cvInputs[7]);
 			// hw.PrintLine("%f, %f, %f, %f, %f, %f, %f, %f", potInputs[0], potInputs[1], potInputs[2], potInputs[3], potInputs[4], potInputs[5], potInputs[6], potInputs[7]);
 			// hw.PrintLine("%f,\t%f,\t%d,\t%d", bpm, bpmAverage.getAverageValue(), samplesSinceLastSyncTick, syncA.isCablePluggedIn());
-			hw.PrintLine("%d, %d, %f", syncA.isCablePluggedIn(), useSyncA, LowStepper::mapRateInputToFrequency(getRateAInput(), useSyncA, bpmAverageA.getAverageValue()));
+			// hw.PrintLine("%d, %d, %f", syncA.isCablePluggedIn(), useSyncA, LowStepper::mapRateInputToFrequency(getRateAInput(), useSyncA, bpmAverageA.getAverageValue()));
+			hw.PrintLine("%d", resetA.isGateHigh());
 			// hw.PrintLine("***");
 		}
 #endif

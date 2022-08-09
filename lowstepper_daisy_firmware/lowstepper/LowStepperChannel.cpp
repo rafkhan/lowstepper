@@ -86,6 +86,10 @@ LowStepperOutput LowStepperChannel::tick(LowStepperInput input) {
       phase = startPhase + (phase - endPhase);
     }
 
+    if(input.shouldReset) {
+      phase = startPhase;
+    }
+
     LowStepperOutput output;
     output.cvOutput = getMorphedOutput(input.morph, phase);
     output.eocGateHigh = false;
