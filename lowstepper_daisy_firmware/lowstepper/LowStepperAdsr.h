@@ -3,13 +3,17 @@
 
 #include "sharedTypes.h"
 
+struct LowStepperAdsrInput {}
+struct LowStepperAdsrOutput {}
+
+
 class LowStepperAdsr {
   private:
     float sampleRate;
     float sampleLength;
   public:
     LowStepperAdsr(float sampleRate);
-    LowStepperOutput tick(LowStepperInput);
+    LowStepperAdsrOutput tick(LowStepperAdsrInput);
 };
 
 #endif

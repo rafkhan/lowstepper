@@ -34,9 +34,9 @@ bool metroValue = false;
 // Config
 float sampleRate;
 
-float bpm = 0;
-int samplesSinceLastSyncTick = 1;
-AverageBuffer<float> bpmAverage{(size_t) 10, 0};
+float bpmA = 0;
+int samplesSinceLastSyncTickA = 1;
+AverageBuffer<float> bpmAverageA{(size_t) 10, 0};
 
 // Globals lol
 float cvCh1 = 0;
@@ -126,6 +126,10 @@ void initGpioOut() {
 	// gpioOutEocA.Init() 
 }
 
+void initGpioIn() {
+	syncA.init(&hw, PIN_RESET_A, PIN_RESET_DETECT_A);
+}
+
 void initDac() {
 	DacHandle::Config cfg;
 	cfg.bitdepth = DacHandle::BitDepth::BITS_12;
@@ -157,6 +161,8 @@ void readGpioIn() {
 	syncA.readHardware();
 }
 
+bool useSyncA;
+
 void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 									 AudioHandle::InterleavingOutputBuffer out,
 									 size_t size) {
@@ -169,19 +175,20 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 
 	for (size_t n = 0; n < size; n += 2) {
 		if(syncA.triggerCheck()) {
-			bpm = 60.0f / ((samplesSinceLastSyncTick + 1.0f) * (1.0f/sampleRate)) / 4;
-			bpmAverage.addValue(bpm);
-			samplesSinceLastSyncTick = 0;
+			bpmA = 60.0f / ((samplesSinceLastSyncTickA + 1.0f) * (1.0f/sampleRate)) / 4;
+			bpmAverageA.addValue(bpmA);
+			samplesSinceLastSyncTickA = 0;
 		} else {
-			samplesSinceLastSyncTick++;
-			samplesSinceLastSyncTick = samplesSinceLastSyncTick % (INT_MAX - 1); // todo check this
+			samplesSinceLastSyncTickA++;
+			samplesSinceLastSyncTickA = samplesSinceLastSyncTickA % (INT_MAX - 1); // todo check this
 		}
 
-		bool useSyncA = syncA.isCablePluggedIn() && (bpmAverage.getAverageValue() > 5);
+		float avgBpmAValue = bpmAverageA.getAverageValue();
+		useSyncA = syncA.isCablePluggedIn() && (avgBpmAValue > 10);
 
 		LowStepperInput inputA;
 		inputA.phase = outputs[0].phase;
-		inputA.frequency = LowStepper::mapRateInputToFrequency(getRateAInput(), useSyncA, bpmAverage.getAverageValue());
+		inputA.frequency = LowStepper::mapRateInputToFrequency(getRateAInput(), useSyncA, avgBpmAValue);
 		inputA.morph = LowStepper::mapMorphInput(getMorphAInput());
 		inputA.start = LowStepper::mapStartInput(getStartAInput());
 		inputA.length = LowStepper::mapLengthInput(getLengthAInput());
@@ -220,20 +227,20 @@ int main(void) {
 
 	tick.Init(2.f, sampleRate);
 
-	syncA.init(&hw, PIN_RESET_A, PIN_RESET_DETECT_A);
+#if DEBUG
+  hw.StartLog();
+	System::Delay(500);
+#endif
+
 	initDac();
 	initAdc();
 	initGpioOut();
+	initGpioIn();
 
 	// gate_output.pin  = hw.GetPin(PIN_EOC_A);
 	// gate_output.mode = DSY_GPIO_MODE_OUTPUT_PP;
 	// gate_output.pull = DSY_GPIO_PULLDOWN;
 	// dsy_gpio_init(&gate_output);
-
-#if DEBUG
-  hw.StartLog();
-	System::Delay(500);
-#endif
 
 	// NOTE TO SELF: Do not move from main, application will segfault lol
 	LowStepperChannel *channelA = new LowStepperChannel(sampleRate); // don't use this
@@ -254,8 +261,8 @@ int main(void) {
 			// hw.PrintLine("%f, %f", potInputs[1], cvInputs[7]);
 			// hw.PrintLine("%f, %f, %f, %f, %f, %f, %f, %f", cvInputs[0], cvInputs[1], cvInputs[2], cvInputs[3], cvInputs[4], cvInputs[5], cvInputs[6], cvInputs[7]);
 			// hw.PrintLine("%f, %f, %f, %f, %f, %f, %f, %f", potInputs[0], potInputs[1], potInputs[2], potInputs[3], potInputs[4], potInputs[5], potInputs[6], potInputs[7]);
-			hw.PrintLine("%f,\t%f,\t%d,\t%d", bpm, bpmAverage.getAverageValue(), samplesSinceLastSyncTick, syncA.isCablePluggedIn());
-			// hw.PrintLine("%d, %d, %d", syncA.isCablePluggedIn(), syncA.isGateHigh(), syncA.isGateHigh());
+			// hw.PrintLine("%f,\t%f,\t%d,\t%d", bpm, bpmAverage.getAverageValue(), samplesSinceLastSyncTick, syncA.isCablePluggedIn());
+			hw.PrintLine("%d, %d, %f", syncA.isCablePluggedIn(), useSyncA, LowStepper::mapRateInputToFrequency(getRateAInput(), useSyncA, bpmAverageA.getAverageValue()));
 			// hw.PrintLine("***");
 		}
 #endif

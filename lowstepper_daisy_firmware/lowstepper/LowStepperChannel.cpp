@@ -3,6 +3,7 @@
 #include "LowStepperChannel.h"
 #include "util.h"
 
+
 /**
  * All of the following functions take a phase input from 0 - TWO_PI
  * and return a value from -1 to 1.

@@ -7,7 +7,7 @@ template <class T>
 AverageBuffer<T>::AverageBuffer(size_t size, T defaultValue) {
   this->bufferSize = size;
   this->values = new T[size];
-  for(int i = 0; i < size; i++) {
+  for(size_t i = 0; i < size; i++) {
     values[i] = defaultValue;
   }
 }
