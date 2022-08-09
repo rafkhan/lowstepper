@@ -17,7 +17,7 @@ void LowStepper::tick(LowStepperInput *inputs, LowStepperOutput outputs[]) {
 
 float LowStepper::mapRateInputToFrequency(float input, bool enableSync, float bpm) {
   if(enableSync) {
-    float maxFreq = (bpm / 60.0f) / 2;
+    float maxFreq = (bpm / 60.0f);
     int position = (int) floor(mapFFFF(input, 0, 1, 17, 1)); // will never actually go to 17?
 
     // even numbers only
@@ -36,11 +36,16 @@ float LowStepper::mapMorphInput(float input) {
   return input;
 }
 
-float LowStepper::mapStartInput(float input) {
+float LowStepper::mapStartInput(float input, bool enableSync) {
+  // if(enableSync) {
+  //   int position = (int) floor(mapFFFF(input, 0, 1, 17, 0));
+  //   return position == 0 ? 0 : 1 / position;
+  // }
+
   return input;
 }
 
-float LowStepper::mapLengthInput(float input) {
+float LowStepper::mapLengthInput(float input, bool enableSync) {
   return mapFFFF(input, 0, 1, 0.5, 1);
 }
 

@@ -53,8 +53,8 @@ const int MUX2S0 = 3;
 const int MUX2S1 = 2;
 const int MUX2S2 = 1;
 
-#define PIN_RESET_A 13	
-#define PIN_RESET_DETECT_A 8
+#define PIN_SYNC_A 12	
+#define PIN_SYNC_DETECT_A 9
 
 #define PIN_EOC_A 20
 #define PIN_EOC_B 19
@@ -127,7 +127,7 @@ void initGpioOut() {
 }
 
 void initGpioIn() {
-	syncA.init(&hw, PIN_RESET_A, PIN_RESET_DETECT_A);
+	syncA.init(&hw, PIN_SYNC_A, PIN_SYNC_DETECT_A);
 }
 
 void initDac() {
@@ -180,7 +180,7 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 			samplesSinceLastSyncTickA = 0;
 		} else {
 			samplesSinceLastSyncTickA++;
-			samplesSinceLastSyncTickA = samplesSinceLastSyncTickA % (INT_MAX - 1); // todo check this
+			samplesSinceLastSyncTickA = samplesSinceLastSyncTickA % (INT_MAX -  1); // todo check this
 		}
 
 		float avgBpmAValue = bpmAverageA.getAverageValue();
@@ -190,15 +190,15 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 		inputA.phase = outputs[0].phase;
 		inputA.frequency = LowStepper::mapRateInputToFrequency(getRateAInput(), useSyncA, avgBpmAValue);
 		inputA.morph = LowStepper::mapMorphInput(getMorphAInput());
-		inputA.start = LowStepper::mapStartInput(getStartAInput());
-		inputA.length = LowStepper::mapLengthInput(getLengthAInput());
+		inputA.start = LowStepper::mapStartInput(getStartAInput(), useSyncA);
+		inputA.length = LowStepper::mapLengthInput(getLengthAInput(), useSyncA);
 
 		LowStepperInput inputB;
 		inputB.phase = outputs[1].phase;
 		inputB.frequency = LowStepper::mapRateInputToFrequency(getRateBInput(), false, 0);
 		inputB.morph = LowStepper::mapMorphInput(getMorphBInput());
-		inputB.start = LowStepper::mapStartInput(getStartBInput());
-		inputB.length = LowStepper::mapLengthInput(getLengthBInput());
+		inputB.start = LowStepper::mapStartInput(getStartBInput(), false);
+		inputB.length = LowStepper::mapLengthInput(getLengthBInput(), false);
 
 		LowStepperInput inputs[2] = { inputA, inputB };
 
