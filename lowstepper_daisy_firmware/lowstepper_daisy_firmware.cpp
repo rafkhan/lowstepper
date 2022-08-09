@@ -15,15 +15,15 @@
 #define DEBUG 1
 
 // PIN MAPPING
-const int MUX1ADC = 28;
-const int MUX1S0 = 27;
-const int MUX1S1 = 26;
-const int MUX1S2 = 25;
+#define MUX1ADC 28
+#define MUX1S0 27
+#define MUX1S1 26
+#define MUX1S2 25
 
-const int MUX2ADC = 24;
-const int MUX2S0 = 3;
-const int MUX2S1 = 2;
-const int MUX2S2 = 1;
+#define MUX2ADC 24
+#define MUX2S0 3
+#define MUX2S1 2
+#define MUX2S2 1
 
 #define PIN_SYNC_A 12	
 #define PIN_SYNC_DETECT_A 9
@@ -182,7 +182,7 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 		}
 
 		float avgBpmAValue = bpmAverageA.getAverageValue();
-		useSyncA = syncA.isCablePluggedIn() && (avgBpmAValue > 10);
+		useSyncA = syncA.isCablePluggedIn() && (avgBpmAValue > 10); // TODO THIS NEVER GOES FALSEz
 
 		LowStepperInput inputA;
 		inputA.phase = outputs[0].phase;
