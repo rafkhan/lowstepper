@@ -13,8 +13,7 @@
  * 
  * lmao math
  */
-float LowStepperChannel::triangle(float phase)
-{
+float LowStepperChannel::triangle(float phase) {
   //REALLY DUMB CODE, NEED TO BE OPTIMIZED!
 
   if (phase <= PI * 0.5) //FIRST QUARTER
@@ -32,8 +31,7 @@ float LowStepperChannel::triangle(float phase)
 
 }
 
-float LowStepperChannel::ramp(float phase)
-{
+float LowStepperChannel::ramp(float phase) {
   return -1 * ((phase - PI) / PI);
 }
 
@@ -45,8 +43,7 @@ float LowStepperChannel::saw(float phase) {
   return ((phase - PI) / PI) - 1;
 }
 
-float LowStepperChannel::square(float phase)
-{
+float LowStepperChannel::square(float phase) {
   if (phase >= PI)
   {
     return -1;

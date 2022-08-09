@@ -37,10 +37,12 @@ float LowStepper::mapMorphInput(float input) {
 }
 
 float LowStepper::mapStartInput(float input, bool enableSync) {
-  // if(enableSync) {
-  //   int position = (int) floor(mapFFFF(input, 0, 1, 17, 0));
-  //   return position == 0 ? 0 : 1 / position;
-  // }
+  if(enableSync) {
+    int exponent = (int) floor(mapFFFF(input, 0, 1, 0, 4));
+    float position = pow(2, exponent);
+
+    return position == 0 ? 0 : 1.0f / (float) position;
+  }
 
   return input;
 }
