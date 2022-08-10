@@ -39,10 +39,11 @@ float LowStepper::mapStartInput(float input, bool enableSync) {
     return exponent == 0 ? 0 : 1.0f / (float) position;
   }
   return input;
-  return mapFFFF(input, 0.1, 1, 0, 1);
+  // return mapFFFF(input, 0, 1, 0, 1); // TODO fix 0.1
 }
 
 float LowStepper::mapLengthInput(float input, bool enableSync) {
-  return mapFFFF(input, 0.1, 1, 1, 0);
+  // return mapFFFF(input, 0, 1, 0, 1); // TODO fix 0.1
+  return input;
 }
 
