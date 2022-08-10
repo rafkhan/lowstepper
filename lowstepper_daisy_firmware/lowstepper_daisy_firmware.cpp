@@ -146,8 +146,11 @@ void readAdc() {
 }
 
 void writeDac() {
-	uint16_t y1 = mapFFII(cvCh1 * -1.0, -1.0, 1.0, 0, 4095);
-	uint16_t y2 =	mapFFII(cvCh2 * -1.0, -1.0, 1.0, 0, 4095);
+	// uint16_t y1 = mapFFII(cvCh1 * -1.0, -1.0, 1.0, 0, 4095);
+	// uint16_t y2 =	mapFFII(cvCh2 * -1.0, -1.0, 1.0, 0, 4095);
+
+	uint16_t y1 = mapFFII(cvCh1 * -1.0, -1.0, 1.0, 5, 4090);
+	uint16_t y2 =	mapFFII(cvCh2 * -1.0, -1.0, 1.0, 5, 4090);
 
 	// accidentally reversed??
 	hw.dac.WriteValue(DacHandle::Channel::TWO, y1);
@@ -173,7 +176,7 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 
 	for (size_t n = 0; n < size; n += 2) {
 		if(syncA.triggerCheck()) {
-			bpmA = 60.0f / ((samplesSinceLastSyncTickA + 1.0f) * (1.0f/sampleRate)) / 4;
+			bpmA = 60.0f / ((samplesSinceLastSyncTickA + 1.0f) * (1.0f / sampleRate)) / 4;
 			bpmAverageA.addValue(bpmA);
 			samplesSinceLastSyncTickA = 0;
 		} else {
@@ -182,14 +185,14 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 		}
 
 		float avgBpmAValue = bpmAverageA.getAverageValue();
-		useSyncA = syncA.isCablePluggedIn() && (avgBpmAValue > 10); // TODO THIS NEVER GOES FALSEz
+		useSyncA = syncA.isCablePluggedIn() && (avgBpmAValue > 10); // TODO THIS NEVER GOES FALSE
 
 		LowStepperInput inputA;
 		inputA.phase = outputs[0].phase;
 		inputA.frequency = LowStepper::mapRateInputToFrequency(getRateAInput(), useSyncA, avgBpmAValue);
 		inputA.morph = LowStepper::mapMorphInput(getMorphAInput());
 		inputA.start = LowStepper::mapStartInput(getStartAInput(), useSyncA);
-		inputA.length = LowStepper::mapLengthInput(getLengthAInput(), useSyncA);
+		inputA.end = LowStepper::mapLengthInput(getLengthAInput(), useSyncA);
 		inputA.shouldReset = resetA.triggerCheck();
 
 		LowStepperInput inputB;
@@ -197,7 +200,7 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 		inputB.frequency = LowStepper::mapRateInputToFrequency(getRateBInput(), false, 0);
 		inputB.morph = LowStepper::mapMorphInput(getMorphBInput());
 		inputB.start = LowStepper::mapStartInput(getStartBInput(), false);
-		inputB.length = LowStepper::mapLengthInput(getLengthBInput(), false);
+		inputB.end = LowStepper::mapLengthInput(getLengthBInput(), false);
 		inputB.shouldReset = false;
  
 		LowStepperInput inputs[2] = { inputA, inputB };
@@ -229,6 +232,7 @@ int main(void) {
 
 #if DEBUG
   hw.StartLog();
+	// Logger<LOGGER_SEMIHOST>::StartLog(true);
 	System::Delay(500);
 #endif
 
@@ -258,13 +262,14 @@ int main(void) {
 #if DEBUG
 		if(metroValue) {
 			metroValue = false;
-			// hw.PrintLine("%f, %f", potInputs[1], cvInputs[7]);
-			// hw.PrintLine("%f, %f, %f, %f, %f, %f, %f, %f", cvInputs[0], cvInputs[1], cvInputs[2], cvInputs[3], cvInputs[4], cvInputs[5], cvInputs[6], cvInputs[7]);
-			// hw.PrintLine("%f, %f, %f, %f, %f, %f, %f, %f", potInputs[0], potInputs[1], potInputs[2], potInputs[3], potInputs[4], potInputs[5], potInputs[6], potInputs[7]);
-			// hw.PrintLine("%f,\t%f,\t%d,\t%d", bpm, bpmAverage.getAverageValue(), samplesSinceLastSyncTick, syncA.isCablePluggedIn());
-			hw.PrintLine("%d, %d, %f", syncA.isCablePluggedIn(), useSyncA, LowStepper::mapRateInputToFrequency(getRateAInput(), useSyncA, bpmAverageA.getAverageValue()));
-			// hw.PrintLine("%f", LowStepper::mapStartInput(getStartAInput(), useSyncA));
-			// hw.PrintLine("***");
+
+			Logger<LOGGER_SEMIHOST>::PrintLine(
+				"%d, %d, %f, %f",
+				syncA.isCablePluggedIn(),
+				useSyncA,
+				LowStepper::mapStartInput(getStartAInput(), useSyncA),
+				LowStepper::mapLengthInput(getLengthAInput(), useSyncA)
+			);
 		}
 #endif
 	}

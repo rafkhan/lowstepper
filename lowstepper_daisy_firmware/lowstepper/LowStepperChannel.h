@@ -18,8 +18,7 @@ struct LowStepperInput {
   float morph; // 0 - 1
   float start; // 0 - 1
 
-  // NOTE THIS IS NOW "END" AND NOT "LENGTH"
-  float length; // 0 - 1 
+  float end; // 0 - 1 
 
   bool shouldReset;
 };
