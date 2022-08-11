@@ -62,6 +62,7 @@ float cvCh2 = 0;
 float bpmA = 0;
 int samplesSinceLastSyncTickA = 1;
 AverageBuffer<float> bpmAverageA{(size_t) 10, 0};
+bool useSyncA;
 
 // Metro for development
 Metro tick;
@@ -162,7 +163,6 @@ void readGpioIn() {
 	resetA.readHardware();
 }
 
-bool useSyncA;
 
 void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 									 AudioHandle::InterleavingOutputBuffer out,
@@ -179,13 +179,18 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 			bpmA = 60.0f / ((samplesSinceLastSyncTickA + 1.0f) * (1.0f / sampleRate)) / 4;
 			bpmAverageA.addValue(bpmA);
 			samplesSinceLastSyncTickA = 0;
+			useSyncA = true;
 		} else {
 			samplesSinceLastSyncTickA++;
 			samplesSinceLastSyncTickA = samplesSinceLastSyncTickA % (INT_MAX -  1); // todo check this
+
+			if(samplesSinceLastSyncTickA > 48000) {
+				useSyncA = false;
+			}
 		}
 
 		float avgBpmAValue = bpmAverageA.getAverageValue();
-		useSyncA = syncA.isCablePluggedIn() && (avgBpmAValue > 10); // TODO THIS NEVER GOES FALSE
+		// useSyncA = syncA.isCablePluggedIn() && (avgBpmAValue > 10); // TODO THIS NEVER GOES FALSE
 
 		LowStepperInput inputA;
 		inputA.phase = outputs[0].phase;
