@@ -78,23 +78,16 @@ float diffThreshold = 0.25;
 LowStepperOutput LowStepperChannel::tick(LowStepperInput input) {
     float phaseIncrement = (this->sampleLength / (1000000.0 / input.frequency)) * TWO_PI;
 
-    // float end = (1 - start);
-
-
     float start = input.start;
     float end = input.end;
     float startPhase;
     float endPhase;
     float phase;
 
-    // if(end - start <= 0.25) {
-    //   start = input.start;
-    //   end = input.end + (0.25 - end - start);
-    // }
-    float startPhase = TWO_PI * start;
-    float endPhase = TWO_PI - (TWO_PI * (1 - end));
+    startPhase = TWO_PI * start;
+    endPhase = TWO_PI - (TWO_PI * (1 - end));
 
-    if(start <= end) {
+    if(start < end) {
       phase = input.phase + phaseIncrement;
 
       if (phase > endPhase) {

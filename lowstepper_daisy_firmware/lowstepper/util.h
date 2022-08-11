@@ -3,8 +3,12 @@
 
 #include <cstdint>
 
+#ifndef HALF_PI
+#define HALF_PI 1.5707963268f
+#endif
+
 #ifndef PI
-#define PI 3.14159265359
+#define PI 3.14159265359f
 #endif
 
 #ifndef TWO_PI
