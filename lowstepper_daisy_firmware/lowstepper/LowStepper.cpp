@@ -17,13 +17,13 @@ void LowStepper::tick(LowStepperInput *inputs, LowStepperOutput outputs[]) {
 
 float LowStepper::mapRateInputToFrequency(float input, bool enableSync, float bpm) {
   if(enableSync) {
-    float maxFreq = (bpm / 60.0f);
-    float exponent = floor(mapFFFF(input, 0, 1, 6, 0)); // will never actually go to 17?
+    float maxFreq = (bpm / 60.0f) * 4;
+    float exponent = floor(mapFFFF(input, 0, 1, 8, 0)); // will never actually go to 17?
     float position = pow(2, exponent);
     return maxFreq / (float) position;
   } else {
     // TODO: non-linear curve here.
-    return mapFFFF(input, 0, 1, 0.01, 2);
+    return mapFFFF(input, 0, 1, 0.05, 2);
   }
 }
 

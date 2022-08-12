@@ -1,8 +1,6 @@
 #include <cstddef>
 #include "AverageBuffer.h"
 
-template class AverageBuffer<float>;
-
 template <class T>
 AverageBuffer<T>::AverageBuffer(size_t size, T defaultValue) {
   this->bufferSize = size;

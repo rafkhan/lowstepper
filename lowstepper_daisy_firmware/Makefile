@@ -9,6 +9,7 @@ CPP_SOURCES += lowstepper/LowStepper.cpp
 CPP_SOURCES += lowstepper/LowStepperChannel.cpp
 CPP_SOURCES += lowstepper/util.cpp
 CPP_SOURCES += lowstepper/AverageBuffer.cpp
+CPP_SOURCES += lowstepper/SyncManager.cpp
 CPP_SOURCES += hardware/GateInput.cpp
 # CPP_SOURCES += AdditionalFile2.cpp
 

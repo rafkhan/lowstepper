@@ -13,4 +13,6 @@ class AverageBuffer {
     uint64_t circularIdx = 0;
 };
 
+template class AverageBuffer<float>;
+
 #endif

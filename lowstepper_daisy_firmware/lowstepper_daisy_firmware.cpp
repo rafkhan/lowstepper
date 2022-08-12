@@ -8,6 +8,7 @@
 #include "lowstepper/LowStepper.h"
 #include "lowstepper/LowStepperChannel.h"
 #include "lowstepper/AverageBuffer.h"
+#include "lowstepper/SyncManager.h"
 #include "lowstepper/util.h"
 
 #include "hardware/GateInput.h"
@@ -44,12 +45,16 @@ GateInput resetA;
 // Config
 float sampleRate;
 
+// Internal objects
 const size_t channelCount = 2;
 LowStepperOutput outputs[channelCount] = { NULL, NULL };
 LowStepperOutput o { 0, 0, false };
 LowStepperOutput o2 { 0, 0, false };
 LowStepper *lowStepper;
 
+SyncManager syncManagerA;
+
+// ADC Input stuff
 int adcCycleCounter = 0;
 float potInputs[8];
 float cvInputs[8];
@@ -61,8 +66,7 @@ float cvCh2 = 0;
 // TODO extract BPM code
 float bpmA = 0;
 int samplesSinceLastSyncTickA = 1;
-AverageBuffer<float> bpmAverageA{(size_t) 10, 0};
-bool useSyncA;
+AverageBuffer<float> bpmAverageA{(size_t) 4, 400};
 
 // Metro for development
 Metro tick;
@@ -140,6 +144,10 @@ void initDac() {
 	hw.dac.WriteValue(DacHandle::Channel::TWO, 0); // CV1
 }
 
+void initSync(float sampleRate) {
+	syncManagerA.init(sampleRate);
+}
+
 void readAdc() {
 	adcCycleCounter = (adcCycleCounter + 1) % 8;
 	potInputs[adcCycleCounter] = 1.0 - hw.adc.GetMuxFloat(0, adcCycleCounter);
@@ -175,21 +183,22 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 	readGpioIn();
 
 	for (size_t n = 0; n < size; n += 2) {
-		if(syncA.triggerCheck()) {
-			bpmA = 60.0f / ((samplesSinceLastSyncTickA + 1.0f) * (1.0f / sampleRate)) / 4;
-			bpmAverageA.addValue(bpmA);
-			samplesSinceLastSyncTickA = 0;
-			useSyncA = true;
-		} else {
-			samplesSinceLastSyncTickA++;
-			samplesSinceLastSyncTickA = samplesSinceLastSyncTickA % (INT_MAX -  1); // todo check this
+		bool useSyncA = syncManagerA.tick(syncA.triggerCheck());
+		float avgBpmAValue = syncManagerA.getBpm();
 
-			if(samplesSinceLastSyncTickA > 48000) {
-				useSyncA = false;
-			}
-		}
+		// if(syncA.triggerCheck()) {
+		// 	bpmA = 60.0f / ((samplesSinceLastSyncTickA + 1.0f) * (1.0f / sampleRate)) / 4;
+		// 	bpmAverageA.addValue(bpmA);
+		// 	samplesSinceLastSyncTickA = 0;
+		// 	useSyncA = true;
+		// } else {
+		// 	samplesSinceLastSyncTickA++;
+		// 	if(samplesSinceLastSyncTickA > 48000) {
+		// 		useSyncA = false;
+		// 	}
+		// 	samplesSinceLastSyncTickA = samplesSinceLastSyncTickA % (INT_MAX -  1); // todo check this
+		// }
 
-		float avgBpmAValue = bpmAverageA.getAverageValue();
 		// useSyncA = syncA.isCablePluggedIn() && (avgBpmAValue > 10); // TODO THIS NEVER GOES FALSE
 
 		LowStepperInput inputA;
@@ -245,6 +254,7 @@ int main(void) {
 	initAdc();
 	initGpioOut();
 	initGpioIn();
+	initSync(sampleRate);
 
 	// gate_output.pin  = hw.GetPin(PIN_EOC_A);
 	// gate_output.mode = DSY_GPIO_MODE_OUTPUT_PP;
@@ -268,13 +278,15 @@ int main(void) {
 		if(metroValue) {
 			metroValue = false;
 
-			Logger<LOGGER_SEMIHOST>::PrintLine(
-				"%d, %d, %f, %f",
-				syncA.isCablePluggedIn(),
-				useSyncA,
-				LowStepper::mapStartInput(getStartAInput(), useSyncA),
-				LowStepper::mapLengthInput(getLengthAInput(), useSyncA)
-			);
+			// Logger<LOGGER_SEMIHOST>::PrintLine(
+			// 	"%d, %d, %f, %f",
+			// 	syncA.isCablePluggedIn(),
+			// 	useSyncA,
+			// 	LowStepper::mapStartInput(getStartAInput(), useSyncA),
+			// 	LowStepper::mapLengthInput(getLengthAInput(), useSyncA)
+			// );
+
+			hw.PrintLine("%d", samplesSinceLastSyncTickA);
 		}
 #endif
 	}

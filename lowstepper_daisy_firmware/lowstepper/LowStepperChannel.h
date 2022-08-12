@@ -2,7 +2,6 @@
 #define BASEMODE_H
 
 #include <stdint.h>
-#include "sharedTypes.h"
 
 struct LowStepperOutput {
   bool eocGateHigh;
