@@ -31,6 +31,11 @@
 #define PIN_RESET_A 13	
 #define PIN_RESET_DETECT_A 8
 
+#define PIN_SYNC_B 10
+#define PIN_SYNC_DETECT_B 7
+#define PIN_RESET_B 14
+#define PIN_RESET_DETECT_B 6
+
 #define PIN_EOC_A 20
 #define PIN_EOC_B 19
 
@@ -41,6 +46,9 @@ using namespace daisysp;
 static DaisySeed hw;
 GateInput syncA;
 GateInput resetA;
+GateInput syncB;
+GateInput resetB;
+
 
 // Config
 float sampleRate;
@@ -53,6 +61,7 @@ LowStepperOutput o2 { 0, 0, false };
 LowStepper *lowStepper;
 
 SyncManager syncManagerA;
+SyncManager syncManagerB;
 
 // ADC Input stuff
 int adcCycleCounter = 0;
@@ -130,6 +139,8 @@ void initGpioOut() {
 void initGpioIn() {
 	syncA.init(&hw, PIN_SYNC_A, PIN_SYNC_DETECT_A);
 	resetA.init(&hw, PIN_RESET_A, PIN_RESET_DETECT_A);
+	syncB.init(&hw, PIN_SYNC_B, PIN_SYNC_DETECT_B);
+	resetB.init(&hw, PIN_RESET_B, PIN_RESET_DETECT_B);
 }
 
 void initDac() {
@@ -146,6 +157,7 @@ void initDac() {
 
 void initSync(float sampleRate) {
 	syncManagerA.init(sampleRate);
+	syncManagerB.init(sampleRate);
 }
 
 void readAdc() {
@@ -169,6 +181,8 @@ void writeDac() {
 void readGpioIn() {
 	syncA.readHardware();
 	resetA.readHardware();
+	syncB.readHardware();
+	resetB.readHardware();
 }
 
 
@@ -184,26 +198,14 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 
 	for (size_t n = 0; n < size; n += 2) {
 		bool useSyncA = syncManagerA.tick(syncA.triggerCheck());
-		float avgBpmAValue = syncManagerA.getBpm();
+		float avgBpmValueA = syncManagerA.getBpm();
 
-		// if(syncA.triggerCheck()) {
-		// 	bpmA = 60.0f / ((samplesSinceLastSyncTickA + 1.0f) * (1.0f / sampleRate)) / 4;
-		// 	bpmAverageA.addValue(bpmA);
-		// 	samplesSinceLastSyncTickA = 0;
-		// 	useSyncA = true;
-		// } else {
-		// 	samplesSinceLastSyncTickA++;
-		// 	if(samplesSinceLastSyncTickA > 48000) {
-		// 		useSyncA = false;
-		// 	}
-		// 	samplesSinceLastSyncTickA = samplesSinceLastSyncTickA % (INT_MAX -  1); // todo check this
-		// }
-
-		// useSyncA = syncA.isCablePluggedIn() && (avgBpmAValue > 10); // TODO THIS NEVER GOES FALSE
+		bool useSyncB = syncManagerB.tick(syncB.triggerCheck());
+		float avgBpmValueB = syncManagerB.getBpm();
 
 		LowStepperInput inputA;
 		inputA.phase = outputs[0].phase;
-		inputA.frequency = LowStepper::mapRateInputToFrequency(getRateAInput(), useSyncA, avgBpmAValue);
+		inputA.frequency = LowStepper::mapRateInputToFrequency(getRateAInput(), useSyncA, avgBpmValueA);
 		inputA.morph = LowStepper::mapMorphInput(getMorphAInput());
 		inputA.start = LowStepper::mapStartInput(getStartAInput(), useSyncA);
 		inputA.end = LowStepper::mapLengthInput(getLengthAInput(), useSyncA);
@@ -211,11 +213,11 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 
 		LowStepperInput inputB;
 		inputB.phase = outputs[1].phase;
-		inputB.frequency = LowStepper::mapRateInputToFrequency(getRateBInput(), false, 0);
+		inputB.frequency = LowStepper::mapRateInputToFrequency(getRateBInput(), useSyncB, avgBpmValueB);
 		inputB.morph = LowStepper::mapMorphInput(getMorphBInput());
-		inputB.start = LowStepper::mapStartInput(getStartBInput(), false);
-		inputB.end = LowStepper::mapLengthInput(getLengthBInput(), false);
-		inputB.shouldReset = false;
+		inputB.start = LowStepper::mapStartInput(getStartBInput(), useSyncB);
+		inputB.end = LowStepper::mapLengthInput(getLengthBInput(), useSyncB);
+		inputB.shouldReset = resetB.triggerCheck();
  
 		LowStepperInput inputs[2] = { inputA, inputB };
 
@@ -286,7 +288,13 @@ int main(void) {
 			// 	LowStepper::mapLengthInput(getLengthAInput(), useSyncA)
 			// );
 
-			hw.PrintLine("%d", samplesSinceLastSyncTickA);
+			hw.PrintLine(
+				"%d, %d, %d, %d",
+				syncB.isGateHigh(),
+				syncB.isCablePluggedIn(),
+				resetB.isGateHigh(),
+				resetB.isCablePluggedIn()
+			);
 		}
 #endif
 	}
