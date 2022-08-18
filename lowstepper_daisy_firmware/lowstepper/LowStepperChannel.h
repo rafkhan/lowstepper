@@ -36,6 +36,11 @@ class LowStepperChannel
   public:
     LowStepperChannel(float sampleRate);
     LowStepperOutput tick(LowStepperInput);
+
+    static float mapRateInputToFrequency(float input, bool enableSync, bool enableFastMode, float bpm); // Convert 0-1 value to frequency
+    static float mapMorphInput(float input);
+    static float mapStartInput(float input, bool enableSync);
+    static float mapLengthInput(float length, bool enableSync);
 };
 
 #endif

@@ -8,9 +8,6 @@
  * All of the following functions take a phase input from 0 - TWO_PI
  * and return a value from -1 to 1.
  * 
- * std::sin is also leveraged but not included because sine waves are
- * incredibly based and just do that by default
- * 
  * lmao math
  */
 float LowStepperChannel::triangle(float phase) {
@@ -62,11 +59,99 @@ float LowStepperChannel::getMorphedOutput(float morphPosition, float phase) {
     newMorph = mapFFFF(morphPosition, 0.34, 0.66, 0, 1);
     return triangle(phase) + (newMorph * (saw(phase) - triangle(phase)));
   } else {
-    newMorph = mapFFFF(morphPosition, 0.67, 1, 0, 1);
+    newMorph = mapFFFF(morphPosition, 0.67, 1, 0, 0.8); // NOT 0-1 to avoid square wave
     return saw(phase) + (newMorph * (square(phase) - saw(phase)));
   }
 }
 
+float LowStepperChannel::mapRateInputToFrequency(float input, bool enableSync, bool enableFastMode, float bpm) {
+  if(enableSync) {
+    float mult = 0.5f;
+    if(enableFastMode) {
+      mult = 16.0f;
+    }
+
+    float maxFreq = (bpm / 60.0f) * mult;
+    float exponent = floor(mapFFFF(input, 0, 1, 8, 0)); // will never actually go to 17?
+    float position = pow(2, exponent);
+    return maxFreq / (float) position;
+  } else {
+    // non-linear curve here.
+    float min = 0.01;
+    float max = 2;
+
+    if(enableFastMode) {
+      min = 2;
+      max = 40;
+    }
+
+    return mapFFFF(pow(input, 2.5), 0, 1, min, max);
+  }
+}
+
+float LowStepperChannel::mapMorphInput(float input) {
+  return input;
+}
+
+float getDividerFromPosition(float input) {
+    int position = floor(mapFFFF(input, 0, 1, 0, 9));
+    float div = 1;
+    if(position == 0) {
+      div = 0;
+    }
+
+    if(position == 1) {
+      div = 0.125;
+    }
+
+    if(position == 2) {
+      div = 0.25;
+    }
+
+    if(position == 3) {
+      div = 0.375;
+    }
+
+    if(position == 4) {
+      div = 0.5;
+    }
+
+    if(position == 5) {
+      div = 0.625;
+    }
+
+    if(position == 6) {
+      div = 0.75;
+    }
+
+    if(position == 7) {
+      div = 0.875;
+    }
+
+    if(position == 8) {
+      div = 1;
+    }
+
+    return div;
+}
+
+
+float LowStepperChannel::mapLengthInput(float input, bool enableSync) {
+  if(enableSync) {
+    return getDividerFromPosition(input);
+  }
+
+  return input;
+}
+
+float LowStepperChannel::mapStartInput(float input, bool enableSync)
+{
+  if(enableSync) {
+    return getDividerFromPosition(input);
+  }
+
+  return input;
+}
 
 LowStepperChannel::LowStepperChannel(float sampleRate) {
   this->sampleRate = sampleRate;

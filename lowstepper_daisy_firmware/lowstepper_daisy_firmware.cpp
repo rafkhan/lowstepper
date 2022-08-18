@@ -12,6 +12,7 @@
 #include "lowstepper/util.h"
 
 #include "hardware/GateInput.h"
+#include "hardware/LSSwitch.h"
 
 #define DEBUG 1
 
@@ -36,6 +37,11 @@
 #define PIN_RESET_B 14
 #define PIN_RESET_DETECT_B 6
 
+#define PIN_SWITCH_A_1 18
+#define PIN_SWITCH_A_2 17
+#define PIN_SWITCH_B_1 16
+#define PIN_SWITCH_B_2 15
+
 #define PIN_EOC_A 20
 #define PIN_EOC_B 19
 
@@ -48,7 +54,8 @@ GateInput syncA;
 GateInput resetA;
 GateInput syncB;
 GateInput resetB;
-
+LSSwitch switchA;
+LSSwitch switchB;
 
 // Config
 float sampleRate;
@@ -71,11 +78,6 @@ float cvInputs[8];
 // Output values
 float cvCh1 = 0;
 float cvCh2 = 0;
-
-// TODO extract BPM code
-float bpmA = 0;
-int samplesSinceLastSyncTickA = 1;
-AverageBuffer<float> bpmAverageA{(size_t) 4, 400};
 
 // Metro for development
 Metro tick;
@@ -141,6 +143,9 @@ void initGpioIn() {
 	resetA.init(&hw, PIN_RESET_A, PIN_RESET_DETECT_A);
 	syncB.init(&hw, PIN_SYNC_B, PIN_SYNC_DETECT_B);
 	resetB.init(&hw, PIN_RESET_B, PIN_RESET_DETECT_B);
+
+	switchA.init(&hw, PIN_SWITCH_A_1);
+	switchB.init(&hw, PIN_SWITCH_B_1);
 }
 
 void initDac() {
@@ -183,6 +188,9 @@ void readGpioIn() {
 	resetA.readHardware();
 	syncB.readHardware();
 	resetB.readHardware();
+
+	switchA.readHardware();
+	switchB.readHardware();
 }
 
 
@@ -199,24 +207,26 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 	for (size_t n = 0; n < size; n += 2) {
 		bool useSyncA = syncManagerA.tick(syncA.triggerCheck());
 		float avgBpmValueA = syncManagerA.getBpm();
+		bool useFastModeA = !switchA.isOn();
 
 		bool useSyncB = syncManagerB.tick(syncB.triggerCheck());
 		float avgBpmValueB = syncManagerB.getBpm();
+		bool useFastModeB = !switchB.isOn();
 
 		LowStepperInput inputA;
 		inputA.phase = outputs[0].phase;
-		inputA.frequency = LowStepper::mapRateInputToFrequency(getRateAInput(), useSyncA, avgBpmValueA);
-		inputA.morph = LowStepper::mapMorphInput(getMorphAInput());
-		inputA.start = LowStepper::mapStartInput(getStartAInput(), useSyncA);
-		inputA.end = LowStepper::mapLengthInput(getLengthAInput(), useSyncA);
+		inputA.frequency = LowStepperChannel::mapRateInputToFrequency(getRateAInput(), useSyncA, useFastModeA, avgBpmValueA);
+		inputA.morph = LowStepperChannel::mapMorphInput(getMorphAInput());
+		inputA.start = LowStepperChannel::mapStartInput(getStartAInput(), useSyncA);
+		inputA.end = LowStepperChannel::mapLengthInput(getLengthAInput(), useSyncA);
 		inputA.shouldReset = resetA.triggerCheck();
 
 		LowStepperInput inputB;
 		inputB.phase = outputs[1].phase;
-		inputB.frequency = LowStepper::mapRateInputToFrequency(getRateBInput(), useSyncB, avgBpmValueB);
-		inputB.morph = LowStepper::mapMorphInput(getMorphBInput());
-		inputB.start = LowStepper::mapStartInput(getStartBInput(), useSyncB);
-		inputB.end = LowStepper::mapLengthInput(getLengthBInput(), useSyncB);
+		inputB.frequency = LowStepperChannel::mapRateInputToFrequency(getRateBInput(), useSyncB, useFastModeB, avgBpmValueB);
+		inputB.morph = LowStepperChannel::mapMorphInput(getMorphBInput());
+		inputB.start = LowStepperChannel::mapStartInput(getStartBInput(), useSyncB);
+		inputB.end = LowStepperChannel::mapLengthInput(getLengthBInput(), useSyncB);
 		inputB.shouldReset = resetB.triggerCheck();
  
 		LowStepperInput inputs[2] = { inputA, inputB };
@@ -288,13 +298,24 @@ int main(void) {
 			// 	LowStepper::mapLengthInput(getLengthAInput(), useSyncA)
 			// );
 
+			// hw.PrintLine(
+			// 	"%d, %d, %d, %d",
+			// 	syncB.isGateHigh(),
+			// 	syncB.isCablePluggedIn(),
+			// 	resetB.isGateHigh(),
+			// 	resetB.isCablePluggedIn()
+			// );
+
 			hw.PrintLine(
-				"%d, %d, %d, %d",
-				syncB.isGateHigh(),
-				syncB.isCablePluggedIn(),
-				resetB.isGateHigh(),
-				resetB.isCablePluggedIn()
+				"%d, %d",
+				switchA.isOn(),
+				switchB.isOn()
 			);
+
+			// hw.PrintLine(
+			// 	"%f",
+			// 	LowStepperChannel::mapStartInput(getStartAInput(), useSyncA)
+			// );
 		}
 #endif
 	}
