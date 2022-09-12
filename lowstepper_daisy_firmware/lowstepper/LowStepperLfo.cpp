@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <math.h>
-#include "LowStepperChannel.h"
+#include "LowStepperLfo.h"
 #include "util.h"
 
 
@@ -10,7 +10,7 @@
  * 
  * lmao math
  */
-float LowStepperChannel::triangle(float phase) {
+float LowStepperLfo::triangle(float phase) {
   //REALLY DUMB CODE, NEED TO BE OPTIMIZED!
 
   if (phase <= PI * 0.5) //FIRST QUARTER
@@ -28,11 +28,11 @@ float LowStepperChannel::triangle(float phase) {
 
 }
 
-float LowStepperChannel::ramp(float phase) {
+float LowStepperLfo::ramp(float phase) {
   return -1 * ((phase - PI) / PI);
 }
 
-float LowStepperChannel::saw(float phase) {
+float LowStepperLfo::saw(float phase) {
   if (phase <= PI) {
     return phase / PI;
   }
@@ -40,7 +40,7 @@ float LowStepperChannel::saw(float phase) {
   return ((phase - PI) / PI) - 1;
 }
 
-float LowStepperChannel::square(float phase) {
+float LowStepperLfo::square(float phase) {
   if (phase >= PI)
   {
     return -1;
@@ -50,7 +50,7 @@ float LowStepperChannel::square(float phase) {
 
 // TODO: stop computing the same thing more than once!!!
 // TODO: CLEAN UP THIS LOGIC.
-float LowStepperChannel::getMorphedOutput(float morphPosition, float phase) {
+float LowStepperLfo::getMorphedOutput(float morphPosition, float phase) {
   double newMorph;
   if(morphPosition <= 0.33) {
     newMorph = mapFFFF(morphPosition, 0, 0.33, 0, 1);
@@ -64,7 +64,7 @@ float LowStepperChannel::getMorphedOutput(float morphPosition, float phase) {
   }
 }
 
-float LowStepperChannel::mapRateInputToFrequency(float input, bool enableSync, bool enableFastMode, float bpm) {
+float LowStepperLfo::mapRateInputToFrequency(float input, bool enableSync, bool enableFastMode, float bpm) {
   if(enableSync) {
     float mult = 0.5f;
     if(enableFastMode) {
@@ -89,7 +89,7 @@ float LowStepperChannel::mapRateInputToFrequency(float input, bool enableSync, b
   }
 }
 
-float LowStepperChannel::mapMorphInput(float input) {
+float LowStepperLfo::mapMorphInput(float input) {
   return input;
 }
 
@@ -136,7 +136,7 @@ float getDividerFromPosition(float input) {
 }
 
 
-float LowStepperChannel::mapLengthInput(float input, bool enableSync) {
+float LowStepperLfo::mapLengthInput(float input, bool enableSync) {
   if(enableSync) {
     return getDividerFromPosition(input);
   }
@@ -144,7 +144,7 @@ float LowStepperChannel::mapLengthInput(float input, bool enableSync) {
   return input;
 }
 
-float LowStepperChannel::mapStartInput(float input, bool enableSync)
+float LowStepperLfo::mapStartInput(float input, bool enableSync)
 {
   if(enableSync) {
     return getDividerFromPosition(input);
@@ -153,14 +153,14 @@ float LowStepperChannel::mapStartInput(float input, bool enableSync)
   return input;
 }
 
-LowStepperChannel::LowStepperChannel(float sampleRate) {
+LowStepperLfo::LowStepperLfo(float sampleRate) {
   this->sampleRate = sampleRate;
   this->sampleLength = (1.0f/sampleRate)*1000000.0f;
 }
 
 float diffThreshold = 0.25;
 
-LowStepperOutput LowStepperChannel::tick(LowStepperInput input) {
+LowStepperOutput LowStepperLfo::tick(LowStepperInput input) {
     float phaseIncrement = (this->sampleLength / (1000000.0 / input.frequency)) * TWO_PI;
 
     float start = input.start;

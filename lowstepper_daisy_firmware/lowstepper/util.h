@@ -19,4 +19,10 @@ uint16_t mapFFII(float x, float in_min, float in_max, int out_min, int out_max);
 float mapFFFF(float x, float in_min, float in_max, float out_min, float out_max);
 float combinePotAndCv(float potValue, float cvValue);
 
+struct LowStepperOutput {
+  bool eocGateHigh;
+  float cvOutput;
+  float phase;
+};
+
 #endif

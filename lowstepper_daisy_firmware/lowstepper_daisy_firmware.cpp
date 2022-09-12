@@ -5,8 +5,7 @@
 #include "daisy_seed.h"
 #include "daisysp.h"
 
-#include "lowstepper/LowStepper.h"
-#include "lowstepper/LowStepperChannel.h"
+#include "lowstepper/LowStepperLfo.h"
 #include "lowstepper/AverageBuffer.h"
 #include "lowstepper/SyncManager.h"
 #include "lowstepper/util.h"
@@ -62,10 +61,11 @@ float sampleRate;
 
 // Internal objects
 const size_t channelCount = 2;
-LowStepperOutput outputs[channelCount] = { NULL, NULL };
-LowStepperOutput o { 0, 0, false };
-LowStepperOutput o2 { 0, 0, false };
-LowStepper *lowStepper;
+// LowStepperOutput outputs[channelCount] = { NULL, NULL };
+LowStepperOutput lastOutputA { 0, 0, false };
+LowStepperOutput lastOutputB { 0, 0, false };
+LowStepperLfo *lfoA;
+LowStepperLfo *lfoB;
 
 SyncManager syncManagerA;
 SyncManager syncManagerB;
@@ -205,6 +205,11 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 	readGpioIn();
 
 	for (size_t n = 0; n < size; n += 2) {
+		if(!lfoA || !lfoB) {
+			break;
+		}
+
+		// TODO refactor this to not be duplicated...
 		bool useSyncA = syncManagerA.tick(syncA.triggerCheck());
 		float avgBpmValueA = syncManagerA.getBpm();
 		bool useFastModeA = !switchA.isOn();
@@ -214,29 +219,27 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 		bool useFastModeB = !switchB.isOn();
 
 		LowStepperInput inputA;
-		inputA.phase = outputs[0].phase;
-		inputA.frequency = LowStepperChannel::mapRateInputToFrequency(getRateAInput(), useSyncA, useFastModeA, avgBpmValueA);
-		inputA.morph = LowStepperChannel::mapMorphInput(getMorphAInput());
-		inputA.start = LowStepperChannel::mapStartInput(getStartAInput(), useSyncA);
-		inputA.end = LowStepperChannel::mapLengthInput(getLengthAInput(), useSyncA);
+		inputA.phase = lastOutputA.phase;
+		inputA.frequency = LowStepperLfo::mapRateInputToFrequency(getRateAInput(), useSyncA, useFastModeA, avgBpmValueA);
+		inputA.morph = LowStepperLfo::mapMorphInput(getMorphAInput());
+		inputA.start = LowStepperLfo::mapStartInput(getStartAInput(), useSyncA);
+		inputA.end = LowStepperLfo::mapLengthInput(getLengthAInput(), useSyncA);
 		inputA.shouldReset = resetA.triggerCheck();
 
 		LowStepperInput inputB;
-		inputB.phase = outputs[1].phase;
-		inputB.frequency = LowStepperChannel::mapRateInputToFrequency(getRateBInput(), useSyncB, useFastModeB, avgBpmValueB);
-		inputB.morph = LowStepperChannel::mapMorphInput(getMorphBInput());
-		inputB.start = LowStepperChannel::mapStartInput(getStartBInput(), useSyncB);
-		inputB.end = LowStepperChannel::mapLengthInput(getLengthBInput(), useSyncB);
+		inputB.phase = lastOutputB.phase;
+		inputB.frequency = LowStepperLfo::mapRateInputToFrequency(getRateBInput(), useSyncB, useFastModeB, avgBpmValueB);
+		inputB.morph = LowStepperLfo::mapMorphInput(getMorphBInput());
+		inputB.start = LowStepperLfo::mapStartInput(getStartBInput(), useSyncB);
+		inputB.end = LowStepperLfo::mapLengthInput(getLengthBInput(), useSyncB);
 		inputB.shouldReset = resetB.triggerCheck();
  
-		LowStepperInput inputs[2] = { inputA, inputB };
-
-		// Process inputs array, dump into outputs array
-		lowStepper->tick(inputs, outputs);
+		lastOutputA = lfoA->tick(inputA);
+		lastOutputB = lfoB->tick(inputB);
 
 		// Copy data out of application to send to DAC
-		cvCh1 = outputs[0].cvOutput;
-		cvCh2 = outputs[1].cvOutput;
+		cvCh1 = lastOutputA.cvOutput;
+		cvCh2 = lastOutputB.cvOutput;
 
 		// Don't do anything on audio output
 		out[n] = 0;
@@ -245,8 +248,8 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 }
 
 int main(void) {
-	outputs[0] = o;
-	outputs[1] = o2;
+	// outputs[0] = o;
+	// outputs[1] = o2;
 
 	// Init Daisy
 	hw.Configure();
@@ -273,11 +276,8 @@ int main(void) {
 	// gate_output.pull = DSY_GPIO_PULLDOWN;
 	// dsy_gpio_init(&gate_output);
 
-	// NOTE TO SELF: Do not move from main, application will segfault lol
-	LowStepperChannel *channelA = new LowStepperChannel(sampleRate); // don't use this
-	LowStepperChannel *channelB = new LowStepperChannel(sampleRate);; // don't use this
-	LowStepperChannel *lsChannels[channelCount] = { channelA, channelB }; // use this
-	lowStepper = new LowStepper(lsChannels, channelCount);
+	lfoA = new LowStepperLfo(sampleRate); // don't use this
+	lfoB = new LowStepperLfo(sampleRate);; // don't use this
 
 	hw.SetAudioBlockSize(1);
 	hw.StartAudio(AudioCallback);
@@ -306,11 +306,11 @@ int main(void) {
 			// 	resetB.isCablePluggedIn()
 			// );
 
-			hw.PrintLine(
-				"%d, %d",
-				switchA.isOn(),
-				switchB.isOn()
-			);
+			// hw.PrintLine(
+			// 	"%d, %d",
+			// 	switchA.isOn(),
+			// 	switchB.isOn()
+			// );
 
 			// hw.PrintLine(
 			// 	"%f",

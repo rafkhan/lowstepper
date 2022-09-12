@@ -1,13 +1,8 @@
-#ifndef BASEMODE_H
-#define BASEMODE_H
+#ifndef LOWSTEPPER_LFO_H
+#define LOWSTEPPER_LFO_H
 
 #include <stdint.h>
-
-struct LowStepperOutput {
-  bool eocGateHigh;
-  float cvOutput;
-  float phase;
-};
+#include "util.h"
 
 // Input for LFO only
 // TODO: Rename this struct
@@ -22,7 +17,7 @@ struct LowStepperInput {
   bool shouldReset;
 };
 
-class LowStepperChannel
+class LowStepperLfo
 {
   private:
     float sampleRate;
@@ -34,7 +29,7 @@ class LowStepperChannel
     float saw(float phase);
     float getMorphedOutput(float morphPosition, float phase);
   public:
-    LowStepperChannel(float sampleRate);
+    LowStepperLfo(float sampleRate);
     LowStepperOutput tick(LowStepperInput);
 
     static float mapRateInputToFrequency(float input, bool enableSync, bool enableFastMode, float bpm); // Convert 0-1 value to frequency
