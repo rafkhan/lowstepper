@@ -21,7 +21,7 @@ float combinePotAndCv(float potValue, float cvValue);
 
 struct LowStepperOutput {
   bool eocGateHigh;
-  float cvOutput;
+  float cvOutput; // -1 to 1
   float phase;
 };
 

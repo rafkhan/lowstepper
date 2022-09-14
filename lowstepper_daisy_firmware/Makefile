@@ -6,6 +6,7 @@ LDFLAGS += -u _printf_float
 # Sources
 CPP_SOURCES = lowstepper_daisy_firmware.cpp
 CPP_SOURCES += lowstepper/LowStepperLfo.cpp
+CPP_SOURCES += lowstepper/LowStepperAdsr.cpp
 CPP_SOURCES += lowstepper/util.cpp
 CPP_SOURCES += lowstepper/AverageBuffer.cpp
 CPP_SOURCES += lowstepper/SyncManager.cpp

@@ -6,6 +6,7 @@
 #include "daisysp.h"
 
 #include "lowstepper/LowStepperLfo.h"
+#include "lowstepper/LowStepperAdsr.h"
 #include "lowstepper/AverageBuffer.h"
 #include "lowstepper/SyncManager.h"
 #include "lowstepper/util.h"
@@ -66,6 +67,7 @@ LowStepperOutput lastOutputA { 0, 0, false };
 LowStepperOutput lastOutputB { 0, 0, false };
 LowStepperLfo *lfoA;
 LowStepperLfo *lfoB;
+LowStepperAdsr *adsrA;
 
 SyncManager syncManagerA;
 SyncManager syncManagerB;
@@ -205,7 +207,7 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 	readGpioIn();
 
 	for (size_t n = 0; n < size; n += 2) {
-		if(!lfoA || !lfoB) {
+		if(!lfoA || !lfoB || !adsrA) {
 			break;
 		}
 
@@ -237,8 +239,19 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 		lastOutputA = lfoA->tick(inputA);
 		lastOutputB = lfoB->tick(inputB);
 
+		LowStepperAdsrInput adsrInputA = {
+			resetA.isGateHigh(),
+			LowStepperAdsr::mapAttack(getRateAInput()),
+			LowStepperAdsr::mapDecay(getMorphAInput()),
+			LowStepperAdsr::mapSustain(getStartAInput()),
+			LowStepperAdsr::mapRelease(getLengthAInput())
+		};
+		LowStepperOutput o = adsrA->tick(adsrInputA);
+
 		// Copy data out of application to send to DAC
-		cvCh1 = lastOutputA.cvOutput;
+		// cvCh1 = lastOutputA.cvOutput;
+		cvCh1 = o.cvOutput;
+		// cvCh1 = -0.2f;
 		cvCh2 = lastOutputB.cvOutput;
 
 		// Don't do anything on audio output
@@ -276,8 +289,9 @@ int main(void) {
 	// gate_output.pull = DSY_GPIO_PULLDOWN;
 	// dsy_gpio_init(&gate_output);
 
-	lfoA = new LowStepperLfo(sampleRate); // don't use this
-	lfoB = new LowStepperLfo(sampleRate);; // don't use this
+	lfoA = new LowStepperLfo(sampleRate);
+	lfoB = new LowStepperLfo(sampleRate);
+	adsrA = new LowStepperAdsr(sampleRate);
 
 	hw.SetAudioBlockSize(1);
 	hw.StartAudio(AudioCallback);
