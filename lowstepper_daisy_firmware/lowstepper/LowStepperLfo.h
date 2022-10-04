@@ -17,6 +17,12 @@ struct LowStepperInput {
   bool shouldReset;
 };
 
+enum LowStepperLfoMode {
+  SLOW,
+  MEDIUM,
+  FAST
+};
+
 class LowStepperLfo
 {
   private:
@@ -32,7 +38,7 @@ class LowStepperLfo
     LowStepperLfo(float sampleRate);
     LowStepperOutput tick(LowStepperInput);
 
-    static float mapRateInputToFrequency(float input, bool enableSync, bool enableFastMode, float bpm); // Convert 0-1 value to frequency
+    static float mapRateInputToFrequency(float input, bool enableSync, LowStepperLfoMode speed, float bpm); // Convert 0-1 value to frequency
     static float mapMorphInput(float input);
     static float mapStartInput(float input, bool enableSync);
     static float mapLengthInput(float length, bool enableSync);

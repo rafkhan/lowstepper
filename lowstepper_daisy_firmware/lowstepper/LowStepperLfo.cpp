@@ -64,11 +64,15 @@ float LowStepperLfo::getMorphedOutput(float morphPosition, float phase) {
   }
 }
 
-float LowStepperLfo::mapRateInputToFrequency(float input, bool enableSync, bool enableFastMode, float bpm) {
+float LowStepperLfo::mapRateInputToFrequency(float input, bool enableSync, LowStepperLfoMode mode, float bpm) {
   if(enableSync) {
     float mult = 0.5f;
-    if(enableFastMode) {
-      mult = 16.0f;
+    if(mode == LowStepperLfoMode::MEDIUM) {
+      mult = 16;
+    }
+
+    if(mode == LowStepperLfoMode::MEDIUM) {
+      mult = 32;
     }
 
     float maxFreq = (bpm / 60.0f) * mult;
@@ -77,12 +81,17 @@ float LowStepperLfo::mapRateInputToFrequency(float input, bool enableSync, bool 
     return maxFreq / (float) position;
   } else {
     // non-linear curve here.
-    float min = 0.01;
-    float max = 2;
+    float min = 0.005;
+    float max = 3.0f;
 
-    if(enableFastMode) {
-      min = 2;
+    if(mode == LowStepperLfoMode::MEDIUM) {
+      min = 1.5;
       max = 40;
+    }
+
+    if(mode == LowStepperLfoMode::FAST) {
+      min = 35;
+      max = 100;
     }
 
     return mapFFFF(pow(input, 2.5), 0, 1, min, max);
@@ -158,8 +167,6 @@ LowStepperLfo::LowStepperLfo(float sampleRate) {
   this->sampleLength = (1.0f/sampleRate)*1000000.0f;
 }
 
-float diffThreshold = 0.25;
-
 LowStepperOutput LowStepperLfo::tick(LowStepperInput input) {
     float phaseIncrement = (this->sampleLength / (1000000.0 / input.frequency)) * TWO_PI;
 
@@ -169,6 +176,9 @@ LowStepperOutput LowStepperLfo::tick(LowStepperInput input) {
     float endPhase;
     float phase;
 
+    LowStepperOutput output;
+    output.eocGateHigh = false;
+
     startPhase = TWO_PI * start;
     endPhase = TWO_PI - (TWO_PI * (1 - end));
 
@@ -177,12 +187,14 @@ LowStepperOutput LowStepperLfo::tick(LowStepperInput input) {
 
       if (phase > endPhase) {
         phase = startPhase + (phase - endPhase);
+        output.eocGateHigh = true;
       }
     } else {
       phase = input.phase - phaseIncrement;
 
       if (phase < endPhase) {
         phase = startPhase + (phase - endPhase);
+        output.eocGateHigh = true;
       }
     }
 
@@ -190,9 +202,7 @@ LowStepperOutput LowStepperLfo::tick(LowStepperInput input) {
       phase = startPhase;
     }
 
-    LowStepperOutput output;
     output.cvOutput = getMorphedOutput(input.morph, phase);
-    output.eocGateHigh = false;
     output.phase = phase;
     return output;
 }

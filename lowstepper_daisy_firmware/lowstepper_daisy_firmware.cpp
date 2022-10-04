@@ -12,9 +12,11 @@
 #include "lowstepper/util.h"
 
 #include "hardware/GateInput.h"
+#include "hardware/GateOutput.h"
 #include "hardware/LSSwitch.h"
 
 #define DEBUG 1
+#define AUDIO_BLOCK_SIZE 1
 
 // PIN MAPPING
 #define MUX1ADC 28
@@ -37,8 +39,8 @@
 #define PIN_RESET_B 14
 #define PIN_RESET_DETECT_B 6
 
-#define PIN_SWITCH_A_1 18
-#define PIN_SWITCH_A_2 17
+#define PIN_SWITCH_A_1 17
+#define PIN_SWITCH_A_2 18
 #define PIN_SWITCH_B_1 16
 #define PIN_SWITCH_B_2 15
 
@@ -54,8 +56,12 @@ GateInput syncA;
 GateInput resetA;
 GateInput syncB;
 GateInput resetB;
-LSSwitch switchA;
-LSSwitch switchB;
+GateOutput eocA;
+GateOutput eocB;
+LSSwitch switchA1;
+LSSwitch switchA2;
+LSSwitch switchB1;
+LSSwitch switchB2;
 
 // Config
 float sampleRate;
@@ -127,17 +133,8 @@ void initAdc() {
 }
 
 void initGpioOut() {
-	// gpioOutEocA.pin  = hw.GetPin(PIN_EOC_A);
-	// gpioOutEocA.mode = DSY_GPIO_MODE_OUTPUT_PP;
-	// gpioOutEocA.pull = DSY_GPIO_NOPULL;
-	// dsy_gpio_init(&gpioOutEocA);
-
-	// gpioOutEocB.pin  = hw.GetPin(PIN_EOC_B);
-	// gpioOutEocB.mode = DSY_GPIO_MODE_OUTPUT_PP;
-	// gpioOutEocB.pull = DSY_GPIO_NOPULL;
-	// dsy_gpio_init(&gpioOutEocB);
-
-	// gpioOutEocA.Init() 
+	eocA.init(&hw, sampleRate, 1, PIN_EOC_A);
+	eocB.init(&hw, sampleRate, 1, PIN_EOC_B);
 }
 
 void initGpioIn() {
@@ -146,8 +143,10 @@ void initGpioIn() {
 	syncB.init(&hw, PIN_SYNC_B, PIN_SYNC_DETECT_B);
 	resetB.init(&hw, PIN_RESET_B, PIN_RESET_DETECT_B);
 
-	switchA.init(&hw, PIN_SWITCH_A_1);
-	switchB.init(&hw, PIN_SWITCH_B_1);
+	switchA1.init(&hw, PIN_SWITCH_A_1);
+	switchA2.init(&hw, PIN_SWITCH_A_2);
+	switchB1.init(&hw, PIN_SWITCH_B_1);
+	switchB2.init(&hw, PIN_SWITCH_B_2);
 }
 
 void initDac() {
@@ -174,11 +173,11 @@ void readAdc() {
 }
 
 void writeDac() {
-	// uint16_t y1 = mapFFII(cvCh1 * -1.0, -1.0, 1.0, 0, 4095);
-	// uint16_t y2 =	mapFFII(cvCh2 * -1.0, -1.0, 1.0, 0, 4095);
+	uint16_t y1 = mapFFII(cvCh1 * -1.0, -1.0, 1.0, 0, 4095);
+	uint16_t y2 =	mapFFII(cvCh2 * -1.0, -1.0, 1.0, 0, 4095);
 
-	uint16_t y1 = mapFFII(cvCh1 * -1.0, -1.0, 1.0, 5, 4090);
-	uint16_t y2 =	mapFFII(cvCh2 * -1.0, -1.0, 1.0, 5, 4090);
+	// uint16_t y1 = (uint16_t) mapFFFF(cvCh1 * -1.0, -1.0, 1.0, 20, 4075);
+	// uint16_t y2 =	(uint16_t) mapFFFF(cvCh2 * -1.0, -1.0, 1.0, 20, 4075);
 
 	// accidentally reversed??
 	hw.dac.WriteValue(DacHandle::Channel::TWO, y1);
@@ -191,8 +190,10 @@ void readGpioIn() {
 	syncB.readHardware();
 	resetB.readHardware();
 
-	switchA.readHardware();
-	switchB.readHardware();
+	switchA1.readHardware();
+	switchA2.readHardware();
+	switchB1.readHardware();
+	switchB2.readHardware();
 }
 
 
@@ -210,19 +211,36 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 		if(!lfoA || !lfoB || !adsrA) {
 			break;
 		}
-
 		// TODO refactor this to not be duplicated...
 		bool useSyncA = syncManagerA.tick(syncA.triggerCheck());
 		float avgBpmValueA = syncManagerA.getBpm();
-		bool useFastModeA = !switchA.isOn();
+		// bool useFastModeA = !switchA2.isOn();
 
 		bool useSyncB = syncManagerB.tick(syncB.triggerCheck());
 		float avgBpmValueB = syncManagerB.getBpm();
-		bool useFastModeB = !switchB.isOn();
+
+
+		LowStepperLfoMode modeA = LowStepperLfoMode::MEDIUM;
+		if (!switchA1.isOn()) {
+			modeA = LowStepperLfoMode::SLOW;
+		}
+		
+		if (!switchA2.isOn()) {
+			modeA = LowStepperLfoMode::FAST;
+		}
+
+		LowStepperLfoMode modeB = LowStepperLfoMode::MEDIUM;
+		if (!switchB1.isOn()) {
+			modeB = LowStepperLfoMode::SLOW;
+		}
+		
+		if (!switchB2.isOn()) {
+			modeB = LowStepperLfoMode::FAST;
+		}
 
 		LowStepperInput inputA;
 		inputA.phase = lastOutputA.phase;
-		inputA.frequency = LowStepperLfo::mapRateInputToFrequency(getRateAInput(), useSyncA, useFastModeA, avgBpmValueA);
+		inputA.frequency = LowStepperLfo::mapRateInputToFrequency(getRateAInput(), useSyncA, modeA, avgBpmValueA);
 		inputA.morph = LowStepperLfo::mapMorphInput(getMorphAInput());
 		inputA.start = LowStepperLfo::mapStartInput(getStartAInput(), useSyncA);
 		inputA.end = LowStepperLfo::mapLengthInput(getLengthAInput(), useSyncA);
@@ -230,7 +248,7 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 
 		LowStepperInput inputB;
 		inputB.phase = lastOutputB.phase;
-		inputB.frequency = LowStepperLfo::mapRateInputToFrequency(getRateBInput(), useSyncB, useFastModeB, avgBpmValueB);
+		inputB.frequency = LowStepperLfo::mapRateInputToFrequency(getRateBInput(), useSyncB, modeB, avgBpmValueB);
 		inputB.morph = LowStepperLfo::mapMorphInput(getMorphBInput());
 		inputB.start = LowStepperLfo::mapStartInput(getStartBInput(), useSyncB);
 		inputB.end = LowStepperLfo::mapLengthInput(getLengthBInput(), useSyncB);
@@ -239,19 +257,29 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 		lastOutputA = lfoA->tick(inputA);
 		lastOutputB = lfoB->tick(inputB);
 
-		LowStepperAdsrInput adsrInputA = {
-			resetA.isGateHigh(),
-			LowStepperAdsr::mapAttack(getRateAInput()),
-			LowStepperAdsr::mapDecay(getMorphAInput()),
-			LowStepperAdsr::mapSustain(getStartAInput()),
-			LowStepperAdsr::mapRelease(getLengthAInput())
-		};
-		LowStepperOutput o = adsrA->tick(adsrInputA);
+		if(lastOutputA.eocGateHigh) {
+			eocA.setGateHigh(0);
+		}
+
+		if(lastOutputB.eocGateHigh) {
+			eocB.setGateHigh(0);
+		}
+
+		eocA.tick();
+		eocB.tick();
+
+		// LowStepperAdsrInput adsrInputA = {
+		// 	resetA.isGateHigh(),
+		// 	LowStepperAdsr::mapAttack(getRateAInput()),
+		// 	LowStepperAdsr::mapDecay(getMorphAInput()),
+		// 	LowStepperAdsr::mapSustain(getStartAInput()),
+		// 	LowStepperAdsr::mapRelease(getLengthAInput())
+		// };
+		// LowStepperOutput o = adsrA->tick(adsrInputA);
+		// cvCh1 = o.cvOutput;
 
 		// Copy data out of application to send to DAC
-		// cvCh1 = lastOutputA.cvOutput;
-		cvCh1 = o.cvOutput;
-		// cvCh1 = -0.2f;
+		cvCh1 = lastOutputA.cvOutput;
 		cvCh2 = lastOutputB.cvOutput;
 
 		// Don't do anything on audio output
@@ -261,9 +289,6 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 }
 
 int main(void) {
-	// outputs[0] = o;
-	// outputs[1] = o2;
-
 	// Init Daisy
 	hw.Configure();
 	hw.Init();
@@ -284,16 +309,11 @@ int main(void) {
 	initGpioIn();
 	initSync(sampleRate);
 
-	// gate_output.pin  = hw.GetPin(PIN_EOC_A);
-	// gate_output.mode = DSY_GPIO_MODE_OUTPUT_PP;
-	// gate_output.pull = DSY_GPIO_PULLDOWN;
-	// dsy_gpio_init(&gate_output);
-
 	lfoA = new LowStepperLfo(sampleRate);
 	lfoB = new LowStepperLfo(sampleRate);
 	adsrA = new LowStepperAdsr(sampleRate);
 
-	hw.SetAudioBlockSize(1);
+	hw.SetAudioBlockSize(AUDIO_BLOCK_SIZE);
 	hw.StartAudio(AudioCallback);
  
 	for (;;)
@@ -304,6 +324,9 @@ int main(void) {
 		if(metroValue) {
 			metroValue = false;
 
+			// gpioOutEocAValue = !gpioOutEocAValue;
+			// dsy_gpio_write(&gpioOutEocA, gpioOutEocAValue);
+			
 			// Logger<LOGGER_SEMIHOST>::PrintLine(
 			// 	"%d, %d, %f, %f",
 			// 	syncA.isCablePluggedIn(),
@@ -320,11 +343,11 @@ int main(void) {
 			// 	resetB.isCablePluggedIn()
 			// );
 
-			// hw.PrintLine(
-			// 	"%d, %d",
-			// 	switchA.isOn(),
-			// 	switchB.isOn()
-			// );
+			hw.PrintLine(
+				"%d, %d",
+				switchB1.isOn(),
+				switchB2.isOn()
+			);
 
 			// hw.PrintLine(
 			// 	"%f",
