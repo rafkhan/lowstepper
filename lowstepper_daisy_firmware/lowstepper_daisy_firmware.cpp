@@ -15,7 +15,7 @@
 #include "hardware/GateOutput.h"
 #include "hardware/LSSwitch.h"
 
-#define DEBUG 1
+#define DEBUG 0
 #define AUDIO_BLOCK_SIZE 1
 
 // PIN MAPPING
@@ -173,11 +173,10 @@ void readAdc() {
 }
 
 void writeDac() {
-	uint16_t y1 = mapFFII(cvCh1 * -1.0, -1.0, 1.0, 0, 4095);
-	uint16_t y2 =	mapFFII(cvCh2 * -1.0, -1.0, 1.0, 0, 4095);
-
-	// uint16_t y1 = (uint16_t) mapFFFF(cvCh1 * -1.0, -1.0, 1.0, 20, 4075);
-	// uint16_t y2 =	(uint16_t) mapFFFF(cvCh2 * -1.0, -1.0, 1.0, 20, 4075);
+	// Not sure why 1.1 solved this flattening issue
+	// TODO: investigate for next module
+	uint16_t y1 = mapFFII(cvCh1 * -1.0, -1.1, 1.1, 40, 4055);
+	uint16_t y2 =	mapFFII(cvCh2 * -1.0, -1.1, 1.1, 40, 4055);
 
 	// accidentally reversed??
 	hw.dac.WriteValue(DacHandle::Channel::TWO, y1);
@@ -323,36 +322,6 @@ int main(void) {
 #if DEBUG
 		if(metroValue) {
 			metroValue = false;
-
-			// gpioOutEocAValue = !gpioOutEocAValue;
-			// dsy_gpio_write(&gpioOutEocA, gpioOutEocAValue);
-			
-			// Logger<LOGGER_SEMIHOST>::PrintLine(
-			// 	"%d, %d, %f, %f",
-			// 	syncA.isCablePluggedIn(),
-			// 	useSyncA,
-			// 	LowStepper::mapStartInput(getStartAInput(), useSyncA),
-			// 	LowStepper::mapLengthInput(getLengthAInput(), useSyncA)
-			// );
-
-			// hw.PrintLine(
-			// 	"%d, %d, %d, %d",
-			// 	syncB.isGateHigh(),
-			// 	syncB.isCablePluggedIn(),
-			// 	resetB.isGateHigh(),
-			// 	resetB.isCablePluggedIn()
-			// );
-
-			hw.PrintLine(
-				"%d, %d",
-				switchB1.isOn(),
-				switchB2.isOn()
-			);
-
-			// hw.PrintLine(
-			// 	"%f",
-			// 	LowStepperChannel::mapStartInput(getStartAInput(), useSyncA)
-			// );
 		}
 #endif
 	}
