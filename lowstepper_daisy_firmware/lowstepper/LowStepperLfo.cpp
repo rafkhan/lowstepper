@@ -71,7 +71,7 @@ float LowStepperLfo::mapRateInputToFrequency(float input, bool enableSync, LowSt
       mult = 16;
     }
 
-    if(mode == LowStepperLfoMode::MEDIUM) {
+    if(mode == LowStepperLfoMode::FAST) {
       mult = 32;
     }
 
