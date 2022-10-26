@@ -16,18 +16,13 @@
  ▀█▄▀▪·▀  ▀ ▀  ▀  ▀ •  ▀▀▀▀   ▀ • ▀▀ █▪ ▀▀▀ ▀▀▀ · ▀▀▀  ▀▀▀▀ ▀▀▀·▀▀▀ • ▀▀▀ .▀  ▀
 ```
 
-LowStepper, a synth module by [Okay Synthesizer](https://okaysynthesizer.com/) <3
-
-
-See a very basic demo at https://lowstepper.vercel.app/ 
+LowStepper, a dual LFO module by [Okay Synthesizer](https://okaysynthesizer.com/) <3
 
 
 ## Components
 
-- `lowstepper_firmware/` - C++ PlatformIO project for Teensy3.5 board
-- `lowstepper_hardware/` - KiCad project containing schematics and and PCB designs
-- `lowstepper_wasm_demo/` - ReactJS project containing web demo of `/lowstepper_firmware`
-- `panel/` - The front panel of the module, Adobe Illustrator designs and KiCad Project
+- `lowstepper_daisy_firmware/` - C++ PlatformIO project for Daisy board
+- `daisy_hardware_v1/` - KiCad project containing schematics and and PCB designs
 
 ### Firmware
 All code is located in `lowstepper_daisy_firmware`
