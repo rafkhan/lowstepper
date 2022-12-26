@@ -15,7 +15,7 @@
 #include "hardware/GateOutput.h"
 #include "hardware/LSSwitch.h"
 
-#define DEBUG 0
+#define DEBUG_LS 1
 #define AUDIO_BLOCK_SIZE 1
 
 // PIN MAPPING
@@ -68,13 +68,11 @@ float sampleRate;
 
 // Internal objects
 const size_t channelCount = 2;
-// LowStepperOutput outputs[channelCount] = { NULL, NULL };
 LowStepperOutput lastOutputA { 0, 0, false };
 LowStepperOutput lastOutputB { 0, 0, false };
 LowStepperLfo *lfoA;
 LowStepperLfo *lfoB;
 LowStepperAdsr *adsrA;
-
 SyncManager syncManagerA;
 SyncManager syncManagerB;
 
@@ -94,34 +92,42 @@ bool metroValue = false;
 // TODO: Fix all of these mappings...
 float getRateAInput() {
 	return combinePotAndCv(potInputs[1], cvInputs[5]);
+	// return 0.5;
 }
 
 float getMorphAInput() {
 	return combinePotAndCv(potInputs[0], cvInputs[7]);
+	// return 0;
 }
 
 float getStartAInput() {
-	return combinePotAndCv(potInputs[4], cvInputs[6]);
+	return combinePotAndCv2(potInputs[4], cvInputs[6]);
+	// return 0.5;
 }
 
 float getLengthAInput() {
 	return combinePotAndCv(potInputs[6], cvInputs[0]);
+	// return 0.9999;
 }
 
 float getRateBInput() {
 	return combinePotAndCv(potInputs[2], cvInputs[4]);
+	// return 0.5;
 }
 
 float getMorphBInput() {
 	return combinePotAndCv(potInputs[3], cvInputs[1]);
+	// return 0;
 }
 
 float getStartBInput() {
 	return combinePotAndCv(potInputs[5], cvInputs[2]);
+	// return 0;
 }
 
 float getLengthBInput() {
 	return combinePotAndCv(potInputs[7], cvInputs[3]);
+	// return 1;
 }
 
 void initAdc() {
@@ -167,9 +173,11 @@ void initSync(float sampleRate) {
 }
 
 void readAdc() {
-	adcCycleCounter = (adcCycleCounter + 1) % 8;
-	potInputs[adcCycleCounter] = 1.0 - hw.adc.GetMuxFloat(0, adcCycleCounter);
-	cvInputs[adcCycleCounter] = 1.0 - hw.adc.GetMuxFloat(1, adcCycleCounter);
+	for(int i = 0; i < 8; i++) {
+		float potValue = fmin(1, fmax(0, (1.0 - hw.adc.GetMuxFloat(0, i))));
+		potInputs[i] = 1.0 - pow(potValue - 1.0, 2);
+		cvInputs[i] = 1.0 - hw.adc.GetMuxFloat(1, i);
+	}
 }
 
 void writeDac() {
@@ -296,10 +304,9 @@ int main(void) {
 
 	tick.Init(2.f, sampleRate);
 
-#if DEBUG
+#if DEBUG_LS
   hw.StartLog();
-	// Logger<LOGGER_SEMIHOST>::StartLog(true);
-	System::Delay(500);
+	System::Delay(100);
 #endif
 
 	initDac();
@@ -314,14 +321,17 @@ int main(void) {
 
 	hw.SetAudioBlockSize(AUDIO_BLOCK_SIZE);
 	hw.StartAudio(AudioCallback);
+
+	hw.adc.GetMuxFloat(0, 0);
  
 	for (;;)
 	{
 		writeDac();
 
-#if DEBUG
+#if DEBUG_LS
 		if(metroValue) {
 			metroValue = false;
+			hw.PrintLine("%f", potInputs[4]);
 		}
 #endif
 	}

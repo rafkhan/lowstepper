@@ -94,17 +94,19 @@ float LowStepperLfo::mapRateInputToFrequency(float input, bool enableSync, LowSt
       max = 100;
     }
 
-    return mapFFFF(pow(input, 2.5), 0, 1, min, max);
+    return mapFFFF(pow(input, 2), 0, 1, min, max);
   }
 }
 
 float LowStepperLfo::mapMorphInput(float input) {
-  return input;
+  return input; // doesn't need to be mapped to any fn
 }
 
 float getDividerFromPosition(float input) {
     int position = floor(mapFFFF(input, 0, 1, 0, 9));
-    float div = 1;
+    float div = 1; 
+
+    // LOL fix this wtf raf were you high?
     if(position == 0) {
       div = 0;
     }
