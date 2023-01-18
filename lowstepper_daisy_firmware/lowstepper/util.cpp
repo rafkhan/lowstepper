@@ -18,13 +18,17 @@ uint16_t mapFFII(float x, float in_min, float in_max, int out_min, int out_max) 
 #pragma GCC push_options
 #pragma GCC optimize ("O0")
 float combinePotAndCv(float potValue, float cvValue) {
-	float adjustedCv = mapFFFF(fmin(fmax(cvValue, 0), 0.86f), 0, 0.86f, -1, 1);
+
+	float adjustedCv = mapFFFF(fmin(fmax(cvValue, 0), 0.87f), 0, 0.87f, -1, 1);
+	if((adjustedCv > 0 && adjustedCv < 0.008) || (adjustedCv < 0 && adjustedCv > -0.008)) {
+		adjustedCv = 0;
+	}
+
 	float adjustedPotValue = mapFFFF(
 		fmin(potValue, 1.0f),
-		0, 1.0f, 0, 1.0f); // TODO: update 0.875 to 1 when CV inputs fixed
+		0, 1.0f, 0, 1.0f);
 
 	float combinedValue = adjustedPotValue + adjustedCv;
-	// float combinedValue = adjustedPotValue;
 
   return fmin(fmax(combinedValue, 0), 1);
 }

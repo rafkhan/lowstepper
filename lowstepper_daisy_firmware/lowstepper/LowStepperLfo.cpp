@@ -168,7 +168,7 @@ LowStepperLfo::LowStepperLfo(float sampleRate) {
   this->sampleRate = sampleRate;
   this->sampleLength = (1.0f/sampleRate)*1000000.0f;
 }
- 0.12
+
 LowStepperOutput LowStepperLfo::tick(LowStepperInput input) {
     float phaseIncrement = (this->sampleLength / (1000000.0 / input.frequency)) * TWO_PI;
 
