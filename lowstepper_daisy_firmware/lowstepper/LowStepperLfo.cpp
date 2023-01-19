@@ -184,20 +184,23 @@ LowStepperOutput LowStepperLfo::tick(LowStepperInput input) {
     startPhase = TWO_PI * start;
     endPhase = TWO_PI - (TWO_PI * (1 - end));
 
-    if(start < end) {
+    // TODO implement range to cancel out start/end
+    if(start < end && end - start > 0.01) {
       phase = input.phase + phaseIncrement;
 
       if (phase > endPhase) {
         phase = startPhase + (phase - endPhase);
         output.eocGateHigh = true;
       }
-    } else {
+    } else if(start > end && start - end > 0.01) {
       phase = input.phase - phaseIncrement;
 
       if (phase < endPhase) {
         phase = startPhase + (phase - endPhase);
         output.eocGateHigh = true;
       }
+    } else {
+      phase = input.phase;
     }
 
     if(input.shouldReset) {

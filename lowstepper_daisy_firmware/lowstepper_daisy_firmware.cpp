@@ -92,42 +92,34 @@ bool metroValue = false;
 // TODO: Fix all of these mappings...
 float getRateAInput() {
 	return combinePotAndCv(potInputs[1], cvInputs[5]);
-	// return 0.5;
 }
 
 float getMorphAInput() {
 	return combinePotAndCv(potInputs[0], cvInputs[7]);
-	// return 0;
 }
 
 float getStartAInput() {
 	return combinePotAndCv2(potInputs[4], cvInputs[6]);
-	// return 0.5;
 }
 
 float getLengthAInput() {
 	return combinePotAndCv(potInputs[6], cvInputs[0]);
-	// return 0.9999;
 }
 
 float getRateBInput() {
 	return combinePotAndCv(potInputs[2], cvInputs[4]);
-	// return 0.5;
 }
 
 float getMorphBInput() {
 	return combinePotAndCv(potInputs[3], cvInputs[1]);
-	// return 0;
 }
 
 float getStartBInput() {
 	return combinePotAndCv(potInputs[5], cvInputs[2]);
-	// return 0;
 }
 
 float getLengthBInput() {
 	return combinePotAndCv(potInputs[7], cvInputs[3]);
-	// return 1;
 }
 
 void initAdc() {
