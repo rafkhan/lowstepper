@@ -15,12 +15,10 @@ uint16_t mapFFII(float x, float in_min, float in_max, int out_min, int out_max) 
 // cvValue always at 0.5 when unplugged
 // clamps value between 0 and 1
 
-#pragma GCC push_options
-#pragma GCC optimize ("O0")
 float combinePotAndCv(float potValue, float cvValue) {
 
 	float adjustedCv = mapFFFF(fmin(fmax(cvValue, 0), 0.87f), 0, 0.87f, -1, 1);
-	if((adjustedCv > 0 && adjustedCv < 0.008) || (adjustedCv < 0 && adjustedCv > -0.008)) {
+	if((adjustedCv > 0 && adjustedCv < 0.02) || (adjustedCv < 0 && adjustedCv > -0.02)) {
 		adjustedCv = 0;
 	}
 
@@ -32,7 +30,6 @@ float combinePotAndCv(float potValue, float cvValue) {
 
   return fmin(fmax(combinedValue, 0), 1);
 }
-#pragma GCC pop_options
 
 
 float combinePotAndCv2(float potValue, float cvValue) {

@@ -16,7 +16,7 @@ void GateOutput::init(DaisySeed *hw, float sampleRate, float blockSize, int pinG
 	this->gpio.pull = DSY_GPIO_NOPULL;
 	dsy_gpio_init(&this->gpio);
 
-	this->sampleCountEnd = 500;
+	this->sampleCountEnd = 250;
 }
 
 void GateOutput::setGateHigh(int ms) {

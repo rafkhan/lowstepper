@@ -15,7 +15,7 @@
 #include "hardware/GateOutput.h"
 #include "hardware/LSSwitch.h"
 
-#define DEBUG_LS 1
+#define DEBUG_LS 0
 #define AUDIO_BLOCK_SIZE 1
 
 // PIN MAPPING
@@ -175,8 +175,8 @@ void readAdc() {
 void writeDac() {
 	// Not sure why 1.1 solved this flattening issue
 	// TODO: investigate for next module
-	uint16_t y1 = mapFFII(cvCh1 * -1.0, -1.1, 1.1, 40, 4055);
-	uint16_t y2 =	mapFFII(cvCh2 * -1.0, -1.1, 1.1, 40, 4055);
+	uint16_t y1 = mapFFII(cvCh1 * -1.0, -1.1, 1.1, 0, 4095);
+	uint16_t y2 =	mapFFII(cvCh2 * -1.0, -1.1, 1.1, 0, 4095);
 
 	// accidentally reversed??
 	hw.dac.WriteValue(DacHandle::Channel::TWO, y1);

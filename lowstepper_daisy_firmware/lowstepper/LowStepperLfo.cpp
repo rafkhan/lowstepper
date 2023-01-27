@@ -68,30 +68,29 @@ float LowStepperLfo::mapRateInputToFrequency(float input, bool enableSync, LowSt
   if(enableSync) {
     float mult = 0.5f;
     if(mode == LowStepperLfoMode::MEDIUM) {
-      mult = 16;
+      mult = 8;
     }
 
     if(mode == LowStepperLfoMode::FAST) {
-      mult = 32;
+      mult = 64;
     }
 
     float maxFreq = (bpm / 60.0f) * mult;
-    float exponent = floor(mapFFFF(input, 0, 1, 8, 0)); // will never actually go to 17?
-    float position = pow(2, exponent);
-    return maxFreq / (float) position;
+    float divisor = floor(mapFFFF(input, 0, 1, 16, 1)); // will never actually go to 17?
+    return maxFreq / divisor;
   } else {
     // non-linear curve here.
-    float min = 0.005;
-    float max = 3.0f;
+    float min = 0.0001f;
+    float max = 2.0f;
 
     if(mode == LowStepperLfoMode::MEDIUM) {
-      min = 1.5;
-      max = 40;
+      min = 1.0f;
+      max = 20.0f;
     }
 
     if(mode == LowStepperLfoMode::FAST) {
-      min = 35;
-      max = 100;
+      min = 18.0f;
+      max = 80.0f;
     }
 
     return mapFFFF(pow(input, 2), 0, 1, min, max);
