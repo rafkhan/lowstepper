@@ -18,7 +18,7 @@ uint16_t mapFFII(float x, float in_min, float in_max, int out_min, int out_max) 
 float combinePotAndCv(float potValue, float cvValue) {
 
 	float adjustedCv = mapFFFF(fmin(fmax(cvValue, 0), 0.87f), 0, 0.87f, -1, 1);
-	if((adjustedCv > 0 && adjustedCv < 0.02) || (adjustedCv < 0 && adjustedCv > -0.02)) {
+	if((adjustedCv > 0 && adjustedCv < 0.0225) || (adjustedCv < 0 && adjustedCv > -0.0225)) {
 		adjustedCv = 0;
 	}
 
