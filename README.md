@@ -19,7 +19,6 @@
 LowStepper, a synth module by [Okay Synthesizer](https://okaysynthesizer.com/) <3
 
 
-
 # LICENSE
 
 This program is free software: you can redistribute it and/or modify
@@ -35,10 +34,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-
-# Graphics licensing (todo update this)
-- https://thenounproject.com/nhammonds1029/
-- https://thenounproject.com/grega.cresnar/
 
 ------
 
