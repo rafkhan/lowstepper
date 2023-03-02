@@ -99,11 +99,11 @@ float getMorphAInput() {
 }
 
 float getStartAInput() {
-	return combinePotAndCv2(potInputs[4], cvInputs[6]);
+	return combinePotAndCv(potInputs[4], cvInputs[6], true);
 }
 
 float getLengthAInput() {
-	return combinePotAndCv(potInputs[6], cvInputs[0]);
+	return combinePotAndCv(potInputs[6], cvInputs[0], true);
 }
 
 float getRateBInput() {
@@ -115,11 +115,11 @@ float getMorphBInput() {
 }
 
 float getStartBInput() {
-	return combinePotAndCv(potInputs[5], cvInputs[2]);
+	return combinePotAndCv(potInputs[5], cvInputs[2], true);
 }
 
 float getLengthBInput() {
-	return combinePotAndCv(potInputs[7], cvInputs[3]);
+	return combinePotAndCv(potInputs[7], cvInputs[3], true);
 }
 
 void initAdc() {

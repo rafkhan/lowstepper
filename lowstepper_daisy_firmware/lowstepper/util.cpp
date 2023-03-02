@@ -15,10 +15,11 @@ uint16_t mapFFII(float x, float in_min, float in_max, int out_min, int out_max) 
 // cvValue always at 0.5 when unplugged
 // clamps value between 0 and 1
 
-float combinePotAndCv(float potValue, float cvValue) {
-
-	float adjustedCv = mapFFFF(fmin(fmax(cvValue, 0), 0.87f), 0, 0.87f, -1, 1);
-	if((adjustedCv > 0 && adjustedCv < 0.0225) || (adjustedCv < 0 && adjustedCv > -0.0225)) {
+float combinePotAndCv(float potValue, float cvValue, bool applyThreshold) {
+	float adjustedCv = mapFFFF(fmin(fmax(cvValue, 0), 0.8f), 0, 0.86f, -1, 1);
+	if(applyThreshold && 
+		((adjustedCv > 0 && adjustedCv < 0.023) || (adjustedCv < 0 && adjustedCv > -0.023))
+	) {
 		adjustedCv = 0;
 	}
 
@@ -29,9 +30,4 @@ float combinePotAndCv(float potValue, float cvValue) {
 	float combinedValue = adjustedPotValue + adjustedCv;
 
   return fmin(fmax(combinedValue, 0), 1);
-}
-
-
-float combinePotAndCv2(float potValue, float cvValue) {
-	return combinePotAndCv(potValue, cvValue);
 }

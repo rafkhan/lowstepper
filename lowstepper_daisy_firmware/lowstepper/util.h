@@ -21,8 +21,7 @@
 
 uint16_t mapFFII(float x, float in_min, float in_max, int out_min, int out_max);
 float mapFFFF(float x, float in_min, float in_max, float out_min, float out_max);
-float combinePotAndCv(float potValue, float cvValue);
-float combinePotAndCv2(float potValue, float cvValue);
+float combinePotAndCv(float potValue, float cvValue, bool applyThreshold = false);
 
 struct LowStepperOutput {
   bool eocGateHigh;
