@@ -16,9 +16,9 @@ uint16_t mapFFII(float x, float in_min, float in_max, int out_min, int out_max) 
 // clamps value between 0 and 1
 
 float combinePotAndCv(float potValue, float cvValue, bool applyThreshold) {
-	float adjustedCv = mapFFFF(fmin(fmax(cvValue, 0), 0.8f), 0, 0.86f, -1, 1);
+	float adjustedCv = mapFFFF(fmin(fmax(cvValue, 0), 0.855f), 0, 0.855f, -1, 1);
 	if(applyThreshold && 
-		((adjustedCv > 0 && adjustedCv < 0.023) || (adjustedCv < 0 && adjustedCv > -0.023))
+		((adjustedCv > 0 && adjustedCv < 0.024) || (adjustedCv < 0 && adjustedCv > -0.024))
 	) {
 		adjustedCv = 0;
 	}
