@@ -67,6 +67,12 @@
     "visible_layers": "7f0ffff_80000007",
     "zone_display_mode": 0
   },
+  "git": {
+    "repo_password": "",
+    "repo_type": "",
+    "repo_username": "",
+    "ssh_key": ""
+  },
   "meta": {
     "filename": "daisy_hardware_v1.kicad_prl",
     "version": 3
