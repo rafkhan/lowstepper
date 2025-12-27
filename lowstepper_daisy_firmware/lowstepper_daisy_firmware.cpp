@@ -267,16 +267,6 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
 		eocA.tick();
 		eocB.tick();
 
-		// LowStepperAdsrInput adsrInputA = {
-		// 	resetA.isGateHigh(),
-		// 	LowStepperAdsr::mapAttack(getRateAInput()),
-		// 	LowStepperAdsr::mapDecay(getMorphAInput()),
-		// 	LowStepperAdsr::mapSustain(getStartAInput()),
-		// 	LowStepperAdsr::mapRelease(getLengthAInput())
-		// };
-		// LowStepperOutput o = adsrA->tick(adsrInputA);
-		// cvCh1 = o.cvOutput;
-
 		// Copy data out of application to send to DAC
 		cvCh1 = lastOutputA.cvOutput;
 		cvCh2 = lastOutputB.cvOutput;
